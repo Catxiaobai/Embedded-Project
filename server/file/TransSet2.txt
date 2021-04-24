@@ -1,0 +1,17 @@
+T1 S1 S2 event=Buy(ticket,x) condition=null action=Write("Confirm purchase"),x=0 
+T2 S2 S3 event=Cancel() condition=x<=30 action=Write("The end"),x=0 
+T3 S4 S5 event=Buy(ticket,x) condition=null action=Write("Confirm purchase"),x=0 
+T4 S5 S6 event=null condition=x>30 action=Write("Time out"),x=0 
+T5 S7 S8 event=Buy(ticket,x) condition=null action=Write("Confirm purchase"),x=0 
+T6 S8 S9 event=Buy(insurance,passenger,y) condition=x<=30,passenger>=10 action=Write("Successful purchase"),passenger=passenger-10,x=0,y=0 
+T7 S9 S10 event=Deposit(company) condition=y>60 action=Write("Time out"),passenger=passenger+10,y=0 
+T8 S11 S12 event=Buy(ticket,x) condition=null action=Write("Confirm Purchase"),x=0 
+T9 S12 S13 event=Buy(insurance,passenger,y) condition=x<=30,passenger>=10 action=Write("Successful purchase"),passenger=passenger-10,x=0,y=0 
+T10 S13 S14 event=Deposit(company) condition=y<=60,company>=1000 action=Write("Pre-stored successfully"),company=company-1000,y=0 
+T11 S14 S15 event=Judge(z) condition=z<=4 action=Write("The flight was not delayed") 
+T12 S15 S16 event=Transfer() condition=null action=Write("The end"),company=company+1100 
+T13 S17 S18 event=Buy(ticket,x) condition=null action=Write("Confirm Purchase"),x=0 
+T14 S18 S19 event=Buy(insurance,passenger,y) condition=x<=30,passenger>=10 action=Write("Successful purchase"),passenger=passenger-10,x=0,y=0 
+T15 S19 S20 event=Deposit(company) condition=y<=60,company>=1000 action=Write("Pre-stored successfully"),company=company-1000,y=0 
+T16 S20 S21 event=Judge(z) condition=z>4 action=Write("The flight was delayed") 
+T17 S21 S22 event=Transfer() condition=null action=Write("The end"),company=company+10,passenger=passenger+1000 

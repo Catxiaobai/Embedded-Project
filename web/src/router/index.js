@@ -61,6 +61,51 @@ const routes = [
         name: 'home',
         component: () => import('@/views/Home/Home'),
       },
+      {
+        path: '/script',
+        name: 'script',
+        component: () => import('@/views/Script/Script'),
+      },
+      {
+        path: '/modelEdit',
+        name: 'modelEdit',
+        component: () => import('@/views/Model/ModelEdit'),
+      },
+      {
+        path: '/modelInfo',
+        name: 'modelInfo',
+        component: () => import('@/views/Model/ModelInfo'),
+      },
+      {
+        path: '/xmiImport',
+        name: 'xmiImport',
+        component: () => import('@/views/Model/XmiImport'),
+      },
+      {
+        path: '/boundaryValue',
+        name: 'boundaryValue',
+        component: () => import('@/views/TestDataGeneration/BoundaryValue'),
+      },
+      {
+        path: '/fullMigration',
+        name: 'fullMigration',
+        component: () => import('@/views/TestDataGeneration/FullMigration'),
+      },
+      {
+        path: '/fullState',
+        name: 'fullState',
+        component: () => import('@/views/TestDataGeneration/FullState'),
+      },
+      {
+        path: '/interfaceProtocol',
+        name: 'interfaceProtocol',
+        component: () => import('@/views/TestDataGeneration/InterfaceProtocol'),
+      },
+      {
+        path: '/randomValue',
+        name: 'randomValue',
+        component: () => import('@/views/TestDataGeneration/RandomValue'),
+      },
     ],
   },
 ]

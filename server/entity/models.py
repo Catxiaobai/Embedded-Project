@@ -57,5 +57,33 @@ class Item(models.Model):
         }
 
 
+# 场景
+class Scenes(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    element = models.TextField(default='')
+    content = models.TextField(default='')
+    type = models.TextField(default='')
+    name = models.TextField(default='')
+    describe = models.TextField(default='')
 
+    def to_dict(self):
+        type2 = ''
+        if self.type == 'sub':
+            type2 = '子场景'
+        elif self.type == 'complex':
+            type2 = '综合场景'
+        return {
+            'id': self.id,
+            'name': self.name,
+            'element': self.element,
+            'type': self.type,
+            'type2': type2,
+            'describe': self.describe,
+            'content': self.content,
+            'item': self.item.id,
+            'model_name': self.name + '的状态图'
+        }
+
+    def reset_pk(self):
+        self.id = None
 

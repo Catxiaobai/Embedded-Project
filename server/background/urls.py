@@ -24,4 +24,12 @@ urlpatterns = [
     path('personnel_list', views.personnel_list, name='personnel_list'),  # 人员列表
     path('add_item', views.add_item, name='add_item'),  # 添加项目
     path('user_item', views.user_item, name='user_item'),  # 用户所属项目
+    path('upload_file', views.upload_file, name='upload_file'),  # 上传文件
+    path('import_xmi', views.import_xmi, name='import_xmi'),  # 导入xmi文件
+    path('scenes_list', views.scenes_list, name='scenes_list'),  # 场景列表
+    path('import_scenes', views.import_scenes, name='import_scenes'),  # 导入场景
+    path('scenes_modeling', views.scenes_modeling, name='scenes_modeling'),  # 场景建模
+    path('deliver_model_data', views.deliver_model_data, name='deliver_model_data'),  # 传递模型的场景信息
+    path('save_model2', views.save_model2, name='save_model2'),  # 保存模型原本的样子
+    path('dsp_test', views.dsp_test, name='dsp_test')
 ]

@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AlarmPkg_profile="http://HomeAlarm.AlarmPkg/schemas/AlarmPkg_profile/_SY7GI31jEeunSI2ziaCNWw/0" xmlns:RHP="http://RhapsodyStandardModel.RhpProperties/schemas/RHP/_SY7GIn1jEeunSI2ziaCNWw/0" xmlns:RhapsodyProfile="http://RhapsodyStandardModel/schemas/RhapsodyProfile/_SY7GIH1jEeunSI2ziaCNWw/0" xmlns:Standard="http://schema.omg.org/spec/UML/2.1/StandardProfileL2" xmlns:uml="http://schema.omg.org/spec/UML/2.1" xsi:schemaLocation="http://HomeAlarm.AlarmPkg/schemas/AlarmPkg_profile/_SY7GI31jEeunSI2ziaCNWw/0 AlarmPkg.sbsx.xmi#_SixA-n1jEeunSI2ziaCNWw http://RhapsodyStandardModel.RhpProperties/schemas/RHP/_SY7GIn1jEeunSI2ziaCNWw/0 HomeAlarm.rpyx.xmi#_SjNs8X1jEeunSI2ziaCNWw http://RhapsodyStandardModel/schemas/RhapsodyProfile/_SY7GIH1jEeunSI2ziaCNWw/0 HomeAlarm.rpyx.xmi#_SjNqk31jEeunSI2ziaCNWw http://schema.omg.org/spec/UML/2.1/StandardProfileL2 http://schema.omg.org/spec/UML/2.1/StandardProfileL2.xmi#_yzU58YinEdqtvbnfB2L_5w http://schema.omg.org/spec/UML/2.1 http://www.eclipse.org/uml2/2.0.0/UML">
+  <uml:Class xmi:id="OLDID+1424988+441" name="AlarmController" classifierBehavior="OLDID+1424988+447">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="GUID+3c06b604-2887-11d3-ac08-0010a4f1d0f6" name="theRedLed" visibility="protected" aggregation="composite">
+      <type xmi:type="uml:Class" href="AlarmPkg.sbsx.xmi#GUID+3c06b5fc-2887-11d3-ac08-0010a4f1d0f6"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="GUID+3c06b608-2887-11d3-ac08-0010a4f1d0f6" name="theGreenLed" visibility="protected" aggregation="composite">
+      <type xmi:type="uml:Class" href="AlarmPkg.sbsx.xmi#GUID+3c06b5fc-2887-11d3-ac08-0010a4f1d0f6"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="OLDID+1424988+444" name="theHardware" visibility="protected">
+      <type xmi:type="uml:Interface" href="IHardware.clsx.xmi#OLDID+1424988+432"/>
+      <association xmi:type="uml:Association" href="HardwarePkg.sbsx.xmi#GUID+74851bf0-cc46-11d3-ae1e-0010a4f1d0f6_OLDID+1424988+444_Association"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="OLDID+1424988+446" name="theKeypad" visibility="protected" aggregation="composite">
+      <type xmi:type="uml:Class" href="AlarmPkg.sbsx.xmi#OLDID+1424988+98"/>
+      <association xmi:type="uml:Association" href="AlarmPkg.sbsx.xmi#GUID+791d70e3-3b6f-11d3-ac5d-0010a4f1d0f6_OLDID+1424988+446_Association"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="OLDID+1424988+445" name="theLightController" visibility="protected" aggregation="composite">
+      <type xmi:type="uml:Class" href="AlarmPkg.sbsx.xmi#OLDID+1424988+241"/>
+    </ownedAttribute>
+    <ownedBehavior xmi:type="uml:StateMachine" xmi:id="OLDID+1424988+447" name="statechart_19">
+      <region xmi:type="uml:Region" xmi:id="OLDID+1424988+448_Region" name="ROOT" stateMachine="OLDID+1424988+447">
+        <subvertex xmi:type="uml:State" xmi:id="OLDID+1424988+452" name="armed" outgoing="OLDID+1424988+453" incoming="OLDID+1424988+506" container="OLDID+1424988+448_Region">
+          <exit xmi:type="uml:OpaqueBehavior" xmi:id="OLDID+1424988+452_ExitAction">
+            <body>theRedLed->GEN(evOff);</body>
+          </exit>
+          <region xmi:type="uml:Region" xmi:id="OLDID+1424988+452_Region" name="armed" state="OLDID+1424988+452">
+            <subvertex xmi:type="uml:State" xmi:id="OLDID+1424988+461" name="active" incoming="OLDID+1424988+458" container="OLDID+1424988+452_Region">
+              <entry xmi:type="uml:OpaqueBehavior" xmi:id="OLDID+1424988+461_EntryAction">
+                <body>theRedLed->GEN(evOn);</body>
+              </entry>
+              <region xmi:type="uml:Region" xmi:id="OLDID+1424988+461_Region" name="active" state="OLDID+1424988+461">
+                <subvertex xmi:type="uml:State" xmi:id="OLDID+1424988+465" name="detecting" outgoing="OLDID+1424988+471 OLDID+1424988+466" incoming="OLDID+1424988+462 OLDID+1424988+489 OLDID+1424988+495" container="OLDID+1424988+461_Region"/>
+                <subvertex xmi:type="uml:State" xmi:id="OLDID+1424988+476" name="entering" outgoing="GUID+b5dcd3d6-2874-11d3-ac08-0010a4f1d0f6 OLDID+1424988+477" incoming="OLDID+1424988+466" container="OLDID+1424988+461_Region">
+                  <entry xmi:type="uml:OpaqueBehavior" xmi:id="OLDID+1424988+476_EntryAction">
+                    <body>theRedLed->GEN(evFlash(100));</body>
+                  </entry>
+                </subvertex>
+                <subvertex xmi:type="uml:State" xmi:id="OLDID+1424988+482" name="intrusion" outgoing="OLDID+1424988+483" incoming="GUID+b5dcd3d6-2874-11d3-ac08-0010a4f1d0f6 OLDID+1424988+471 OLDID+1424988+477" container="OLDID+1424988+461_Region">
+                  <entry xmi:type="uml:OpaqueBehavior" xmi:id="OLDID+1424988+482_EntryAction">
+                    <body>theHardware->setSiren(ON);&#xD;
+theRedLed->GEN(evOn);</body>
+                  </entry>
+                  <exit xmi:type="uml:OpaqueBehavior" xmi:id="OLDID+1424988+482_ExitAction">
+                    <body>theHardware->setSiren(OFF);</body>
+                  </exit>
+                </subvertex>
+                <subvertex xmi:type="uml:State" xmi:id="OLDID+1424988+488" name="silence" outgoing="OLDID+1424988+489" incoming="OLDID+1424988+483" container="OLDID+1424988+461_Region"/>
+                <subvertex xmi:type="uml:Pseudostate" xmi:id="OLDID+1424988+461_Region_Initial" name="ROOT" outgoing="OLDID+1424988+462" container="OLDID+1424988+461_Region"/>
+                <transition xmi:type="uml:Transition" xmi:id="GUID+b5dcd3d6-2874-11d3-ac08-0010a4f1d0f6" name="12" container="OLDID+1424988+461_Region" target="OLDID+1424988+482" source="OLDID+1424988+476">
+                  <trigger xmi:type="uml:Trigger" xmi:id="GUID+b5dcd3da-2874-11d3-ac08-0010a4f1d0f6" name="">
+                    <event xmi:type="uml:SignalEvent" href="AlarmPkg.sbsx.xmi#OLDID+1424988+321"/>
+                  </trigger>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="OLDID+1424988+462" name="8" container="OLDID+1424988+461_Region" target="OLDID+1424988+465" source="OLDID+1424988+461_Region_Initial"/>
+                <transition xmi:type="uml:Transition" xmi:id="OLDID+1424988+489" name="5" container="OLDID+1424988+461_Region" target="OLDID+1424988+465" source="OLDID+1424988+488">
+                  <trigger xmi:type="uml:Trigger" xmi:id="OLDID+1424988+493" name="">
+                    <event xmi:type="uml:TimeEvent" href="AlarmPkg.sbsx.xmi#OLDID+1424988+493_TimeEvent"/>
+                  </trigger>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="OLDID+1424988+495" name="11" container="OLDID+1424988+461_Region" target="OLDID+1424988+465" source="OLDID+1424988+494">
+                  <trigger xmi:type="uml:Trigger" xmi:id="OLDID+1424988+499" name="">
+                    <event xmi:type="uml:TimeEvent" href="AlarmPkg.sbsx.xmi#OLDID+1424988+499_TimeEvent"/>
+                  </trigger>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="OLDID+1424988+471" name="4" container="OLDID+1424988+461_Region" target="OLDID+1424988+482" source="OLDID+1424988+465">
+                  <trigger xmi:type="uml:Trigger" xmi:id="OLDID+1424988+475" name="">
+                    <event xmi:type="uml:SignalEvent" href="AlarmPkg.sbsx.xmi#OLDID+1424988+321"/>
+                  </trigger>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="OLDID+1424988+466" name="2" container="OLDID+1424988+461_Region" target="OLDID+1424988+476" source="OLDID+1424988+465">
+                  <trigger xmi:type="uml:Trigger" xmi:id="OLDID+1424988+470" name="">
+                    <event xmi:type="uml:SignalEvent" href="AlarmPkg.sbsx.xmi#OLDID+1424988+316"/>
+                  </trigger>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="OLDID+1424988+477" name="3" container="OLDID+1424988+461_Region" target="OLDID+1424988+482" source="OLDID+1424988+476">
+                  <trigger xmi:type="uml:Trigger" xmi:id="OLDID+1424988+481" name="">
+                    <event xmi:type="uml:TimeEvent" href="AlarmPkg.sbsx.xmi#OLDID+1424988+481_TimeEvent"/>
+                  </trigger>
+                </transition>
+                <transition xmi:type="uml:Transition" xmi:id="OLDID+1424988+483" name="6" container="OLDID+1424988+461_Region" target="OLDID+1424988+488" source="OLDID+1424988+482">
+                  <trigger xmi:type="uml:Trigger" xmi:id="OLDID+1424988+487" name="">
+                    <event xmi:type="uml:TimeEvent" href="AlarmPkg.sbsx.xmi#OLDID+1424988+487_TimeEvent"/>
+                  </trigger>
+                </transition>
+              </region>
+            </subvertex>
+            <subvertex xmi:type="uml:State" xmi:id="OLDID+1424988+494" name="exiting" outgoing="OLDID+1424988+495" incoming="OLDID+1424988+501" container="OLDID+1424988+452_Region">
+              <entry xmi:type="uml:OpaqueBehavior" xmi:id="OLDID+1424988+494_EntryAction">
+                <body>theRedLed->GEN(evFlash(100));</body>
+              </entry>
+            </subvertex>
+            <subvertex xmi:type="uml:Pseudostate" xmi:id="OLDID+1424988+452_Region_Initial" name="ROOT" outgoing="OLDID+1424988+458" container="OLDID+1424988+452_Region"/>
+            <transition xmi:type="uml:Transition" xmi:id="OLDID+1424988+458" name="9" container="OLDID+1424988+452_Region" target="OLDID+1424988+461" source="OLDID+1424988+452_Region_Initial"/>
+            <transition xmi:type="uml:Transition" xmi:id="OLDID+1424988+501" name="1" container="OLDID+1424988+452_Region" target="OLDID+1424988+494" source="OLDID+1424988+500">
+              <trigger xmi:type="uml:Trigger" xmi:id="OLDID+1424988+505" name="">
+                <event xmi:type="uml:SignalEvent" href="AlarmPkg.sbsx.xmi#GUID+be010079-3f3b-11d3-ac65-0010a4f1d0f6"/>
+              </trigger>
+            </transition>
+          </region>
+        </subvertex>
+        <subvertex xmi:type="uml:State" xmi:id="OLDID+1424988+500" name="off" outgoing="OLDID+1424988+501 OLDID+1424988+506" incoming="OLDID+1424988+453 OLDID+1424988+449" container="OLDID+1424988+448_Region"/>
+        <subvertex xmi:type="uml:Pseudostate" xmi:id="OLDID+1424988+448_Region_Initial" name="ROOT" outgoing="OLDID+1424988+449" container="OLDID+1424988+448_Region"/>
+        <transition xmi:type="uml:Transition" xmi:id="OLDID+1424988+506" name="10" container="OLDID+1424988+448_Region" target="OLDID+1424988+452" source="OLDID+1424988+500">
+          <trigger xmi:type="uml:Trigger" xmi:id="OLDID+1424988+510" name="">
+            <event xmi:type="uml:SignalEvent" href="AlarmPkg.sbsx.xmi#OLDID+1424988+314"/>
+          </trigger>
+        </transition>
+        <transition xmi:type="uml:Transition" xmi:id="OLDID+1424988+453" name="7" container="OLDID+1424988+448_Region" target="OLDID+1424988+500" source="OLDID+1424988+452">
+          <trigger xmi:type="uml:Trigger" xmi:id="OLDID+1424988+457" name="">
+            <event xmi:type="uml:SignalEvent" href="AlarmPkg.sbsx.xmi#GUID+be0101e7-3f3b-11d3-ac65-0010a4f1d0f6"/>
+          </trigger>
+        </transition>
+        <transition xmi:type="uml:Transition" xmi:id="OLDID+1424988+449" name="0" container="OLDID+1424988+448_Region" target="OLDID+1424988+500" source="OLDID+1424988+448_Region_Initial">
+          <effect xmi:type="uml:OpaqueBehavior" xmi:id="GUID+3c06ac02-2887-11d3-ac08-0010a4f1d0f6">
+            <body>init();</body>
+          </effect>
+        </transition>
+      </region>
+    </ownedBehavior>
+    <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="OLDID+1424988+442_Implementation" specification="OLDID+1424988+442">
+      <body>//    assert(aHardware);&#xD;
+setTheHardware( aHardware );&#xD;
+theRedLed->setItsHardware( aHardware );&#xD;
+theGreenLed->setItsHardware( aHardware );&#xD;
+theLightController->setTheHardware( aHardware );</body>
+    </ownedBehavior>
+    <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="GUID+3c06ac4a-2887-11d3-ac08-0010a4f1d0f6_Implementation" specification="GUID+3c06ac4a-2887-11d3-ac08-0010a4f1d0f6">
+      <body>assert(theGreenLed);&#xD;
+assert(theRedLed);&#xD;
+theGreenLed->GEN(evOn);&#xD;
+theRedLed->GEN(evOff);</body>
+    </ownedBehavior>
+    <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="GUID+3c06b931-2887-11d3-ac08-0010a4f1d0f6_Implementation" specification="GUID+3c06b931-2887-11d3-ac08-0010a4f1d0f6">
+      <body>theRedLed->setIdent( RED );&#xD;
+theGreenLed->setIdent( GREEN );</body>
+    </ownedBehavior>
+    <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="GUID+ad1844f7-2898-11d3-ac09-0010a4f1d0f6_Implementation" specification="GUID+ad1844f7-2898-11d3-ac09-0010a4f1d0f6">
+      <body>assert(theGreenLed);&#xD;
+theGreenLed->GEN(evFlash(4));</body>
+    </ownedBehavior>
+    <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="GUID+c6eee3a1-cc43-11d3-ae1e-0010a4f1d0f6_Implementation" specification="GUID+c6eee3a1-cc43-11d3-ae1e-0010a4f1d0f6">
+      <body>GEN(evArm);</body>
+    </ownedBehavior>
+    <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="GUID+c6eee4e7-cc43-11d3-ae1e-0010a4f1d0f6_Implementation" specification="GUID+c6eee4e7-cc43-11d3-ae1e-0010a4f1d0f6">
+      <body>GEN(evDisarm);</body>
+    </ownedBehavior>
+    <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="GUID+c6eee582-cc43-11d3-ae1e-0010a4f1d0f6_Implementation" specification="GUID+c6eee582-cc43-11d3-ae1e-0010a4f1d0f6">
+      <body>GEN(evDoor);</body>
+    </ownedBehavior>
+    <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="GUID+c6eee5fd-cc43-11d3-ae1e-0010a4f1d0f6_Implementation" specification="GUID+c6eee5fd-cc43-11d3-ae1e-0010a4f1d0f6">
+      <body>theKeypad->GEN(evKey(n));</body>
+    </ownedBehavior>
+    <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="GUID+c6eee6f9-cc43-11d3-ae1e-0010a4f1d0f6_Implementation" specification="GUID+c6eee6f9-cc43-11d3-ae1e-0010a4f1d0f6">
+      <body>theKeypad->GEN(evKeyOff);</body>
+    </ownedBehavior>
+    <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="GUID+c6eee765-cc43-11d3-ae1e-0010a4f1d0f6_Implementation" specification="GUID+c6eee765-cc43-11d3-ae1e-0010a4f1d0f6">
+      <body>theKeypad->GEN(evKeyOn);</body>
+    </ownedBehavior>
+    <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="GUID+c6eee7e4-cc43-11d3-ae1e-0010a4f1d0f6_Implementation" specification="GUID+c6eee7e4-cc43-11d3-ae1e-0010a4f1d0f6">
+      <body>GEN(evMovement);</body>
+    </ownedBehavior>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="OLDID+1424988+442" name="configure" visibility="public" method="OLDID+1424988+442_Implementation" class="OLDID+1424988+441">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="OLDID+1424988+443" name="aHardware">
+        <type xmi:type="uml:DataType" href="AlarmPkg.sbsx.xmi#OLDID+1424988+443_NonExistingType"/>
+      </ownedParameter>
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="OLDID+1424988+442_Return" name="Result" direction="return">
+        <type xmi:type="uml:PrimitiveType" href="PredefinedTypesC++.sbs.xmi#GUID+c6b70728-b655-45a0-abb7-8ea5d3da94be"/>
+      </ownedParameter>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="GUID+3c06ac4a-2887-11d3-ac08-0010a4f1d0f6" name="init" visibility="protected" method="GUID+3c06ac4a-2887-11d3-ac08-0010a4f1d0f6_Implementation" class="OLDID+1424988+441">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="GUID+3c06ac4a-2887-11d3-ac08-0010a4f1d0f6_Return" name="Result" direction="return">
+        <type xmi:type="uml:PrimitiveType" href="PredefinedTypesC++.sbs.xmi#GUID+c6b70728-b655-45a0-abb7-8ea5d3da94be"/>
+      </ownedParameter>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="GUID+3c06b931-2887-11d3-ac08-0010a4f1d0f6" name="AlarmController" visibility="public" method="GUID+3c06b931-2887-11d3-ac08-0010a4f1d0f6_Implementation" class="OLDID+1424988+441"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="GUID+ad1844f7-2898-11d3-ac09-0010a4f1d0f6" name="flashGreenLed" visibility="public" method="GUID+ad1844f7-2898-11d3-ac09-0010a4f1d0f6_Implementation" class="OLDID+1424988+441">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="GUID+ad1844f7-2898-11d3-ac09-0010a4f1d0f6_Return" name="Result" direction="return">
+        <type xmi:type="uml:PrimitiveType" href="PredefinedTypesC++.sbs.xmi#GUID+c6b70728-b655-45a0-abb7-8ea5d3da94be"/>
+      </ownedParameter>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="GUID+c6eee3a1-cc43-11d3-ae1e-0010a4f1d0f6" name="onArm" visibility="public" method="GUID+c6eee3a1-cc43-11d3-ae1e-0010a4f1d0f6_Implementation" class="OLDID+1424988+441">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="GUID+c6eee3a1-cc43-11d3-ae1e-0010a4f1d0f6_Return" name="Result" direction="return">
+        <type xmi:type="uml:PrimitiveType" href="PredefinedTypesC++.sbs.xmi#GUID+c6b70728-b655-45a0-abb7-8ea5d3da94be"/>
+      </ownedParameter>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="GUID+c6eee4e7-cc43-11d3-ae1e-0010a4f1d0f6" name="onDisarm" visibility="public" method="GUID+c6eee4e7-cc43-11d3-ae1e-0010a4f1d0f6_Implementation" class="OLDID+1424988+441">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="GUID+c6eee4e7-cc43-11d3-ae1e-0010a4f1d0f6_Return" name="Result" direction="return">
+        <type xmi:type="uml:PrimitiveType" href="PredefinedTypesC++.sbs.xmi#GUID+c6b70728-b655-45a0-abb7-8ea5d3da94be"/>
+      </ownedParameter>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="GUID+c6eee582-cc43-11d3-ae1e-0010a4f1d0f6" name="onDoor" visibility="public" method="GUID+c6eee582-cc43-11d3-ae1e-0010a4f1d0f6_Implementation" class="OLDID+1424988+441">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="GUID+c6eee582-cc43-11d3-ae1e-0010a4f1d0f6_Return" name="Result" direction="return">
+        <type xmi:type="uml:PrimitiveType" href="PredefinedTypesC++.sbs.xmi#GUID+c6b70728-b655-45a0-abb7-8ea5d3da94be"/>
+      </ownedParameter>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="GUID+c6eee5fd-cc43-11d3-ae1e-0010a4f1d0f6" name="onKey" visibility="public" method="GUID+c6eee5fd-cc43-11d3-ae1e-0010a4f1d0f6_Implementation" class="OLDID+1424988+441">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="GUID+c6eee5fe-cc43-11d3-ae1e-0010a4f1d0f6" name="n">
+        <type xmi:type="uml:PrimitiveType" href="PredefinedTypesC++.sbs.xmi#GUID+6024c6ab-fe9e-402e-954f-27aca6d3b5e4"/>
+      </ownedParameter>
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="GUID+c6eee5fd-cc43-11d3-ae1e-0010a4f1d0f6_Return" name="Result" direction="return">
+        <type xmi:type="uml:PrimitiveType" href="PredefinedTypesC++.sbs.xmi#GUID+c6b70728-b655-45a0-abb7-8ea5d3da94be"/>
+      </ownedParameter>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="GUID+c6eee6f9-cc43-11d3-ae1e-0010a4f1d0f6" name="onKeyOff" visibility="public" method="GUID+c6eee6f9-cc43-11d3-ae1e-0010a4f1d0f6_Implementation" class="OLDID+1424988+441">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="GUID+c6eee6f9-cc43-11d3-ae1e-0010a4f1d0f6_Return" name="Result" direction="return">
+        <type xmi:type="uml:PrimitiveType" href="PredefinedTypesC++.sbs.xmi#GUID+c6b70728-b655-45a0-abb7-8ea5d3da94be"/>
+      </ownedParameter>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="GUID+c6eee765-cc43-11d3-ae1e-0010a4f1d0f6" name="onKeyOn" visibility="public" method="GUID+c6eee765-cc43-11d3-ae1e-0010a4f1d0f6_Implementation" class="OLDID+1424988+441">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="GUID+c6eee765-cc43-11d3-ae1e-0010a4f1d0f6_Return" name="Result" direction="return">
+        <type xmi:type="uml:PrimitiveType" href="PredefinedTypesC++.sbs.xmi#GUID+c6b70728-b655-45a0-abb7-8ea5d3da94be"/>
+      </ownedParameter>
+    </ownedOperation>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="GUID+c6eee7e4-cc43-11d3-ae1e-0010a4f1d0f6" name="onMovement" visibility="public" method="GUID+c6eee7e4-cc43-11d3-ae1e-0010a4f1d0f6_Implementation" class="OLDID+1424988+441">
+      <ownedParameter xmi:type="uml:Parameter" xmi:id="GUID+c6eee7e4-cc43-11d3-ae1e-0010a4f1d0f6_Return" name="Result" direction="return">
+        <type xmi:type="uml:PrimitiveType" href="PredefinedTypesC++.sbs.xmi#GUID+c6b70728-b655-45a0-abb7-8ea5d3da94be"/>
+      </ownedParameter>
+    </ownedOperation>
+    <ownedReception xmi:type="uml:Reception" xmi:id="GUID+5d1891c5-6267-4b3b-8464-55dd3e7b63b6" name="evArm">
+      <signal xmi:type="uml:Signal" href="AlarmPkg.sbsx.xmi#OLDID+1424988+314_Signal"/>
+    </ownedReception>
+    <ownedReception xmi:type="uml:Reception" xmi:id="GUID+7956794a-6d8d-4628-bcd0-75010a11b49c" name="evMovement">
+      <signal xmi:type="uml:Signal" href="AlarmPkg.sbsx.xmi#OLDID+1424988+321_Signal"/>
+    </ownedReception>
+    <ownedReception xmi:type="uml:Reception" xmi:id="GUID+c25dc340-0ab3-447b-a32e-fc53336ccd19" name="evDoor">
+      <signal xmi:type="uml:Signal" href="AlarmPkg.sbsx.xmi#OLDID+1424988+316_Signal"/>
+    </ownedReception>
+    <ownedReception xmi:type="uml:Reception" xmi:id="GUID+6fe5f654-8704-42ae-8e19-2261a8b9d4a5" name="evTemporise">
+      <signal xmi:type="uml:Signal" href="AlarmPkg.sbsx.xmi#GUID+be010079-3f3b-11d3-ac65-0010a4f1d0f6_Signal"/>
+    </ownedReception>
+    <ownedReception xmi:type="uml:Reception" xmi:id="GUID+7fe7331a-32e2-45c9-8623-352a9749d2f0" name="evDisarm">
+      <signal xmi:type="uml:Signal" href="AlarmPkg.sbsx.xmi#GUID+be0101e7-3f3b-11d3-ac65-0010a4f1d0f6_Signal"/>
+    </ownedReception>
+  </uml:Class>
+  <Standard:Create xmi:id="_SlvaLX1jEeunSI2ziaCNWw" base_BehavioralFeature="GUID+3c06b931-2887-11d3-ac08-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_SlvaNn1jEeunSI2ziaCNWw" guid="OLDID 1424988 441" description="Class that controls the alarm system" descriptionHTML="&lt;![[CDATA[Class that controls the alarm system]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Class that controls the alarm system\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>" base_Class="OLDID+1424988+441"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_SlvaN31jEeunSI2ziaCNWw" guid="GUID 3c06b604-2887-11d3-ac08-0010a4f1d0f6" base_Property="GUID+3c06b604-2887-11d3-ac08-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_SlvaOH1jEeunSI2ziaCNWw" guid="GUID 3c06b608-2887-11d3-ac08-0010a4f1d0f6" base_Property="GUID+3c06b608-2887-11d3-ac08-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_SlvaOX1jEeunSI2ziaCNWw" guid="OLDID 1424988 444" base_Property="OLDID+1424988+444"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_SlvaOn1jEeunSI2ziaCNWw" guid="OLDID 1424988 446" base_Property="OLDID+1424988+446"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_SlvaO31jEeunSI2ziaCNWw" guid="OLDID 1424988 445" base_Property="OLDID+1424988+445"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_SlvaPH1jEeunSI2ziaCNWw" guid="OLDID 1424988 447" base_StateMachine="OLDID+1424988+447" base_Class="OLDID+1424988+447"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_SlvaPX1jEeunSI2ziaCNWw" guid="OLDID 1424988 452" base_State="OLDID+1424988+452"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_SlvaPn1jEeunSI2ziaCNWw" guid="OLDID 1424988 461" base_State="OLDID+1424988+461"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_SlvaP31jEeunSI2ziaCNWw" guid="OLDID 1424988 465" base_State="OLDID+1424988+465"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LIH1jEeunSI2ziaCNWw" guid="OLDID 1424988 476" base_State="OLDID+1424988+476"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LIX1jEeunSI2ziaCNWw" guid="OLDID 1424988 482" base_State="OLDID+1424988+482"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LIn1jEeunSI2ziaCNWw" guid="OLDID 1424988 488" base_State="OLDID+1424988+488"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LI31jEeunSI2ziaCNWw" guid="GUID b5dcd3d6-2874-11d3-ac08-0010a4f1d0f6" displayName="evMovement" base_Transition="GUID+b5dcd3d6-2874-11d3-ac08-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LJH1jEeunSI2ziaCNWw" guid="GUID b5dcd3da-2874-11d3-ac08-0010a4f1d0f6" base_Trigger="GUID+b5dcd3da-2874-11d3-ac08-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LJX1jEeunSI2ziaCNWw" guid="OLDID 1424988 462" base_Transition="OLDID+1424988+462"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LJn1jEeunSI2ziaCNWw" guid="OLDID 1424988 489" displayName="tm(SILENCE_TIME)" base_Transition="OLDID+1424988+489"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LJ31jEeunSI2ziaCNWw" guid="OLDID 1424988 493" base_Trigger="OLDID+1424988+493"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LKH1jEeunSI2ziaCNWw" guid="OLDID 1424988 495" displayName="tm(EXIT_TIME)" base_Transition="OLDID+1424988+495"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LKX1jEeunSI2ziaCNWw" guid="OLDID 1424988 499" base_Trigger="OLDID+1424988+499"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LKn1jEeunSI2ziaCNWw" guid="OLDID 1424988 471" displayName="evMovement" base_Transition="OLDID+1424988+471"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LK31jEeunSI2ziaCNWw" guid="OLDID 1424988 475" base_Trigger="OLDID+1424988+475"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LLH1jEeunSI2ziaCNWw" guid="OLDID 1424988 466" displayName="evDoor" base_Transition="OLDID+1424988+466"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LLX1jEeunSI2ziaCNWw" guid="OLDID 1424988 470" base_Trigger="OLDID+1424988+470"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LLn1jEeunSI2ziaCNWw" guid="OLDID 1424988 477" displayName="tm(ENTRY_TIME)" base_Transition="OLDID+1424988+477"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LL31jEeunSI2ziaCNWw" guid="OLDID 1424988 481" base_Trigger="OLDID+1424988+481"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LMH1jEeunSI2ziaCNWw" guid="OLDID 1424988 483" displayName="tm(ALARM_TIME)" base_Transition="OLDID+1424988+483"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LMX1jEeunSI2ziaCNWw" guid="OLDID 1424988 487" base_Trigger="OLDID+1424988+487"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LMn1jEeunSI2ziaCNWw" guid="OLDID 1424988 494" base_State="OLDID+1424988+494"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LM31jEeunSI2ziaCNWw" guid="OLDID 1424988 458" base_Transition="OLDID+1424988+458"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LNH1jEeunSI2ziaCNWw" guid="OLDID 1424988 501" displayName="evTemporise" base_Transition="OLDID+1424988+501"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LNX1jEeunSI2ziaCNWw" guid="OLDID 1424988 505" base_Trigger="OLDID+1424988+505"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LNn1jEeunSI2ziaCNWw" guid="OLDID 1424988 500" base_State="OLDID+1424988+500"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LN31jEeunSI2ziaCNWw" guid="OLDID 1424988 506" displayName="evArm" base_Transition="OLDID+1424988+506"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LOH1jEeunSI2ziaCNWw" guid="OLDID 1424988 510" base_Trigger="OLDID+1424988+510"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LOX1jEeunSI2ziaCNWw" guid="OLDID 1424988 453" displayName="evDisarm" base_Transition="OLDID+1424988+453"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LOn1jEeunSI2ziaCNWw" guid="OLDID 1424988 457" base_Trigger="OLDID+1424988+457"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LO31jEeunSI2ziaCNWw" guid="OLDID 1424988 449" displayName="/init();" base_Transition="OLDID+1424988+449"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LPH1jEeunSI2ziaCNWw" guid="OLDID 1424988 442" description="Setup the actual hardware that is connected." descriptionHTML="&lt;![[CDATA[Setup the actual hardware that is connected.]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Setup the actual hardware that is connected.\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>" base_Operation="OLDID+1424988+442"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_Sl5LPX1jEeunSI2ziaCNWw" base_Operation="OLDID+1424988+442"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LPn1jEeunSI2ziaCNWw" guid="OLDID 1424988 443" base_Parameter="OLDID+1424988+443"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LP31jEeunSI2ziaCNWw" guid="GUID 3c06ac4a-2887-11d3-ac08-0010a4f1d0f6" description="initialise the leds into a known state." descriptionHTML="&lt;![[CDATA[initialise the leds into a known state.]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 initialise the leds into a known state.\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>" base_Operation="GUID+3c06ac4a-2887-11d3-ac08-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_Sl5LQH1jEeunSI2ziaCNWw" isInline="true" base_Operation="GUID+3c06ac4a-2887-11d3-ac08-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LQX1jEeunSI2ziaCNWw" guid="GUID 3c06b931-2887-11d3-ac08-0010a4f1d0f6" description="Initialise the LED's" descriptionHTML="&lt;![[CDATA[Initialise the LED's]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Initialise the LED's\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>" base_Operation="GUID+3c06b931-2887-11d3-ac08-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_Sl5LQn1jEeunSI2ziaCNWw" base_Operation="GUID+3c06b931-2887-11d3-ac08-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LQ31jEeunSI2ziaCNWw" guid="GUID ad1844f7-2898-11d3-ac09-0010a4f1d0f6" description="flash Green led on and off 4 times" descriptionHTML="&lt;![[CDATA[flash Green led on and off 4 times]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 flash Green led on and off 4 times\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>" base_Operation="GUID+ad1844f7-2898-11d3-ac09-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_Sl5LRH1jEeunSI2ziaCNWw" base_Operation="GUID+ad1844f7-2898-11d3-ac09-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LRX1jEeunSI2ziaCNWw" guid="GUID c6eee3a1-cc43-11d3-ae1e-0010a4f1d0f6" description="Generates an event and sends it to itself" descriptionHTML="&lt;![[CDATA[Generates an event and sends it to itself]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Generates an event and sends it to itself\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>" base_Operation="GUID+c6eee3a1-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_Sl5LRn1jEeunSI2ziaCNWw" base_Operation="GUID+c6eee3a1-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LR31jEeunSI2ziaCNWw" guid="GUID c6eee4e7-cc43-11d3-ae1e-0010a4f1d0f6" description="Generates an event and sends it to itself" descriptionHTML="&lt;![[CDATA[Generates an event and sends it to itself]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Generates an event and sends it to itself\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>" base_Operation="GUID+c6eee4e7-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_Sl5LSH1jEeunSI2ziaCNWw" base_Operation="GUID+c6eee4e7-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LSX1jEeunSI2ziaCNWw" guid="GUID c6eee582-cc43-11d3-ae1e-0010a4f1d0f6" description="routine called when a door opening has been detected" descriptionHTML="&lt;![[CDATA[routine called when a door opening has been detected]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 routine called when a door opening has been detected\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>" base_Operation="GUID+c6eee582-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_Sl5LSn1jEeunSI2ziaCNWw" base_Operation="GUID+c6eee582-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LS31jEeunSI2ziaCNWw" guid="GUID c6eee5fd-cc43-11d3-ae1e-0010a4f1d0f6" description="Acts as a facade and generates and sends an event to its keypad" descriptionHTML="&lt;![[CDATA[Acts as a facade and generates and sends an event to its keypad]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Acts as a facade and generates and sends an event to its keypad\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>" base_Operation="GUID+c6eee5fd-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_Sl5LTH1jEeunSI2ziaCNWw" base_Operation="GUID+c6eee5fd-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LTX1jEeunSI2ziaCNWw" guid="GUID c6eee5fe-cc43-11d3-ae1e-0010a4f1d0f6" base_Parameter="GUID+c6eee5fe-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LTn1jEeunSI2ziaCNWw" guid="GUID c6eee6f9-cc43-11d3-ae1e-0010a4f1d0f6" description="Acts as a facade and generates and sends an event to its keypad" descriptionHTML="&lt;![[CDATA[Acts as a facade and generates and sends an event to its keypad]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Acts as a facade and generates and sends an event to its keypad\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>" base_Operation="GUID+c6eee6f9-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_Sl5LT31jEeunSI2ziaCNWw" base_Operation="GUID+c6eee6f9-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LUH1jEeunSI2ziaCNWw" guid="GUID c6eee765-cc43-11d3-ae1e-0010a4f1d0f6" description="Acts as a facade and generates and sends an event to its keypad" descriptionHTML="&lt;![[CDATA[Acts as a facade and generates and sends an event to its keypad]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Acts as a facade and generates and sends an event to its keypad\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>" base_Operation="GUID+c6eee765-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_Sl5LUX1jEeunSI2ziaCNWw" base_Operation="GUID+c6eee765-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LUn1jEeunSI2ziaCNWw" guid="GUID c6eee7e4-cc43-11d3-ae1e-0010a4f1d0f6" description="Generates an event and sends it to itself" descriptionHTML="&lt;![[CDATA[Generates an event and sends it to itself]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Generates an event and sends it to itself\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>" base_Operation="GUID+c6eee7e4-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_Sl5LU31jEeunSI2ziaCNWw" base_Operation="GUID+c6eee7e4-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LVH1jEeunSI2ziaCNWw" guid="GUID 5d1891c5-6267-4b3b-8464-55dd3e7b63b6" base_Reception="GUID+5d1891c5-6267-4b3b-8464-55dd3e7b63b6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LVX1jEeunSI2ziaCNWw" guid="GUID 7956794a-6d8d-4628-bcd0-75010a11b49c" base_Reception="GUID+7956794a-6d8d-4628-bcd0-75010a11b49c"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_Sl5LVn1jEeunSI2ziaCNWw" guid="GUID c25dc340-0ab3-447b-a32e-fc53336ccd19" base_Reception="GUID+c25dc340-0ab3-447b-a32e-fc53336ccd19"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_SmC8IH1jEeunSI2ziaCNWw" guid="GUID 6fe5f654-8704-42ae-8e19-2261a8b9d4a5" base_Reception="GUID+6fe5f654-8704-42ae-8e19-2261a8b9d4a5"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_SmC8IX1jEeunSI2ziaCNWw" guid="GUID 7fe7331a-32e2-45c9-8623-352a9749d2f0" base_Reception="GUID+7fe7331a-32e2-45c9-8623-352a9749d2f0"/>
+  <RHP:RHPStereotype xmi:id="_Sm7s9H1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_Class="OLDID+1424988+441"/>
+  <RHP:RHPStereotype xmi:id="_Sm7s9X1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_StateMachine="OLDID+1424988+447" base_Class="OLDID+1424988+447"/>
+  <RHP:RHPStereotype xmi:id="_Sm7s9n1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_Operation="OLDID+1424988+442"/>
+  <RHP:RHPStereotype xmi:id="_Sm7s931jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_Operation="GUID+3c06ac4a-2887-11d3-ac08-0010a4f1d0f6"/>
+  <RHP:RHPStereotype xmi:id="_Sm7s-H1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_Operation="GUID+3c06b931-2887-11d3-ac08-0010a4f1d0f6"/>
+  <RHP:RHPStereotype xmi:id="_Sm7s-X1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_Operation="GUID+ad1844f7-2898-11d3-ac09-0010a4f1d0f6"/>
+  <RHP:RHPStereotype xmi:id="_Sm7s-n1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_Operation="GUID+c6eee3a1-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RHP:RHPStereotype xmi:id="_Sm7s-31jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_Operation="GUID+c6eee4e7-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RHP:RHPStereotype xmi:id="_Sm7s_H1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_Operation="GUID+c6eee582-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RHP:RHPStereotype xmi:id="_Sm7s_X1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_Operation="GUID+c6eee5fd-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RHP:RHPStereotype xmi:id="_Sm7s_n1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_Operation="GUID+c6eee6f9-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RHP:RHPStereotype xmi:id="_Sm7s_31jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_Operation="GUID+c6eee765-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RHP:RHPStereotype xmi:id="_Sm7tAH1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_Operation="GUID+c6eee7e4-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RHP:RHPStereotype xmi:id="_Sm7tAX1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_Reception="GUID+5d1891c5-6267-4b3b-8464-55dd3e7b63b6"/>
+  <RHP:RHPStereotype xmi:id="_Sm7tAn1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_Reception="GUID+7956794a-6d8d-4628-bcd0-75010a11b49c"/>
+  <RHP:RHPStereotype xmi:id="_Sm7tA31jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_Reception="GUID+c25dc340-0ab3-447b-a32e-fc53336ccd19"/>
+  <RHP:RHPStereotype xmi:id="_Sm7tBH1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_Reception="GUID+6fe5f654-8704-42ae-8e19-2261a8b9d4a5"/>
+  <RHP:RHPStereotype xmi:id="_Sm7tBX1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp" base_Reception="GUID+7fe7331a-32e2-45c9-8623-352a9749d2f0"/>
+  <AlarmPkg_profile:Facade xmi:id="_SnPO9H1jEeunSI2ziaCNWw" base_Class="OLDID+1424988+441"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pEX1jEeunSI2ziaCNWw" guid="OLDID 1424988 447"/>
+  <RHP:RHPStereotype xmi:id="_So3pEn1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pE31jEeunSI2ziaCNWw" guid="OLDID 1424988 443"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pFH1jEeunSI2ziaCNWw" guid="GUID c6eee5fe-cc43-11d3-ae1e-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pFX1jEeunSI2ziaCNWw" guid="GUID 5d1891c5-6267-4b3b-8464-55dd3e7b63b6"/>
+  <RHP:RHPStereotype xmi:id="_So3pFn1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pF31jEeunSI2ziaCNWw" guid="GUID 7956794a-6d8d-4628-bcd0-75010a11b49c"/>
+  <RHP:RHPStereotype xmi:id="_So3pGH1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pGX1jEeunSI2ziaCNWw" guid="GUID c25dc340-0ab3-447b-a32e-fc53336ccd19"/>
+  <RHP:RHPStereotype xmi:id="_So3pGn1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pG31jEeunSI2ziaCNWw" guid="GUID 6fe5f654-8704-42ae-8e19-2261a8b9d4a5"/>
+  <RHP:RHPStereotype xmi:id="_So3pHH1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pHX1jEeunSI2ziaCNWw" guid="GUID 7fe7331a-32e2-45c9-8623-352a9749d2f0"/>
+  <RHP:RHPStereotype xmi:id="_So3pHn1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pH31jEeunSI2ziaCNWw" guid="OLDID 1424988 442" description="Setup the actual hardware that is connected." descriptionHTML="&lt;![[CDATA[Setup the actual hardware that is connected.]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Setup the actual hardware that is connected.\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>"/>
+  <RHP:RHPStereotype xmi:id="_So3pIH1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_So3pIX1jEeunSI2ziaCNWw"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pIn1jEeunSI2ziaCNWw" guid="GUID 3c06ac4a-2887-11d3-ac08-0010a4f1d0f6" description="initialise the leds into a known state." descriptionHTML="&lt;![[CDATA[initialise the leds into a known state.]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 initialise the leds into a known state.\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>"/>
+  <RHP:RHPStereotype xmi:id="_So3pI31jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_So3pJH1jEeunSI2ziaCNWw" isInline="true"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pJX1jEeunSI2ziaCNWw" guid="GUID 3c06b931-2887-11d3-ac08-0010a4f1d0f6" description="Initialise the LED's" descriptionHTML="&lt;![[CDATA[Initialise the LED's]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Initialise the LED's\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>"/>
+  <RHP:RHPStereotype xmi:id="_So3pJn1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_So3pJ31jEeunSI2ziaCNWw"/>
+  <Standard:Create xmi:id="_So3pKH1jEeunSI2ziaCNWw"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pKX1jEeunSI2ziaCNWw" guid="GUID ad1844f7-2898-11d3-ac09-0010a4f1d0f6" description="flash Green led on and off 4 times" descriptionHTML="&lt;![[CDATA[flash Green led on and off 4 times]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 flash Green led on and off 4 times\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>"/>
+  <RHP:RHPStereotype xmi:id="_So3pKn1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_So3pK31jEeunSI2ziaCNWw"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pLH1jEeunSI2ziaCNWw" guid="GUID c6eee3a1-cc43-11d3-ae1e-0010a4f1d0f6" description="Generates an event and sends it to itself" descriptionHTML="&lt;![[CDATA[Generates an event and sends it to itself]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Generates an event and sends it to itself\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>"/>
+  <RHP:RHPStereotype xmi:id="_So3pLX1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_So3pLn1jEeunSI2ziaCNWw"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pL31jEeunSI2ziaCNWw" guid="GUID c6eee4e7-cc43-11d3-ae1e-0010a4f1d0f6" description="Generates an event and sends it to itself" descriptionHTML="&lt;![[CDATA[Generates an event and sends it to itself]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Generates an event and sends it to itself\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>"/>
+  <RHP:RHPStereotype xmi:id="_So3pMH1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_So3pMX1jEeunSI2ziaCNWw"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pMn1jEeunSI2ziaCNWw" guid="GUID c6eee582-cc43-11d3-ae1e-0010a4f1d0f6" description="routine called when a door opening has been detected" descriptionHTML="&lt;![[CDATA[routine called when a door opening has been detected]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 routine called when a door opening has been detected\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>"/>
+  <RHP:RHPStereotype xmi:id="_So3pM31jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_So3pNH1jEeunSI2ziaCNWw"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pNX1jEeunSI2ziaCNWw" guid="GUID c6eee5fd-cc43-11d3-ae1e-0010a4f1d0f6" description="Acts as a facade and generates and sends an event to its keypad" descriptionHTML="&lt;![[CDATA[Acts as a facade and generates and sends an event to its keypad]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Acts as a facade and generates and sends an event to its keypad\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>"/>
+  <RHP:RHPStereotype xmi:id="_So3pNn1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_So3pN31jEeunSI2ziaCNWw"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pOH1jEeunSI2ziaCNWw" guid="GUID c6eee6f9-cc43-11d3-ae1e-0010a4f1d0f6" description="Acts as a facade and generates and sends an event to its keypad" descriptionHTML="&lt;![[CDATA[Acts as a facade and generates and sends an event to its keypad]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Acts as a facade and generates and sends an event to its keypad\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>"/>
+  <RHP:RHPStereotype xmi:id="_So3pOX1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_So3pOn1jEeunSI2ziaCNWw"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pO31jEeunSI2ziaCNWw" guid="GUID c6eee765-cc43-11d3-ae1e-0010a4f1d0f6" description="Acts as a facade and generates and sends an event to its keypad" descriptionHTML="&lt;![[CDATA[Acts as a facade and generates and sends an event to its keypad]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Acts as a facade and generates and sends an event to its keypad\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>"/>
+  <RHP:RHPStereotype xmi:id="_So3pPH1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_So3pPX1jEeunSI2ziaCNWw"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pPn1jEeunSI2ziaCNWw" guid="GUID c6eee7e4-cc43-11d3-ae1e-0010a4f1d0f6" description="Generates an event and sends it to itself" descriptionHTML="&lt;![[CDATA[Generates an event and sends it to itself]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Generates an event and sends it to itself\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>"/>
+  <RHP:RHPStereotype xmi:id="_So3pP31jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <RhapsodyProfile:RhpOperation xmi:id="_So3pQH1jEeunSI2ziaCNWw"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pQX1jEeunSI2ziaCNWw" guid="OLDID 1424988 452"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pQn1jEeunSI2ziaCNWw" guid="OLDID 1424988 461"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pQ31jEeunSI2ziaCNWw" guid="OLDID 1424988 465"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pRH1jEeunSI2ziaCNWw" guid="OLDID 1424988 476"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pRX1jEeunSI2ziaCNWw" guid="OLDID 1424988 482"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pRn1jEeunSI2ziaCNWw" guid="OLDID 1424988 488"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pR31jEeunSI2ziaCNWw" guid="OLDID 1424988 494"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pSH1jEeunSI2ziaCNWw" guid="OLDID 1424988 500"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pSX1jEeunSI2ziaCNWw" guid="GUID b5dcd3d6-2874-11d3-ac08-0010a4f1d0f6" displayName="evMovement"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pSn1jEeunSI2ziaCNWw" guid="OLDID 1424988 462"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pS31jEeunSI2ziaCNWw" guid="OLDID 1424988 489" displayName="tm(SILENCE_TIME)"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pTH1jEeunSI2ziaCNWw" guid="OLDID 1424988 495" displayName="tm(EXIT_TIME)"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pTX1jEeunSI2ziaCNWw" guid="OLDID 1424988 471" displayName="evMovement"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pTn1jEeunSI2ziaCNWw" guid="OLDID 1424988 466" displayName="evDoor"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pT31jEeunSI2ziaCNWw" guid="OLDID 1424988 477" displayName="tm(ENTRY_TIME)"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pUH1jEeunSI2ziaCNWw" guid="OLDID 1424988 483" displayName="tm(ALARM_TIME)"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pUX1jEeunSI2ziaCNWw" guid="OLDID 1424988 458"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pUn1jEeunSI2ziaCNWw" guid="OLDID 1424988 501" displayName="evTemporise"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pU31jEeunSI2ziaCNWw" guid="OLDID 1424988 506" displayName="evArm"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pVH1jEeunSI2ziaCNWw" guid="OLDID 1424988 453" displayName="evDisarm"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pVX1jEeunSI2ziaCNWw" guid="OLDID 1424988 449" displayName="/init();"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pVn1jEeunSI2ziaCNWw" guid="GUID 3c06b604-2887-11d3-ac08-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pV31jEeunSI2ziaCNWw" guid="GUID 3c06b608-2887-11d3-ac08-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pWH1jEeunSI2ziaCNWw" guid="OLDID 1424988 444"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pWX1jEeunSI2ziaCNWw" guid="OLDID 1424988 446"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pWn1jEeunSI2ziaCNWw" guid="OLDID 1424988 445"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pW31jEeunSI2ziaCNWw" guid="GUID b5dcd3da-2874-11d3-ac08-0010a4f1d0f6"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pXH1jEeunSI2ziaCNWw" guid="OLDID 1424988 493"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pXX1jEeunSI2ziaCNWw" guid="OLDID 1424988 499"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pXn1jEeunSI2ziaCNWw" guid="OLDID 1424988 475"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pX31jEeunSI2ziaCNWw" guid="OLDID 1424988 470"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pYH1jEeunSI2ziaCNWw" guid="OLDID 1424988 481"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pYX1jEeunSI2ziaCNWw" guid="OLDID 1424988 487"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pYn1jEeunSI2ziaCNWw" guid="OLDID 1424988 505"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pY31jEeunSI2ziaCNWw" guid="OLDID 1424988 510"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pZH1jEeunSI2ziaCNWw" guid="OLDID 1424988 457"/>
+  <RhapsodyProfile:RhpModelElement xmi:id="_So3pZX1jEeunSI2ziaCNWw" guid="OLDID 1424988 441" description="Class that controls the alarm system" descriptionHTML="&lt;![[CDATA[Class that controls the alarm system]]>" descriptionRTF="&lt;![[CDATA[{\rtf1\fbidis\ansi\ansicpg1255\deff0\deflang1037{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset177{\*\fname Arial;}Arial (Hebrew);}}&#xD;&#xA;\viewkind4\uc1\pard\ltrpar\fs20 Class that controls the alarm system\f1\rtlch\par&#xD;&#xA;}&#xD;&#xA;]]>"/>
+  <RHP:RHPStereotype xmi:id="_So3pZn1jEeunSI2ziaCNWw" IsBeingGenerated="TRUE" SpecificationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.h" ImplementationFilename="E:\rhapsody\Samples\CppSamples\HomeAlarm\Gui\Debug\AlarmController.cpp"/>
+  <AlarmPkg_profile:Facade xmi:id="_So3pZ31jEeunSI2ziaCNWw"/>
+</xmi:XMI>
