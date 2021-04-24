@@ -1,18 +1,5 @@
 <template>
   <div id="main">
-    <!--    <el-container>-->
-    <!--      <el-header id="el-header">-->
-    <!--        <common-header />-->
-    <!--      </el-header>-->
-    <!--      <el-container>-->
-    <!--        <el-aside id="el-aside">-->
-    <!--          <common-aside />-->
-    <!--        </el-aside>-->
-    <!--        <el-main id="el-main">-->
-    <!--          <common-main />-->
-    <!--        </el-main>-->
-    <!--      </el-container>-->
-    <!--    </el-container>-->
     <el-container>
       <el-header id="el-header">
         <main-header />
@@ -30,8 +17,8 @@ import MainHeader from '@/components/MainHeader'
 export default {
   name: 'Main.vue',
   components: {
-    MainHeader
-  }
+    MainHeader,
+  },
 }
 </script>
 

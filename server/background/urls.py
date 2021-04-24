@@ -19,5 +19,9 @@ from django.urls import path
 from background import views
 
 urlpatterns = [
-    path('login', views.login, name='login')
+    path('item_list', views.item_list, name='item_list'),  # 项目列表
+    path('login', views.login, name='login'),  # 登录
+    path('personnel_list', views.personnel_list, name='personnel_list'),  # 人员列表
+    path('add_item', views.add_item, name='add_item'),  # 添加项目
+    path('user_item', views.user_item, name='user_item'),  # 用户所属项目
 ]

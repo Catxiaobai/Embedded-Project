@@ -21,7 +21,6 @@
         router
         class="el-menu-demo"
         mode="horizontal"
-        @select="handleSelect"
         background-color="#545c64"
         text-color="#fff"
         active-text-color="#ffd04b"
@@ -37,12 +36,12 @@
           </el-submenu>
           <el-menu-item index="/item">项目管理</el-menu-item>
         </el-submenu>
-        <el-submenu index="2">
-          <template slot="title">安全性数据库管理</template>
-          <el-menu-item index="/analysisBase">分析规则库</el-menu-item>
-          <el-menu-item index="/designBase">设计准则库</el-menu-item>
-          <el-menu-item index="/failureDataBase">失效数据库</el-menu-item>
-        </el-submenu>
+        <!--        <el-submenu index="2">-->
+        <!--          <template slot="title">安全性数据库管理</template>-->
+        <!--          <el-menu-item index="/analysisBase">分析规则库</el-menu-item>-->
+        <!--          <el-menu-item index="/designBase">设计准则库</el-menu-item>-->
+        <!--          <el-menu-item index="/failureDataBase">失效数据库</el-menu-item>-->
+        <!--        </el-submenu>-->
       </el-menu>
     </div>
   </div>
@@ -53,7 +52,7 @@ export default {
   name: 'CommonHeader.vue',
   data() {
     return {
-      title: '基于使用场景的软件安全性分析与设计工具',
+      title: '基于嵌入式软件的 EFSM 建模与安全测试用例集生成',
       imgLogo: require('@/assets/images/logo.png'),
       activeIndex: '2',
       divSubMenuVisible: false,
@@ -65,206 +64,6 @@ export default {
         item_name: '',
       },
       headMenu: [],
-      menuList: [
-        [
-          {
-            path: '/modeling',
-            name: 'modeling',
-            label: '使用场景建模',
-            icon: 's-claim',
-            children: [
-              // {
-              //   path: '/subScene',
-              //   name: 'subScene',
-              //   label: '子使用场景建模',
-              //   children: [
-              //     {
-              //       path: '/subSceneInfo',
-              //       name: 'subSceneInfo',
-              //       label: '子使用场景描述'
-              //     },
-              //     {
-              //       path: '/subSceneModel',
-              //       name: 'subSceneModel',
-              //       label: '子使用场景建模'
-              //     }
-              //   ]
-              // },
-              {
-                path: '/subSceneInfo',
-                name: 'subSceneInfo',
-                label: '子使用场景描述',
-              },
-              {
-                path: '/subSceneModel',
-                name: 'subSceneModel',
-                label: '子使用场景建模',
-              },
-              // {
-              //   path: '/complexScene',
-              //   name: 'complexScene',
-              //   label: '综合场景建模',
-              //   children: [
-              //     {
-              //       path: '/complexSceneInfo',
-              //       name: 'complexSceneInfo',
-              //       label: '综合使用场景描述'
-              //     },
-              //     {
-              //       path: '/complexSceneModel',
-              //       name: 'complexSceneModel',
-              //       label: '综合使用场景建模'
-              //     }
-              //   ]
-              // },
-              {
-                path: '/complexSceneInfo',
-                name: 'complexSceneInfo',
-                label: '综合使用场景描述',
-              },
-              {
-                path: '/complexSceneModel',
-                name: 'complexSceneModel',
-                label: '综合使用场景建模',
-              },
-              {
-                path: '/listGeneration',
-                name: 'listGeneration',
-                label: '模型列表生成',
-              },
-            ],
-          },
-          {
-            path: '/analysisRules',
-            name: 'analysisRules',
-            label: '分析规则设置',
-            icon: 's-claim',
-            children: [
-              {
-                path: '/specialRules',
-                name: 'specialRules',
-                label: '项目分析规则设置',
-              },
-              {
-                path: '/generalRules',
-                name: 'generalRules',
-                label: '通用分析规则选择',
-              },
-              {
-                path: '/instantiate',
-                name: 'instantiate',
-                label: '分析规则实例化',
-              },
-            ],
-          },
-          {
-            path: '/implement',
-            name: 'implement',
-            label: '分析实施',
-            icon: 's-claim',
-            children: [
-              {
-                path: '/check',
-                name: 'check',
-                label: '模型检验',
-              },
-              {
-                path: '/failureAnalysis',
-                name: 'failureAnalysis',
-                label: '失效分析',
-              },
-              {
-                path: '/demandExtraction',
-                name: 'demandExtraction',
-                label: '软件安全性需求提取',
-              },
-            ],
-          },
-          {
-            path: '/requirements',
-            name: 'requirements',
-            label: '软件安全性需求管理',
-            icon: 's-claim',
-          },
-        ],
-        [
-          {
-            path: '/criteria',
-            name: 'criteria',
-            label: '设计准则设置',
-            icon: 's-claim',
-            children: [
-              {
-                path: '/generalCriteria',
-                name: 'generalCriteria',
-                label: '通用设计准则选择',
-              },
-              {
-                path: '/specialCriteria',
-                name: 'specialCriteria',
-                label: '专用设计准则设置',
-              },
-            ],
-          },
-          {
-            path: '/verification',
-            name: 'verification',
-            label: '核查实施',
-            icon: 's-claim',
-          },
-          {
-            path: '/complete',
-            name: 'complete',
-            label: '设计完善',
-            icon: 's-claim',
-          },
-        ],
-        [
-          {
-            path: '/system',
-            name: 'system',
-            label: '系统管理',
-            icon: 's-claim',
-            children: [
-              {
-                path: '/personnel',
-                name: 'personnel',
-                label: '人员管理',
-              },
-              {
-                path: '/authority',
-                name: 'authority',
-                label: '权限管理',
-              },
-              {
-                path: '/tools',
-                name: 'tools',
-                label: '工具说明',
-              },
-            ],
-          },
-          {
-            path: '/item',
-            name: 'item',
-            label: '项目管理',
-            icon: 's-claim',
-          },
-        ],
-        [
-          {
-            path: '/analysisBase',
-            name: 'analysisBase',
-            label: '分析规则库',
-            icon: 's-claim',
-          },
-          {
-            path: '/designBase',
-            name: 'designBase',
-            label: '设计准则库',
-            icon: 's-claim',
-          },
-        ],
-      ],
     }
   },
   mounted() {
@@ -273,33 +72,6 @@ export default {
     // console.log(this.itemInfo)
   },
   methods: {
-    // handleSelect(key, keyPath) {
-    //   // console.log(key, keyPath)
-    //   this.bus.$emit('transferMenuData', this.menuList[key])
-    // },
-    // selectAnalysis() {
-    //   this.bus.$emit('transferMenuData', this.menuList[0])
-    // },
-    // selectDesign() {
-    //   this.bus.$emit('transferMenuData', this.menuList[1])
-    // },
-    // closeSubMenu() {
-    //   this.divSubMenuVisible = false
-    //   this.bus.$emit('transferMenuData', this.menuList[2])
-    // },
-    // test() {
-    //   var rightCube = document.getElementsByClassName('rightCube')
-    //   var tab = document.getElementById('tab')
-    //   var newDiv = document.createElement('div')
-    //   rightCube[0].className = 'cube'
-    //   newDiv.className = 'rightCube'
-    //   tab.append(newDiv)
-    // },
-    // del() {
-    //   var rightCube = document.getElementsByClassName('rightCube')
-    //   var tab = document.getElementById('tab')
-    //   tab.removeChild(rightCube[0])
-    // },
     gotoHome() {
       this.$router.replace('/main')
     },

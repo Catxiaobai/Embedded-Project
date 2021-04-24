@@ -33,19 +33,29 @@ class Personnel(models.Model):
         }
 
 
-# 项目表
+# 项目
 class Item(models.Model):
-    item_name = models.TextField(default='', unique=True)
-    item_content = models.TextField(default='')
-    item_describe = models.TextField(default='')
+    name = models.TextField(default='', unique=True)
+    software = models.TextField(default='')
+    team = models.TextField(default='')
+    level = models.TextField(default='')
+    path = models.TextField(default='')
+    describe = models.TextField(default='', blank=True)
+
+    # item_date = models.DateTimeField(default='')
+    # item_leader = models.ForeignKey(Personnel, on_delete=models.CASCADE)
 
     def to_dict(self):
         return {
-            'invalid_id': self.id,
-            'item_name': self.item_name,
-            'item_content': self.item_content,
-            'item_describe': self.item_describe,
+            'id': self.id,
+            'name': self.name,
+            'software': self.software,
+            'team': self.team,
+            'level': self.level,
+            'path': self.path,
+            'describe': self.describe
         }
+
 
 
 
