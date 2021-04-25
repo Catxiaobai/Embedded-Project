@@ -1,26 +1,30 @@
 <template>
-  <div id="complexSceneModel">
+  <div id="fullState">
     <el-card>
-      <div id="action" style="display: flex; margin-bottom: 20px">
-        <div id="stateAction" style="margin-left: 80%">
-          <el-button type="primary" @click="modeling">接口协议</el-button>
-        </div>
-      </div>
-      <!--        <el-button type="primary" @click="reduction" v-show="buttonShow.reduction">模型还原</el-button>-->
-      <div v-show="diagram.uml" style="background-color: whitesmoke; border: solid 1px black; width: 100%; height: 520px">
-        <!--        <span class="demonstration">请选择需要导入的文件</span>-->
-        <el-image :src="umlSrc" style="width: 100%; height: 100%" fit="contain" :preview-src-list="umlSrcList">
-          <div slot="error" class="image-slot">
-            <i class="el-icon-picture-outline"></i>
-          </div>
-        </el-image>
-      </div>
-      <div
-        id="myDiagramDiv"
-        v-show="diagram.state"
-        style="background-color: whitesmoke; border: solid 1px black; width: 100%; height: 610px"
-        ref="generatePicture"
-      ></div>
+      <el-row :gutter="20">
+        <el-col :span="16">
+          <div class="grid-content">
+            <div id="action" style="display: flex; margin-bottom: 20px">
+              <div id="stateAction" style="margin-left: 35%">
+                <el-button type="primary" @click="modeling">接口协议</el-button>
+              </div>
+            </div>
+            <div
+              id="myDiagramDiv"
+              v-show="diagram.state"
+              style="background-color: whitesmoke; border: solid 1px black; width: 100%; height: 550px"
+              ref="generatePicture"
+            ></div></div
+        ></el-col>
+        <el-col :span="8">
+          <div class="grid-content">
+            <div>
+              <a style="font-size: 30px; margin-left: 30%">测试用例集</a>
+              <el-card style="margin-top: 30px; height: 500px">{{ test_cases_result }}</el-card>
+            </div>
+          </div></el-col
+        >
+      </el-row>
     </el-card>
   </div>
 </template>
@@ -30,13 +34,14 @@ import go from 'gojs'
 import html2canvas from 'html2canvas'
 const MAKE = go.GraphObject.make
 export default {
-  name: 'InterfaceProtocol.veu',
+  name: 'FullState.veu',
   inject: ['reload'],
   data() {
     return {
       doUpload: this.Global_Api + '/api/upload_umlfile',
       nodeDataArray: [],
       linkDataArray: [],
+      test_cases_result: '',
       buttonShow: {
         modeling: false,
         reduction: false,
@@ -466,6 +471,7 @@ export default {
     },
     modeling() {
       console.log('test')
+      this.test_cases_result = ['t1,t2,t3,t4', 't5,t6,t7,t8']
     },
     handleImport(res) {
       if (res.error_code === -1) {

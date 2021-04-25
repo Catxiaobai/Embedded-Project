@@ -37,7 +37,7 @@ export default {
   data() {
     return {
       value: '',
-      title: '基于使用场景的软件安全性分析与设计工具',
+      title: '基于嵌入式软件的 EFSM 建模与安全测试用例集生成',
       imgLogo: require('@/assets/images/logo.png'),
       activeIndex: '2',
       user: '',

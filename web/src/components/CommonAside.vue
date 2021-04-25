@@ -31,7 +31,7 @@
             <el-menu-item index="/interfaceProtocol"><i class="el-icon-folder"></i>接口协议</el-menu-item>
           </el-submenu>
         </el-submenu>
-        <el-menu-item index="/script"><i class="el-icon-folder"></i>脚本库</el-menu-item>
+        <el-menu-item index="/script"><i class="el-icon-folder"></i>脚本</el-menu-item>
       </el-menu>
     </div>
   </div>

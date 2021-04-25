@@ -20,23 +20,23 @@ Transition:
 	name=t1
 	src=S1
 	tgt=S2
-	event=Cancel()
-	condition=(x<=30)
-	action=Write("The end");x=0
+	event=null
+	condition=(x>30)
+	action=Write("Time out");x=0
 Transition:
 	name=t2
-	src=S1
-	tgt=S3
-	event=Buy(insurance,passenger,y)
-	condition=(x<=30) & (passenger>=10)
-	action=Write("Successful purchase");passenger=passenger-10;x=0;y=0
+	src=S5
+	tgt=S2
+	event=Transfer()
+	condition=
+	action=Write("The end");company=company+10;passenger=passenger+1000
 Transition:
 	name=t3
-	src=S3
-	tgt=S4
-	event=Deposit(company)
-	condition=(y<=60) & (company>=1000)
-	action=Write("Pre-stored successfully");company=company-1000;y=0
+	src=S0
+	tgt=S1
+	event=Buy(ticket,x)
+	condition=
+	action=Write("Confirm purchase");x=0
 Transition:
 	name=t4
 	src=S4
@@ -46,50 +46,50 @@ Transition:
 	action=Write("The flight was not delayed")
 Transition:
 	name=t5
+	src=S3
+	tgt=S4
+	event=Deposit(company)
+	condition=(y<=60) & (company>=1000)
+	action=Write("Pre-stored successfully");company=company-1000;y=0
+Transition:
+	name=t6
+	src=S1
+	tgt=S2
+	event=Cancel()
+	condition=(x<=30)
+	action=Write("The end");x=0
+Transition:
+	name=t7
 	src=S4
 	tgt=S5
 	event=Judge(z)
 	condition=(z>4)
 	action=Write("The flight was delayed")
 Transition:
-	name=t6
+	name=t8
 	src=S5
 	tgt=S2
 	event=Transfer()
 	condition=
 	action=Write("The end");company=company+1100
 Transition:
-	name=t7
-	src=S5
-	tgt=S2
-	event=Transfer()
-	condition=
-	action=Write("The end");company=company+10;passenger=passenger+1000
-Transition:
-	name=t8
-	src=S0
-	tgt=S1
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm purchase");x=0
-Transition:
 	name=t9
-	src=S1
-	tgt=S2
-	event=null
-	condition=(x>30)
-	action=Write("Time out");x=0
-Transition:
-	name=t10
-	src=S0
-	tgt=S1
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm Purchase");x=0
-Transition:
-	name=t11
 	src=S3
 	tgt=S2
 	event=Deposit(company)
 	condition=(y>60)
 	action=Write("Time out");passenger=passenger+10;y=0
+Transition:
+	name=t10
+	src=S1
+	tgt=S3
+	event=Buy(insurance,passenger,y)
+	condition=(x<=30) & (passenger>=10)
+	action=Write("Successful purchase");passenger=passenger-10;x=0;y=0
+Transition:
+	name=t11
+	src=S0
+	tgt=S1
+	event=Buy(ticket,x)
+	condition=
+	action=Write("Confirm Purchase");x=0

@@ -49,7 +49,7 @@ def start():
         win32api.keybd_event(17, 0, 0, 0)
         time.sleep(1)
         # r键位码是86
-        win32api.keybd_event(82, 0, 0, 0)
+        win32api.keybd_event(86, 0, 0, 0)
         time.sleep(1)
 
         # 释放按键

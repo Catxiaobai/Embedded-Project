@@ -8,7 +8,7 @@
           filter-placeholder="请输入关键字"
           v-model="value"
           :data="data"
-          :titles="['脚本库', '输出']"
+          :titles="['测试用例集', '指令']"
           style="height: 300px"
         >
         </el-transfer>
@@ -24,7 +24,7 @@ export default {
   data() {
     const generateData = (_) => {
       const data = []
-      const cities = ['脚本1', '脚本2', '脚本3', '脚本4', '脚本5', '脚本6', '脚本7']
+      const cities = ['t1,t2,t3,t4', 't5,t6,t7,t8', 't9,t10,t11,t12', 't1,t2,t6,t9', 't8,t7,t3,t4', 't11,t12,t3,t4', 't6,t2,t7,t4']
       const pinyin = ['1', '2', '3', '4', '5', '6', '7']
       cities.forEach((city, index) => {
         data.push({
