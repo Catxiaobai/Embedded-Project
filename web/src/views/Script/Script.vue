@@ -8,7 +8,7 @@
           filter-placeholder="请输入关键字"
           v-model="value"
           :data="data"
-          :titles="['测试用例集', '指令']"
+          :titles="['测试用例集', '脚本']"
           style="height: 300px"
         >
         </el-transfer>
