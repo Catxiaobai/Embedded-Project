@@ -1,0 +1,129 @@
+State:
+	name=START
+State:
+	name=S1
+State:
+	name=S2
+State:
+	name=S3
+State:
+	name=EXIT
+Transition:
+	name=T1
+	src=START
+	tgt=S1
+	event=EngineOn()
+	cond=
+	action=MinSpeed=40;MaxSpeed=65;CruiseSpeed=0;DeactivatingSpeed = 35;Off =0;Suspended = 0;False =0;True=1;Activated=1;StepSpeed =1;CCS=0;CurrentSpeed=0;decr=0;inc=0
+Transition:
+	name=T2
+	src=S1
+	tgt=S2
+	event=Set(CurSpeed, BrakeR, AccelR)
+	cond=((CurSpeed >=MinSpeed) & (CurSpeed <=MaxSpeed) & (BrakeR==True) & (AccelR==True))
+	action=CurrentSpeed=CurSpeed;CruiseSpeed=CurSpeed;CCS=Activated;write("CruiseSpeed = ",CruiseSpeed )
+Transition:
+	name=T3
+	src=S2
+	tgt=S2
+	event=SensorSpeed(CurSpeed)
+	cond=(CurSpeed==CruiseSpeed)
+	action=CurrentSpeed=CurSpeed;write("CurrentSpeed = ",CurrentSpeed )
+Transition:
+	name=T4
+	src=S2
+	tgt=S2
+	event=SensorSpeed(CurSpeed)
+	cond=(CurSpeed > CruiseSpeed)
+	action=CurrentSpeed=CurSpeed;decr=CurrentSpeed - CruiseSpeed;write("Your Speed is over cruising speed, Decreasing Speed");CurrentSpeed = CurrentSpeed - decr;write("CurrentSpeed = ",CurrentSpeed )
+Transition:
+	name=T5
+	src=S2
+	tgt=S2
+	event=SensorSpeed(CurSpeed)
+	cond=((CurSpeed < CruiseSpeed) & (CurSpeed >=DeactivatingSpeed))
+	action=CurrentSpeed=CurSpeed;inc=CruiseSpeed - CurrentSpeed;write("Your Speed is lower than cruising speed, Increasing Speed to crusie speed");CurrentSpeed = CurrentSpeed  - CruiseSpeed;write("CurrentSpeed = ",CurrentSpeed )
+Transition:
+	name=T6
+	src=S2
+	tgt=S2
+	event=Accel(CurSpeed)
+	cond=(CurSpeed < MaxSpeed)
+	action=CurrentSpeed=CurSpeed;write("Your Speed is lower than Max speed, Increasing Speed by 1 mile each Accel");CruiseSpeed = CruiseSpeed + 1
+Transition:
+	name=T7
+	src=S2
+	tgt=S2
+	event=Coast(CurSpeed)
+	cond=(CurSpeed >=MinSpeed)
+	action=CurrentSpeed=CurSpeed;write("Your Speed is greater than than Min Speed limit, decreasing Speed");CruiseSpeed = CruiseSpeed - StepSpeed ;write("CruiseSpeed = ",CruiseSpeed )
+Transition:
+	name=T8
+	src=S2
+	tgt=S3
+	event=SensorSpeed(CurSpeed)
+	cond=(CurSpeed < DeactivatingSpeed)
+	action=CurrentSpeed=CurSpeed;CCS=Suspended;write ("Current Speed less than 35 mile, Cruise Control Speed: CCS Suspended");write("CurrentSpeed = ",CurrentSpeed );CurrentSpeed = CruiseSpeed - CurrentSpeed
+Transition:
+	name=T9
+	src=S2
+	tgt=S3
+	event=Brake(BrakeR)
+	cond=
+	action=CCS=Suspended;CurrentSpeed = CruiseSpeed - CurrentSpeed
+Transition:
+	name=T10
+	src=S2
+	tgt=S3
+	event=Accelerator(AccelR)
+	cond=
+	action=CCS=Suspended;CurrentSpeed = CruiseSpeed - CurrentSpeed
+Transition:
+	name=T11
+	src=S3
+	tgt=S2
+	event=Resume(CurSpeed, BrakeR, AccelR)
+	cond=((CurSpeed > MinSpeed) & (CurSpeed <= MaxSpeed)  & (BrakeR==True) & (AccelR==True))
+	action=CurrentSpeed=CurSpeed;CCS=Activated;write("CCS Activated");CurrentSpeed = CruiseSpeed - CurrentSpeed
+Transition:
+	name=T12
+	src=S3
+	tgt=S2
+	event=Resume(CurSpeed, BrakeR, AccelR)
+	cond=(CurSpeed <= MinSpeed) 
+	action=CurrentSpeed=CurSpeed;CCS=Suspended;write("T12: CCS Suspended");CurrentSpeed = CruiseSpeed - CurrentSpeed
+Transition:
+	name=T13
+	src=S3
+	tgt=S2
+	event=Resume(CurSpeed, BrakeR, AccelR)
+	cond=(CurSpeed > MaxSpeed) 
+	action=CurrentSpeed=CurSpeed;CCS=Suspended;write("T13: CCS Suspended");CurrentSpeed = CruiseSpeed - CurrentSpeed 
+Transition:
+	name=T14
+	src=S3
+	tgt=S2
+	event=Resume(CurSpeed, BrakeR, AccelR)
+	cond=((CurSpeed >= MinSpeed) & (CurSpeed <= MaxSpeed) & (BrakeR==False) & (AccelR==False))
+	action=CurrentSpeed=CurSpeed;CCS=Suspended;write("T14: CCS Suspended");CurrentSpeed = CruiseSpeed - CurrentSpeed
+Transition:
+	name=T15
+	src=S2
+	tgt=EXIT
+	event=Off()
+	cond=
+	action=CCS=Off
+Transition:
+	name=T16
+	src=S1
+	tgt=EXIT
+	event=Off()
+	cond=
+	action=CCS=Off
+Transition:
+	name=T17
+	src=S3
+	tgt=EXIT
+	event=Off()
+	cond=
+	action=CCS=Off

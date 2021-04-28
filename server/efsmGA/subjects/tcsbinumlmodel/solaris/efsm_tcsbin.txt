@@ -1,0 +1,551 @@
+State:
+	name=START
+State:
+	name=null_0
+State:
+	name=call_initiated_1
+State:
+	name=call_delivered_4
+State:
+	name=outgoing_call_proceeding_3
+State:
+	name=bearer_estab
+State:
+	name=overlap_sending_2
+State:
+	name=disconnect_ind
+State:
+	name=initiated_clearing
+State:
+	name=call_present_6
+State:
+	name=overlap_receiving_25
+State:
+	name=wait_bearer_disc_1
+State:
+	name=release_request_19
+State:
+	name=wait_bearer_disc_2
+State:
+	name=initiated_clearing_nobearer
+State:
+	name=disconnect_request_11
+State:
+	name=call_active_10
+State:
+	name=bearer_connect
+State:
+	name=wait_bearer_con
+State:
+	name=overlap_received_call_present
+State:
+	name=incoming_call_proceeding_9
+State:
+	name=call_received_7
+State:
+	name=connect_request_8
+State:
+	name=wait_bearer_estab
+State:
+	name=EXIT
+
+Transition:
+	name=T1
+	src=START
+	tgt=null_0
+	event=CCStart()
+	cond=
+	action=CCSTartAck(ST_OK)
+
+Transition:
+	name=T3
+	src=null_0
+	tgt=call_initiated_1
+	event=AppCallRequest(sigpAppReq)
+	cond=ValidateCall(sigpAppCallReq) == 0
+	action= SendSetup(sigpAppCallReq); set(TmrT303());
+
+Transition:
+	name=T4
+	src=call_initiated_1
+	tgt=call_delivered_4
+	event=AllertingIN(sigpAlerting)
+	cond=
+	action=AppCallAlertingOUT(); reset(TmrT303()); set(TmrT301());
+
+Transition:
+	name=T5
+	src=call_initiated_1
+	tgt=outgoing_call_proceeding_3
+	event=CallProceedingIN(sigpCallProceed)
+	cond=
+	action=l=reset(TmrT303());set(TmrT310());
+
+Transition:
+	name=T6
+	src=call_initiated_1
+	tgt=bearer_estab
+	event=CallConnectIN(sigpConnect)
+	cond=
+	action=reset(TmrT303())
+Transition:
+	name=T7
+	src=call_initiated_1
+	tgt=null_0
+	event=TmrT303()
+	cond=
+	action=
+Transition:
+	name=T8
+	src=call_initiated_1
+	tgt=null_0
+	event=ReleaseCompleteIN(sigpReleaseComplete)
+	cond=
+	action=reset(TmrT303())
+Transition:
+	name=T9
+	src=call_initiated_1
+	tgt=overlap_sending_2
+	event=SetupAcknowledgeIN(sigpSetupAck)
+	cond=
+	action=SendOverlapInfo(calledNum); set(TmrT304());
+
+Transition:
+	name=T10
+	src=overlap_sending_2
+	tgt=call_delivered_4
+	event=AlertingIN(sigpAlerting)
+	cond=
+	action=reset(TmrT304()); set(TmrT301());
+
+Transition:
+	name=T11
+	src=overlap_sending_2
+	tgt=outgoing_call_proceeding_3
+	event=CallProceedingIN(sigpCallProceed)
+	cond=
+	action=reset(TmrT304()); set(TmrT310());
+Transition:
+	name=T12
+	src=overlap_sending_2
+	tgt=bearer_estab
+	event=CallConnectIN(sigpConnect)
+	cond=
+	action=reset(TmrT304())
+Transition:
+	name=T13
+	src=overlap_sending_2
+	tgt=disconnect_ind
+	event=DiconnectIN(sigpDisconnect)
+	cond=
+	action=reset(TmrT304())
+
+Transition:
+	name=T14
+	src=overlap_sending_2
+	tgt=initiated_clearing
+	event=TmrT304()
+	cond=
+	action=sigpDisconnect.Cause.data=CAUSE_RECOVERY_ON_TIMER_EXPIRY
+
+Transition:
+	name=T15
+	src=null_0
+	tgt=call_present_6
+	event=SetupIN(sigpSetup)
+	cond=sigpSetup.SendingComplete == SendingComplete_t::PRESENT
+	action=callingNum = sigpSetup.CallingpartyNumber; sigpAppCallInd.CallingPartyNumber=callingNum; AppCallIndincation(sigpAppCallInd)
+
+Transition:
+	name=T16
+	src=null_0
+	tgt=overlap_receiving_25
+	event=SetupIN(sigpSetup)
+	cond=sigpSetup.SendingComplete != SendingComplete_t::PRESENT
+	action=callingNum = sigpSetup.CallingpartyNumber; SetupAcknowledgeOUT(sigpSetupAck); set(TmrT302())
+
+Transition:
+	name=T17
+	src=disconnect_ind
+	tgt=wait_bearer_disc_1
+	event=
+	cond=
+	action=sigpSCODiscReq.SCOHandle=sigpDisconnect.SCOHandle; LM_SCO_Disconnect_Request(sigpSCODiscReq); set(TmrLmpReply());
+
+
+Transition:
+	name=T19
+	src=wait_bearer_disc_1
+	tgt=release_request_19
+	event=LM_SCO_Disconnect_Accept(sigpSCODiscAcc)
+	cond=sigpSCODiscAcc.SCOHandle==scoHandle
+	action=reset(TmrLmpreply()); sigpRelease.Cause.data=Cause_data_t::invalid; sigprelease.SCOHandle=scoHandle; ReleaseOUT(sigpRelease); set(TmrT308())
+
+Transition:
+	name=T20
+	src=wait_bearer_disc_1
+	tgt=release_request_19
+	event=TmrLmpReply()
+	cond=
+	action=platformLog("TmrLmpReply expired in state wait_bearer_disc"); sigpRelease.Cause.data=CAUSE_RECOVERY_ON_TIMER_EXPIRY; sigprelease.SCOHandle=scoHandle; ReleaseOUT(sigpRelease); set(TmrT308())
+
+Transition:
+	name=T21
+	src=release_request_19
+	tgt=null_0
+	event=ReleaseCompleteIN(sigpReleaseComplete)
+	cond=
+	action=reset(TmrT308()); AppCallInactive()
+
+Transition:
+	name=T22
+	src=release_request_19
+	tgt=null_0
+	event=ReleaseIN(sigpRelease)
+	cond=
+	action=reset(TmrT308()); AppCallInactive()
+Transition:
+	name=T23
+	src=release_request_19
+	tgt=null_0
+	event=TmrT308()
+	cond=
+	action=platformLog("TmrT308 expired in state release_request_19"); reset(TmrT308()); AppCallInactive()
+
+Transition:
+	name=T24
+	src=initiated_clearing
+	tgt=wait_bearer_disc_2
+	event=
+	cond=
+	action=sigpSCODiscReq.SCOHandle=scoHandle; LM_SCO_Disconnect_Request(sigpSCODiscReq); set(TmrLmpReply());
+
+Transition:
+	name=T25
+	src=wait_bearer_disc_2
+	tgt=wait_bearer_disc_2
+	event=LM_SCO_Disconnect_Accept(sigpSCODiscAcc)
+	cond=sigpSCDiscAcc.SCOHandle != scHandle
+	action=
+
+Transition:
+	name=T26
+	src=wait_bearer_disc_2
+	tgt=disconnect_request_11
+	event=LM_SCO_Disconnect_Accept(sigpSCODiscAcc)
+	cond=sigpSCDiscAcc.SCOHandle == scHandle
+	action=reset(TmrLmpReply()); sigpDisconnectSCOHandle=scoHandle; DisconnectOUT(sigpDisconnect); set(TmrT305());
+
+Transition:
+	name=T27
+	src=wait_bearer_disc_2
+	tgt=disconnect_request_11
+	event=TmrLmpReply()
+	cond=
+	action=platformLog("TmrLmpReply expired in state wait_bearer_disc_2"); sigpDisconnect.Cause.data=CAUSE_RECOVERY_ON_TIMER_EXPIRY; sigpDisconnectSCOHandle=scoHandle; DisconnectOUT(sigpDisconnect); set(TmrT305());
+
+Transition:
+	name=T28
+	src=disconnect_request_11
+	tgt=null_0
+	event=releaseIN(sigpRelease)
+	cond=
+	action=sigpReleaseComplete.Cause.data=Cause_data_t::invalid; sigpReleaseComplete.SCOHandle = scoHandle; scoHandle = 0; ReleaseCompleteOUT(sigpReleaseComplete); AppCallInactive()
+
+Transition:
+	name=T29
+	src=disconnect_request_11
+	tgt=release_request_19
+	event=DisconnectIn(sigpDisconnect)
+	cond=
+	action=reset(TmrT305()); ReleaseOUT(sigpRelease); set(TmrT308());
+
+Transition:
+	name=T71
+	src=disconnect_request_11
+	tgt=release_request_19
+	event=TmrT305()
+	cond=
+	action=platformLog("TmrT305 expired in state disconnect_request_11"); ReleaseOUT(sigpRelease); set(TmrT308());
+
+Transition:
+	name=T72
+	src=initiated_clearing_nobearer
+	tgt=disconnect_request_11
+	event=
+	cond=
+	action=DisconnectOUT(sigpDisconnect); set(TmrT305());
+
+Transition:
+	name=T30
+	src=outgoing_call_proceeding_3
+	tgt=bearer_estab
+	event=DisconnectIn(sigpDisconnect)
+	cond=
+	action=reset(TmrT310())
+Transition:
+	name=T31
+	src=outgoing_call_proceeding_3
+	tgt=disconnect_ind
+	event=DisconnectIn(sigpDisconnect)
+	cond=
+	action=reset(TmrT305()); 
+Transition:
+	name=T32
+	src=outgoing_call_proceeding_3
+	tgt=call_delivered_4
+	event=AlertingIn(sigpAlerting)
+	cond=
+	action=AppCallAlertingOUT(); reset(TmrT310()); set(TmrT301())
+Transition:
+	name=T33
+	src=outgoing_call_proceeding_3
+	tgt=initiated_clearing
+	event=TmrT310()
+	cond=
+	action=sigpDisconnect.Cause.data=CAUSE_RECOVERY_ON_TIMER_EXPIRY
+Transition:
+	name=T34
+	src=call_delivered_4
+	tgt=bearer_estab
+	event=CallConnectIN(sigpConnect)
+	cond=
+	action=reset(TmrT301()); 
+Transition:
+	name=T35
+	src=call_delivered_4
+	tgt=disconnect_ind
+	event=DisconnectIN(sigpDisconnect)
+	cond=
+	action=reset(TmrT301());	  
+Transition:
+	name=T36
+	src=call_delivered_4
+	tgt=initiated_clearing
+	event=TmrT301()
+	cond=
+	action=sigpDisconnect.Cause.data=CAUSE_RECOVERY_ON_TIMER_EXPIRY; platformLog("TmrT301 expired in state call_delivered_4");
+
+Transition:
+	name=T37
+	src=call_active_10
+	tgt=initiated_clearing
+	event=AppCallRelease(sigpAppCallRelease)
+	cond=
+	action=sigpDisconnect.Cause=sigpAppCallRelsease.Cause;
+
+Transition:
+	name=T38
+	src=call_active_10
+	tgt=disconnect_ind
+	event=DisconnectIN(sigpDiconnect)
+	cond=
+	action=
+
+Transition:
+	name=T41
+	src=bearer_estab
+	tgt=wait_bearer_estab
+	event=
+	cond=
+	action=scoHandle = 0;sigpSCOLinkRequest.SCOHandle = 0;LM_SCO_Link_Request(sigpSCOLinkRequest);set(TmrLmpReply());
+
+Transition:
+	name=T42
+	src=wait_bearer_estab
+	tgt=call_active_10
+	event=LM_SCO_Link_Accept(sigpSCOLinkAccept)
+	cond=
+	action=reset(TmrLmpReply());scoHandle = sigpSCOLinkAccept.SCOHandle; sigpConnectAck.SCOHandle = scoHandle;ConnectAcknowledgeOUT(sigpConnectAck);AppCallActive();
+
+Transition:
+	name=T43
+	src=wait_bearer_estab
+	tgt=initiated_clearing_nobearer
+	event=LM_SCO_Link_Reject(sigpSCOLinkReject)
+	cond=
+	action=reset(TmrLmpReply()); sigpDisconnect.Cause.data = Cause_data_t::invalid;
+
+Transition:
+	name=T70
+	src=wait_bearer_estab
+	tgt=initiated_clearing_nobearer
+	event=TmrLmpReply()
+	cond=
+	action=sigpDisconnect.Cause.data = CAUSE_RECOVERY_ON_TIMER_EXPIRY;
+
+Transition:
+	name=T44
+	src=bearer_connect
+	tgt=wait_bearer_con
+	event=
+	cond=
+	action=sigpSCOConRequest.SCOHandle = scoHandle;LM_SCO_Connection_Request(sigpSCOConRequest);set(TmrLmpReply());
+
+Transition:
+	name=T45
+	src=wait_bearer_con
+	tgt=wait_bearer_con
+	event=LM_SCO_Connection_Accept(sigpSCOCConAccept)
+	cond=sigpSCOConAccept.SCOHandle != scoHandle
+	action=
+Transition:
+	name=T46
+	src=wait_bearer_con
+	tgt=call_active_10
+	event=LM_SCO_Connection_Accept(sigpSCOCConAccept)
+	cond=sigpSCOConAccept.SCOHandle == scoHandle
+	action=reset(TmrLmpReply());AppCallActive();call_active_10;
+
+Transition:
+	name=T47
+	src=wait_bearer_con
+	tgt=wait_bearer_con
+	event=LM_SCO_Connection_Reject(sigpSCOCConReject)
+	cond=sigpSCOConRaject.SCOHandle != scoHandle
+	action=
+Transition:
+	name=T48
+	src=wait_bearer_con
+	tgt=initiated_clearing_nobearer
+	event=LM_SCO_Connection_Raject(sigpSCOCConReject)
+	cond=sigpSCOConReject.SCOHandle == scoHandle
+	action=reset(TmrLmpReply());scoHandle, cast<Integer>(sigpSCCOConReject.LMCause));
+Transition:
+	name=T49
+	src=wait_bearer_con
+	tgt=initiated_clearing_nobearer
+	event= TmrLmpReply()
+	cond=
+	action=
+
+Transition:
+	name=T50
+	src=overlap_receiving_25
+	tgt=overlap_received_call_present
+	event=InformationIN(sigpInfo)
+	cond=sigpInfo.SendingComplete == SecingComplete_t::PRESENT
+	action=reset(TmrT302()); sigpAppCallInd.CallingPartyNumber = callingNum;AppCallIndication(sigpAppCallInd);
+
+
+Transition:
+	name=T52
+	src=overlap_receiving_25
+	tgt=initiated_clearing_nobearer
+	event=TmrT302()
+	cond=
+	action=sigpDisconnect.SCOHandle =scoHandle;sigpDisconnect.Cause.data = CAUSE_RECOVERY_ON_TIMER_EXPIRY;
+
+Transition:
+	name=T53
+	src=overlap_received_call_present
+	tgt=incoming_call_proceeding_9
+	event=AppCallProceed()
+	cond=
+	action=CallProceedingOUT(sigpCallProceed);
+
+Transition:
+	name=T54
+	src=call_present_6
+	tgt=incoming_call_proceeding_9
+	event=AppCallProceed()
+	cond=
+	action=CallProceedingOUT(sigpCallProceed);
+
+
+Transition:
+	name=T55
+	src=overlap_received_call_present
+	tgt=connect_request_8
+	event=AppCallAccept()
+	cond=
+	action=CallConnectOUT(sigpConnect)
+Transition:
+	name=T56
+	src=call_present_6
+	tgt=connect_request_8
+	event=AppCallAccept()
+	cond=
+	action=CallConnectOUT(sigpConnect)
+Transition:
+	name=T57
+	src=incoming_call_proceeding_9
+	tgt=connect_request_8
+	event=AppCallAccept()
+	cond=
+	action=CallConnectOUT(sigpConnect)
+Transition:
+	name=T58
+	src=call_received_7
+	tgt=connect_request_8
+	event=AppCallAccept()
+	cond=
+	action=CallConnectOUT(sigpConnect)
+
+Transition:
+	name=T59
+	src=overlap_received_call_present
+	tgt=initiated_clearing_nobearer
+	event=AppCallreject(sigpAppCallRej)
+	cond=
+	action=sigpDisconnect.SCOHandle = scoHandle; sigpDisconnect.Cause.data = sigpAppCallRej.Cause.data;
+
+Transition:
+	name=T60
+	src=call_present_6
+	tgt=initiated_clearing_nobearer
+	event=AppCallreject(sigpAppCallRej)
+	cond=
+	action=sigpDisconnect.SCOHandle = scoHandle; sigpDisconnect.Cause.data = sigpAppCallRej.Cause.data;
+
+Transition:
+	name=T61
+	src=incoming_call_proceeding_9
+	tgt=initiated_clearing_nobearer
+	event=AppCallreject(sigpAppCallRej)
+	cond=
+	action=sigpDisconnect.SCOHandle = scoHandle; sigpDisconnect.Cause.data = sigpAppCallRej.Cause.data;
+Transition:
+	name=T62
+	src=call_received_7
+	tgt=initiated_clearing_nobearer
+	event=AppCallreject(sigpAppCallRej)
+	cond=
+	action=sigpDisconnect.SCOHandle = scoHandle; sigpDisconnect.Cause.data = sigpAppCallRej.Cause.data;
+
+Transition:
+	name=T63
+	src=overlap_received_call_present
+	tgt=call_received_7
+	event=AppCallAlertingIN()
+	cond=
+	action=AlertingOUT(sigpAlerting);
+Transition:
+	name=T64
+	src=call_present_6
+	tgt=call_received_7
+	event=AppCallAlertingIN()
+	cond=
+	action=AlertingOUT(sigpAlerting);
+Transition:
+	name=T65
+	src=incoming_call_proceeding_9
+	tgt=call_received_7
+	event=AppCallAlertingIN()
+	cond=
+	action=AlertingOUT(sigpAlerting);
+Transition:
+	name=T66
+	src=connect_request_8
+	tgt=bearer_connect
+	event=ConnectAcknowledgeIN(sigpConnectAck)
+	cond=
+	action=reset(TmrT313()); scoHandle = sigpConnectAck.SCOHandle;
+
+Transition:
+	name=T67
+	src=connect_request_8
+	tgt=initiated_clearing_nobearer
+	event=TmrT313()
+	cond=
+	action=sigpDisconnect.SCOHandle = scoHandle; sigpDisconnect.Cause.data = CAUSE_RECOVERY_ON_TIMER_EXPIRY;

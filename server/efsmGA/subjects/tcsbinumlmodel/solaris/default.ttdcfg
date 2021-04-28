@@ -1,0 +1,17 @@
+[FileFormatVersion] 2
+[Messages]
+from env[1] to TCSBINLayer.theBrain[1] : ::Implementation::CCConfig 
+from env[1] to TCSBINLayer.theBrain[1] : ::Implementation::CLConfig 
+from env[1] to TCSBINLayer.theBrain[1] : ::Implementation::RoleConfig ( true )
+from env[1] to TCSBINLayer.theBrain[1] : ::Implementation::GMConfig 
+from env[1] to TCSBINLayer.callControl[1] : ::Implementation::AppCallRequest ( ( AppCallRequest_t (.CallClass = CLASS_EXTERNAL, CallingPartyNumber = CallingPartyNumber_t (.NType = NumberType_International, NumberingPlanID = NumberingPlan_ISDN, PresentationIndicator = PRES_ALLOWED, ScreeningIndicator = SCR_USER_PASSED, NumberDigits = "18477777777".), CalledPartyNumber = CalledPartyNumber_t (.NType = NumberType_International, NumberingPlanID = NumberingPlan_ISDN, NumberDigits = "01133145454545".).)) )
+from env[1] to TCSBINLayer.callControl[1] : ::Implementation::SetupIN ( [[-]] )
+[Breakpoints]
+[SQDTraceLevels]
+TCSBINLayer 1
+env 1
+SQDTraceOnSymbolLevel 1
+[ExecutionTrackingLevels]
+TCSBINLayer 1
+env 1
+[Watches]

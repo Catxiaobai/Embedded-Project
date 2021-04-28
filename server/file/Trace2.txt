@@ -1,95 +1,138 @@
 Trace:
-source:S1:初始状态
+source:S1:开始
 event:Buy(ticket,x)
 condition:null
 action:Write("Confirm purchase"),x=0
-target:S2:投保
-source:S2:投保
+target:S2:初始化
+source:S2:初始化
 event:Cancel()
 condition:x<=30
 action:Write("The end"),x=0
-target:S3:结束
-
-Trace:
-source:S4:初始状态
+target:S3:空闲
+source:S3:空闲
 event:Buy(ticket,x)
 condition:null
 action:Write("Confirm purchase"),x=0
-target:S5:投保
-source:S5:投保
-event:null
-condition:x>30
-action:Write("Time out"),x=0
-target:S6:结束
-
-Trace:
-source:S7:初始状态
+target:S4:维护
+source:S4:维护
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S5:自检
+source:S5:自检
 event:Buy(ticket,x)
 condition:null
 action:Write("Confirm purchase"),x=0
-target:S8:投保
-source:S8:投保
-event:Buy(insurance,passenger,y)
-condition:x<=30,passenger>=10
-action:Write("Successful purchase"),passenger=passenger-10,x=0,y=0
-target:S9:购买
-source:S9:购买
-event:Deposit(company)
-condition:y>60
-action:Write("Time out"),passenger=passenger+10,y=0
-target:S10:结束
+target:S6:维护
+source:S6:维护
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S7:空闲
 
 Trace:
-source:S11:初始状态
+source:S8:开始
 event:Buy(ticket,x)
 condition:null
-action:Write("Confirm Purchase"),x=0
-target:S12:投保
-source:S12:投保
-event:Buy(insurance,passenger,y)
-condition:x<=30,passenger>=10
-action:Write("Successful purchase"),passenger=passenger-10,x=0,y=0
-target:S13:购买
-source:S13:购买
-event:Deposit(company)
-condition:y<=60,company>=1000
-action:Write("Pre-stored successfully"),company=company-1000,y=0
-target:S14:保险生效
-source:S14:保险生效
-event:Judge(z)
-condition:z<=4
-action:Write("The flight was not delayed")
-target:S15:结算
-source:S15:结算
-event:Transfer()
+action:Write("Confirm purchase"),x=0
+target:S9:初始化
+source:S9:初始化
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S10:空闲
+source:S10:空闲
+event:Buy(ticket,x)
 condition:null
-action:Write("The end"),company=company+1100
-target:S16:结束
+action:Write("Confirm purchase"),x=0
+target:S11:准备完成
+source:S11:准备完成
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S12:校准
+source:S12:校准
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S13:准备完成
+source:S13:准备完成
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S14:空闲
 
 Trace:
-source:S17:初始状态
+source:S15:初始化
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S16:空闲
+source:S16:空闲
 event:Buy(ticket,x)
 condition:null
-action:Write("Confirm Purchase"),x=0
-target:S18:投保
-source:S18:投保
-event:Buy(insurance,passenger,y)
-condition:x<=30,passenger>=10
-action:Write("Successful purchase"),passenger=passenger-10,x=0,y=0
-target:S19:购买
-source:S19:购买
-event:Deposit(company)
-condition:y<=60,company>=1000
-action:Write("Pre-stored successfully"),company=company-1000,y=0
-target:S20:保险生效
-source:S20:保险生效
-event:Judge(z)
-condition:z>4
-action:Write("The flight was delayed")
-target:S21:结算
-source:S21:结算
-event:Transfer()
+action:Write("Confirm purchase"),x=0
+target:S17:准备完成
+source:S17:准备完成
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S18:拍照
+source:S18:拍照
+event:Buy(ticket,x)
 condition:null
-action:Write("The end"),company=company+10,passenger=passenger+1000
-target:S22:结束
+action:Write("Confirm purchase"),x=0
+target:S19:准备完成
+source:S19:准备完成
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S20:空闲
+
+Trace:
+source:S21:初始化
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S22:空闲
+source:S22:空闲
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S23:结束
+
+Trace:
+source:S24:维护
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S25:结束
+
+Trace:
+source:S26:自检
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S27:结束
+
+Trace:
+source:S28:准备完成
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S29:结束
+
+Trace:
+source:S30:校准
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S31:结束
+
+Trace:
+source:S32:拍照
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S33:结束
 

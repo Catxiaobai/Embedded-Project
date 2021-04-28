@@ -20,7 +20,9 @@
           <div class="grid-content">
             <div>
               <a style="font-size: 30px; margin-left: 30%">测试用例集</a>
-              <el-card style="margin-top: 30px; height: 500px">{{ test_cases_result }}</el-card>
+              <el-card style="margin-top: 30px; height: 500px">
+                <div style="white-space: pre-line">{{ test_cases_result }}</div>
+              </el-card>
             </div>
           </div></el-col
         >
@@ -471,7 +473,16 @@ export default {
     },
     modeling() {
       console.log('test')
-      this.test_cases_result = ['t1,t2,t3,t4', 't5,t6,t7,t8']
+      // this.test_cases_result = ['t1,t2,t3,t4', 't5,t6,t7,t8']
+      this.$http
+        .get(this.Global_Api + '/api/generation/full_state')
+        .then((response) => {
+          console.log(response.data)
+          this.test_cases_result = response.data.results
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     },
     handleImport(res) {
       if (res.error_code === -1) {

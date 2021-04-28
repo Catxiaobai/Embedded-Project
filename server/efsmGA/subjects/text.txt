@@ -1,0 +1,224 @@
+State:
+	name=START
+State:
+	name=S1
+State:
+	name=S2
+State:
+	name=S3
+State:
+	name=S4
+State:
+	name=S5
+State:
+	name=S6
+State:
+	name=S7
+State:
+	name=S8
+State:
+	name=S9
+State:
+	name=S10
+State:
+	name=S11
+State:
+	name=S12
+State:
+	name=Exit
+Transition:
+	name=T1
+	src=START
+	tgt=S1
+	event=login(ID, password, sb)
+	cond=
+	action=write("Enter Password"); attempts = 0;
+Transition:
+	name=T2
+	src=S1
+	tgt=S1
+	event=
+	cond=
+	action=
+Transition:
+	name=T3
+	src=S1
+	tgt=Exit
+	event=
+	cond=
+	action=
+Transition:
+	name=T4
+	src=S1
+	tgt=S2
+	event=
+	cond=
+	action=
+Transition:
+	name=T5
+	src=S2
+	tgt=S4
+	event=Transfer(d,account,name,bank)
+	cond=d>0
+	action=sb=sb-d;
+Transition:
+	name=T6
+	src=S4
+	tgt=S2
+	event=
+	cond=
+	action=
+Transition:
+	name=T7
+	src=S2
+	tgt=S3
+	event=
+	cond=
+	action=
+Transition:
+	name=T8
+	src=S3
+	tgt=S2
+	event=
+	cond=
+	action=
+Transition:
+	name=T9
+	src=S2
+	tgt=S8
+	event=
+	cond=
+	action=
+Transition:
+	name=T10
+	src=S8
+	tgt=S2
+	event=
+	cond=
+	action=
+Transition:
+	name=T11
+	src=S2
+	tgt=S11
+	event=
+	cond=
+	action=
+Transition:
+	name=T12
+	src=S11
+	tgt=S2
+	event=
+	cond=
+	action=
+Transition:
+	name=T13
+	src=S3
+	tgt=S8
+	event=Transfer(d,account,name,bank)
+	cond=d>0
+	action=sb=sb-d
+Transition:
+	name=T14
+	src=S3
+	tgt=S8
+	event=
+	cond=
+	action=
+Transition:
+	name=T15
+	src=S8
+	tgt=S3
+	event=
+	cond=
+	action=
+Transition:
+	name=T16
+	src=S3
+	tgt=S5
+	event=Press Saving_Account_btn
+	cond=
+	action=Write(sb);
+Transition:
+	name=T17
+	src=S5
+	tgt=S3
+	event=
+	cond=
+	action=
+Transition:
+	name=T18
+	src=S5
+	tgt=S6
+	event=
+	cond=
+	action=
+Transition:
+	name=T19
+	src=S6
+	tgt=S5
+	event=
+	cond=
+	action=
+Transition:
+	name=T20
+	src=S6
+	tgt=S7
+	event=
+	cond=
+	action=
+Transition:
+	name=T21
+	src=S7
+	tgt=S6
+	event=
+	cond=
+	action=
+Transition:
+	name=T22
+	src=S8
+	tgt=S9
+	event=
+	cond=
+	action=
+Transition:
+	name=T23
+	src=S9
+	tgt=S8
+	event=
+	cond=
+	action=
+Transition:
+	name=T24
+	src=S9
+	tgt=S10
+	event=
+	cond=
+	action=
+Transition:
+	name=T25
+	src=S10
+	tgt=S9
+	event=
+	cond=
+	action=
+Transition:
+	name=T26
+	src=S11
+	tgt=S12
+	event=
+	cond=
+	action=
+Transition:
+	name=T27
+	src=S12
+	tgt=S11
+	event=
+	cond=
+	action=
+Transition:
+	name=T28
+	src=S2
+	tgt=Exit
+	event=
+	cond=
+	action=

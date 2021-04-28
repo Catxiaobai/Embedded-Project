@@ -1,0 +1,103 @@
+State:
+	name=START
+State:
+	name=wait
+State:
+	name=closeDoor
+State:
+	name=doorIsClosed
+State:
+	name=openDoor
+State:
+	name=doorIsOpen
+Transition:
+	name=T1
+	src=START
+	tgt=wait
+	event=
+	cond=
+	action=timer=5;
+Transition:
+	name=T2
+	src=wait
+	tgt=wait
+	event=
+	cond=(timer >0)
+	action=timer=timer-1;
+Transition:
+	name=T3
+	src=wait
+	tgt=closeDoor
+	event=
+	cond=(timer==0)
+	action=
+Transition:
+	name=T4
+	src=closeDoor
+	tgt=closeDoor
+	event=
+	cond=
+	action=
+Transition:
+	name=T5
+	src=closeDoor
+	tgt=openDoor
+	event=
+	cond=
+	action=timer=3
+Transition:
+	name=T6
+	src=closeDoor
+	tgt=doorIsClosed
+	event=
+	cond=
+	action=
+Transition:
+	name=T7
+	src=doorIsClosed
+	tgt=doorIsClosed
+	event=
+	cond=
+	action=
+Transition:
+	name=T8
+	src=doorIsClosed
+	tgt=openDoor
+	event=
+	cond=
+	action=timer=10;
+Transition:
+	name=T9
+	src=openDoor
+	tgt=openDoor
+	event=
+	cond=
+	action=
+Transition:
+	name=T10
+	src=openDoor
+	tgt=doorIsOpen
+	event=
+	cond=
+	action=
+Transition:
+	name=T11
+	src=doorIsOpen
+	tgt=doorIsOpen
+	event=
+	cond=(timer>0)
+	action=timer=timer-1;
+Transition:
+	name=T12
+	src=doorIsOpen
+	tgt=closeDoor
+	event=
+	cond=
+	action=
+Transition:
+	name=T13
+	src=doorIsOpen
+	tgt=START
+	event=Restart()
+	cond=
+	action=

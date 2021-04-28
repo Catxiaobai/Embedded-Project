@@ -1,0 +1,645 @@
+State:
+	name=START
+State:
+	name=S1
+State:
+	name=S2
+State:
+	name=S3
+State:
+	name=S4
+State:
+	name=S5
+State:
+	name=S6
+State:
+	name=S7
+State:
+	name=S8
+State:
+	name=S9
+State:
+	name=EXIT
+Transition:
+	name=T1
+	src=START
+	tgt=S1
+	event=start()
+	cond=
+	action=count=0;countquotation=0;c='';k=" ";write("Printtokens2")
+Transition:
+	name=T2
+	src=S1
+	tgt=S2
+	event=an(c)
+	cond=
+	action=
+Transition:
+	name=T3
+	src=S2
+	tgt=S2
+	event=an(c)
+	cond=
+	action=
+Transition:
+	name=T4
+	src=S2
+	tgt=S2
+	event=key(k)
+	cond=(k!="=>")
+	action=
+Transition:
+	name=T5
+	src=S2
+	tgt=EXIT
+	event=eof()
+	cond=
+	action=write("Identifier");write("Exit")
+Transition:
+	name=T6
+	src=S2
+	tgt=S1
+	event=space()
+	cond=
+	action=write("Identifier")
+Transition:
+	name=T7
+	src=S2
+	tgt=S1
+	event=sem()
+	cond=
+	action=write("Identifier")
+Transition:
+	name=T8
+	src=S2
+	tgt=S7
+	event=key(k)
+	cond=(k=="=>")
+	action=count=count+1
+Transition:
+	name=T9
+	src=S1
+	tgt=S1
+	event=space()
+	cond=
+	action=
+Transition:
+	name=T10
+	src=S1
+	tgt=S4
+	event=sem()
+	cond=
+	action=
+Transition:
+	name=T11
+	src=S1
+	tgt=S3
+	event=key(k)
+	cond=(k!="=>")
+	action=count=0
+Transition:
+	name=T12
+	src=S3
+	tgt=S2
+	event=key(k)
+	cond=(k!="=>")
+	action=
+Transition:
+	name=T13
+	src=S3
+	tgt=EXIT
+	event=eof()
+	cond=(count==0)
+	action=write("Keyword");write("Exit")
+Transition:
+	name=T14
+	src=S3
+	tgt=S1
+	event=space()
+	cond=
+	action=write("Keyword")
+Transition:
+	name=T15
+	src=S3
+	tgt=S1
+	event=sem()
+	cond=
+	action=write("Keyword")
+Transition:
+	name=T16
+	src=S1
+	tgt=S9
+	event=error()
+	cond=
+	action=
+Transition:
+	name=T17
+	src=S1
+	tgt=EXIT
+	event=eof()
+	cond=
+	action=write("Exit")
+Transition:
+	name=T18
+	src=S3
+	tgt=S1
+	event=symbol(s)
+	cond=
+	action=write("Keyword");write("Symbol")
+Transition:
+	name=T19
+	src=S1
+	tgt=S1
+	event=symbol(s)
+	cond=
+	action=write("Symbol")
+Transition:
+	name=T20
+	src=S2
+	tgt=S2
+	event=num()
+	cond=
+	action=
+Transition:
+	name=T21
+	src=S4
+	tgt=S4
+	event=an(c)
+	cond=
+	action=
+Transition:
+	name=T22
+	src=S4
+	tgt=S4
+	event=key(k)
+	cond=
+	action=
+Transition:
+	name=T23
+	src=S4
+	tgt=S4
+	event=symbol(s)
+	cond=
+	action=
+Transition:
+	name=T24
+	src=S4
+	tgt=S4
+	event=num()
+	cond=
+	action=
+Transition:
+	name=T25
+	src=S4
+	tgt=S1
+	event=sem()
+	cond=
+	action=
+Transition:
+	name=T26
+	src=S4
+	tgt=S1
+	event=space()
+	cond=
+	action=
+Transition:
+	name=T27
+	src=S1
+	tgt=S6
+	event=num()
+	cond=
+	action=
+Transition:
+	name=T28
+	src=S2
+	tgt=S1
+	event=symbol(s)
+	cond=
+	action=write("Identifier");write("Symbol")
+Transition:
+	name=T29
+	src=S7
+	tgt=S7
+	event=key(k)
+	cond=
+	action=count=count+1
+Transition:
+	name=T30
+	src=S8
+	tgt=S8
+	event=key(k)
+	cond=
+	action=
+Transition:
+	name=T31
+	src=S3
+	tgt=S2
+	event=an(c)
+	cond=
+	action=
+Transition:
+	name=T32
+	src=S4
+	tgt=EXIT
+	event=eof()
+	cond=
+	action=write("Exit")
+Transition:
+	name=T33
+	src=S6
+	tgt=S1
+	event=sem()
+	cond=
+	action=write("Numeric")
+Transition:
+	name=T34
+	src=S6
+	tgt=S1
+	event=space()
+	cond=
+	action=write("Numeric")
+Transition:
+	name=T35
+	src=S6
+	tgt=S1
+	event=symbol(s)
+	cond=
+	action=write("Numeric");write("Symbol")
+Transition:
+	name=T36
+	src=S7
+	tgt=S7
+	event=num()
+	cond=
+	action=
+Transition:
+	name=T37
+	src=S6
+	tgt=S8
+	event=key(k)
+	cond=
+	action=
+Transition:
+	name=T38
+	src=S6
+	tgt=S8
+	event=an(c)
+	cond=
+	action=
+Transition:
+	name=T39
+	src=S6
+	tgt=EXIT
+	event=eof()
+	cond=
+	action=write("Numeric");write("Exit")
+Transition:
+	name=T40
+	src=S3
+	tgt=S7
+	event=key(k)
+	cond=(k=="=>")
+	action=count=count+1
+Transition:
+	name=T41
+	src=S7
+	tgt=S1
+	event=space()
+	cond=(count>1)
+	action=write("Error")
+Transition:
+	name=T42
+	src=S6
+	tgt=S6
+	event=num()
+	cond=
+	action=
+Transition:
+	name=T43
+	src=S8
+	tgt=S8
+	event=an(c)
+	cond=
+	action=
+Transition:
+	name=T44
+	src=S8
+	tgt=S1
+	event=space()
+	cond=
+	action=write("Error")
+Transition:
+	name=T45
+	src=S8
+	tgt=S1
+	event=symbol(s)
+	cond=
+	action=write("Error");write("Symbol")
+Transition:
+	name=T46
+	src=S7
+	tgt=S1
+	event=space()
+	cond=(count==1)
+	action=write("Keyword")
+Transition:
+	name=T47
+	src=S1
+	tgt=S7
+	event=key(k)
+	cond=(k=="=>")
+	action=count=1
+Transition:
+	name=T48
+	src=S2
+	tgt=S9
+	event=error()
+	cond=
+	action=
+Transition:
+	name=T49
+	src=S7
+	tgt=EXIT
+	event=eof()
+	cond=(count==1)
+	action=write("Keyword");write("Exit")
+Transition:
+	name=T50
+	src=S7
+	tgt=EXIT
+	event=eof()
+	cond=(count>0)
+	action=write("Error");write("Exit")
+Transition:
+	name=T51
+	src=S7
+	tgt=S1
+	event=symbol(s)
+	cond=
+	action=write("Symbol");write("Error")
+Transition:
+	name=T52
+	src=S7
+	tgt=S1
+	event=sem()
+	cond=(count>1)
+	action=write("Error")
+Transition:
+	name=T53
+	src=S8
+	tgt=S1
+	event=sem()
+	cond=
+	action=write("Error")
+Transition:
+	name=T54
+	src=S9
+	tgt=S5
+	event=quotation()
+	cond=
+	action=countquotation=countquotation+1
+Transition:
+	name=T55
+	src=S7
+	tgt=S7
+	event=an(c)
+	cond=
+	action=
+Transition:
+	name=T56
+	src=S8
+	tgt=EXIT
+	event=eof()
+	cond=
+	action=write("Error");write("Exit")
+Transition:
+	name=T57
+	src=S9
+	tgt=S9
+	event=key(k)
+	cond=
+	action=
+Transition:
+	name=T58
+	src=S9
+	tgt=S9
+	event=error()
+	cond=
+	action=
+Transition:
+	name=T59
+	src=S9
+	tgt=S9
+	event=num()
+	cond=
+	action=
+Transition:
+	name=T60
+	src=S9
+	tgt=S9
+	event=an(c)
+	cond=
+	action=
+Transition:
+	name=T61
+	src=S9
+	tgt=EXIT
+	event=eof()
+	cond=
+	action=write("Error");write("Exit")
+Transition:
+	name=T62
+	src=S9
+	tgt=S1
+	event=space()
+	cond=
+	action=write("Error")
+Transition:
+	name=T63
+	src=S9
+	tgt=S1
+	event=sem()
+	cond=
+	action=write("Error")
+Transition:
+	name=T64
+	src=S9
+	tgt=S1
+	event=symbol(s)
+	cond=
+	action=write("Error");write("Symbol")
+Transition:
+	name=T65
+	src=S3
+	tgt=S9
+	event=error()
+	cond=
+	action=
+Transition:
+	name=T66
+	src=S3
+	tgt=S2
+	event=num()
+	cond=
+	action=
+Transition:
+	name=T67
+	src=S1
+	tgt=S5
+	event=quotation()
+	cond=
+	action=countquotation=countquotation+1
+Transition:
+	name=T68
+	src=S5
+	tgt=S1
+	event=eol()
+	cond=
+	action=write("Error")
+Transition:
+	name=T69
+	src=S5
+	tgt=S5
+	event=space()
+	cond=
+	action=
+Transition:
+	name=T70
+	src=S5
+	tgt=S5
+	event=symbol(s)
+	cond=
+	action=
+Transition:
+	name=T71
+	src=S5
+	tgt=S5
+	event=an(c)
+	cond=
+	action=
+Transition:
+	name=T72
+	src=S5
+	tgt=S5
+	event=key(k)
+	cond=
+	action=
+Transition:
+	name=T73
+	src=S5
+	tgt=S5
+	event=sem()
+	cond=
+	action=
+Transition:
+	name=T74
+	src=S5
+	tgt=S5
+	event=error()
+	cond=
+	action=
+Transition:
+	name=T75
+	src=S5
+	tgt=EXIT
+	event=eof()
+	cond=
+	action=write("Error");write("Exit")
+Transition:
+	name=T76
+	src=S5
+	tgt=S5
+	event=num()
+	cond=
+	action=
+Transition:
+	name=T77
+	src=S5
+	tgt=S1
+	event=quotation()
+	cond=
+	action=countquotation=0;write("String")
+Transition:
+	name=T78
+	src=S2
+	tgt=S9
+	event=quotation()
+	cond=
+	action=
+Transition:
+	name=T79
+	src=S3
+	tgt=S9
+	event=quotation()
+	cond=
+	action=
+Transition:
+	name=T80
+	src=S6
+	tgt=S9
+	event=quotation()
+	cond=
+	action=
+Transition:
+	name=T81
+	src=S7
+	tgt=S1
+	event=sem()
+	cond=(count==1)
+	action=write("Keyword")
+Transition:
+	name=T82
+	src=S4
+	tgt=S9
+	event=error()
+	cond=
+	action=
+Transition:
+	name=T83
+	src=S7
+	tgt=S1
+	event=space()
+	cond=
+	action=
+Transition:
+	name=T84
+	src=S6
+	tgt=S9
+	event=error()
+	cond=
+	action=
+Transition:
+	name=T85
+	src=S8
+	tgt=S9
+	event=quotation()
+	cond=
+	action=
+Transition:
+	name=T86
+	src=S7
+	tgt=S9
+	event=error()
+	cond=
+	action=
+Transition:
+	name=T87
+	src=S8
+	tgt=S9
+	event=error()
+	cond=
+	action=
+Transition:
+	name=T88
+	src=S4
+	tgt=S5
+	event=quotation()
+	cond=
+	action=countquotation=countquotation+1
+Transition:
+	name=T89
+	src=S8
+	tgt=S6
+	event=num()
+	cond=
+	action=

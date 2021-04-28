@@ -1,0 +1,25 @@
+[FileFormatVersion] 2
+TCSBINLayer.theBrain[1] : from ::Implementation::TCSBINLayer::_inline_type_of_theBrain_0::state_sort::start input ::StartUp
+output from env[1] to TCSBINLayer.theBrain[1] : ::Implementation::CCConfig ()
+TCSBINLayer.theBrain[1] : from ::Implementation::TCSBINLayer::_inline_type_of_theBrain_0::state_sort::wait_config input ::Implementation::CCConfig
+TCSBINLayer.callControl[1] : from ::Implementation::CallControl::state_sort::start input ::StartUp
+output from env[1] to TCSBINLayer.theBrain[1] : ::Implementation::CLConfig ()
+TCSBINLayer.theBrain[1] : from ::Implementation::TCSBINLayer::_inline_type_of_theBrain_0::state_sort::wait_config input ::Implementation::CLConfig
+TCSBINLayer.tcsCl[1] : from ::Implementation::CL::state_sort::start input ::StartUp
+output from env[1] to TCSBINLayer.theBrain[1] : ::Implementation::RoleConfig (true)
+TCSBINLayer.theBrain[1] : from ::Implementation::TCSBINLayer::_inline_type_of_theBrain_0::state_sort::wait_role_config input ::Implementation::RoleConfig
+output from env[1] to TCSBINLayer.theBrain[1] : ::Implementation::GMConfig ()
+TCSBINLayer.theBrain[1] : from ::Implementation::TCSBINLayer::_inline_type_of_theBrain_0::state_sort::wait_gm_config input ::Implementation::GMConfig
+TCSBINLayer.groupMgr[1] : from ::Implementation::GroupManager::state_sort::start input ::StartUp
+TCSBINLayer.callControl[1] : from ::Implementation::CallControl::state_sort::wait_start input ::Implementation::CCStart
+TCSBINLayer.tcsCl[1] : from ::Implementation::CL::state_sort::wait_start input ::Implementation::CLStart
+TCSBINLayer.theBrain[1] : from ::Implementation::TCSBINLayer::_inline_type_of_theBrain_0::state_sort::wait_component_reply input ::Implementation::CCStartAck
+TCSBINLayer.theBrain[1] : from ::Implementation::TCSBINLayer::_inline_type_of_theBrain_0::state_sort::wait_component_reply input ::Implementation::CLStartAck
+TCSBINLayer.groupMgr[1] : from ::Implementation::GroupManager::state_sort::wait_start input ::Implementation::GMStart
+TCSBINLayer.theBrain[1] : from ::Implementation::TCSBINLayer::_inline_type_of_theBrain_0::state_sort::wait_gm_reply input ::Implementation::GMStartAck
+output from env[1] to TCSBINLayer.callControl[1] : ::Implementation::AppCallRequest (( AppCallRequest_t (.CallClass = CLASS_EXTERNAL, CallingPartyNumber = CallingPartyNumber_t (.NType = NumberType_International, NumberingPlanID = NumberingPlan_ISDN, PresentationIndicator = PRES_ALLOWED, ScreeningIndicator = SCR_USER_PASSED, NumberDigits = "18477777777".), CalledPartyNumber = CalledPartyNumber_t (.NType = NumberType_International, NumberingPlanID = NumberingPlan_ISDN, NumberDigits = "01133145454545".).)))
+TCSBINLayer.callControl[1] : from ::Implementation::CallControl::state_sort::null_0 input ::Implementation::AppCallRequest
+TCSBINLayer.callControl[1] : timer ::Implementation::CallControl::TmrT303
+TCSBINLayer.callControl[1] : from ::Implementation::CallControl::state_sort::call_initiated_1 input ::Implementation::CallControl::TmrT303
+output from env[1] to TCSBINLayer.callControl[1] : ::Implementation::SetupIN ([[-]])
+TCSBINLayer.callControl[1] : from ::Implementation::CallControl::state_sort::null_0 input ::Implementation::SetupIN

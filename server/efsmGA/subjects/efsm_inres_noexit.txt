@@ -1,0 +1,133 @@
+State:
+	name=S1
+State:
+	name=S2
+State:
+	name=S3
+State:
+	name=S4
+State:
+	name=S5
+State:
+	name=S6
+State:
+	name=S7
+Transition:
+	name=T1
+	src=S1
+	tgt=S2
+	event=Usendrequest()
+	cond=
+	action=
+Transition:
+	name=T2
+	src=S2
+	tgt=S3
+	event=
+	cond=
+	action=Usendconfrim()
+Transition:
+	name=T3
+	src=S3
+	tgt=S4
+	event=Udatarequest()
+	cond=
+	action=sdu=datarequest.sdu;number=0;conuter=0;no_of_segment=datarequest.n;blockbound=datarequest.b;
+Transition:
+	name=T4
+	src=S4
+	tgt=S6
+	event=Ltokengive()
+	cond=
+	action=Ldt(sduElement=sdu[number]);timer1.start();number=number+1
+Transition:
+	name=T5
+	src=S4
+	tgt=S4
+	event=Lresume()
+	cond=
+	action=
+Transition:
+	name=T6
+	src=S6
+	tgt=S4
+	event=timer1.timeout()
+	cond=
+	action=Ltoken_release();number=number-1;
+Transition:
+	name=T7
+	src=S6
+	tgt=S5
+	event=Lack()
+	cond=number=no_of_segment
+	action=Umoniter_complete(counter);Ltoken_release();Ldisrequest;
+Transition:
+	name=T8
+	src=S6
+	tgt=S6
+	event=Lack()
+	cond=number<no_of_segment
+	action=Ldt(sduElement=sdu[number]);timer1.start();number=number+1;
+Transition:
+	name=T9
+	src=S6
+	tgt=S7
+	event=Lblock()
+	cond=
+	action=counter=counter+1
+Transition:
+	name=T10
+	src=S7
+	tgt=S6
+	event=Lresume()
+	cond=counter<=blockround
+	action=
+Transition:
+	name=T11
+	src=S7
+	tgt=S5
+	event=
+	cond=counter>blockround
+	action=Ltoken_release();Umonitor_incomplete(number);Ldisrequest();
+Transition:
+	name=T12
+	src=S7
+	tgt=S4
+	event=timer1.timeout()
+	cond=counter<=blockbound
+	action=Ltoken_release();number=number-1;
+Transition:
+	name=T13
+	src=S5
+	tgt=S5
+	event=Lresume()
+	cond=
+	action=
+Transition:
+	name=T14
+	src=S5
+	tgt=S5
+	event=Lblock()
+	cond=
+	action=
+Transition:
+	name=T15
+	src=S5
+	tgt=S5
+	event=Lack()
+	cond=
+	action=
+Transition:
+	name=T16
+	src=S5
+	tgt=S1
+	event=Ldisrequest()
+	cond=
+	action=Udisindication()
+Transition:
+	name=T17
+	src=S2
+	tgt=S1
+	event=Ldisrequest()
+	cond=
+	action=Udisindication()

@@ -1,0 +1,202 @@
+State:
+	name=START
+State:
+	name=S1
+State:
+	name=S2
+State:
+	name=S3
+State:
+	name=S4
+State:
+	name=S5
+
+Transition:
+	name=T1
+	src=START
+	tgt=S1
+	event=
+	cond=
+	action=create();k=0;k1=0;t=0;price=0;
+Transition:
+	name=T2
+	src=S1
+	tgt=S2
+	event=coin();
+	cond=((t+25>=price) and (price>0));
+	action=s=0;t=0;
+Transition:
+	name=T3
+	src=S1
+	tgt=S1
+	event=setprice(p)
+	cond=(p>0)
+	action=price=p
+Transition:
+	name=T4
+	src=S1
+	tgt=S1
+	event=coin()
+	cond=(t+25<price)
+	action=t=t+25
+Transition:
+	name=T5
+	src=S1
+	tgt=S1
+	event=insertlargecups( n )
+	cond=(n>0) 
+	action=k=k+n
+Transition:
+	name=T6
+	src=S1
+	tgt=S1
+	event=insertsmallcups( n )
+	cond=(n>0) 
+	action=k1=k1+n
+Transition:
+	name=T8
+	src=S2
+	tgt=S2
+	event=coin()
+	cond=
+	action=
+Transition:
+	name=T9
+	src=S2
+	tgt=S2
+	event=smallcup()
+	cond=
+	action=s=2
+Transition:
+	name=T10
+	src=S2
+	tgt=S2
+	event=largecup()
+	cond=
+	action=s=1
+Transition:
+	name=T11
+	src=S2
+	tgt=S3
+	event=sugar()
+	cond=
+	action=
+Transition:
+	name=T12
+	src=S2
+	tgt=S1
+	event=cancel()
+	cond=
+	action=
+Transition:
+	name=T13
+	src=S2
+	tgt=S1
+	event=tea()
+	cond=((k1>1) and (s==2))
+	action=k1=k1-1
+Transition:
+	name=T14
+	src=S2
+	tgt=S1
+	event=tea()
+	cond=((k>1) and (s==1))
+	action=k=k-1
+Transition:
+	name=T15
+	src=S2
+	tgt=S4
+	event=tea()
+	cond=((k==1) and (s==1))
+	action=k=k-1
+Transition:
+	name=T16
+	src=S2
+	tgt=S5
+	event=tea()
+	cond=((k1==1) and (s==2))
+	action=k1=k1-1
+Transition:
+	name=T17
+	src=S3
+	tgt=S3
+	event=coin()
+	cond=
+	action=
+Transition:
+	name=T18
+	src=S3
+	tgt=S3
+	event=smallcup()
+	cond=
+	action=s=2
+Transition:
+	name=T19
+	src=S3
+	tgt=S3
+	event=largecup()
+	cond=
+	action=s=1
+Transition:
+	name=T20
+	src=S3
+	tgt=S1
+	event=cancel()
+	cond=
+	action=
+Transition:
+	name=T21
+	src=S3
+	tgt=S1
+	event=tea()
+	cond=((k1>1)&&(s==2))
+	action=k1=k1-1
+Transition:
+	name=T22
+	src=S3
+	tgt=S5
+	event=tea()
+	cond=((k1==1)&&(s==2))
+	action=k1=k1-1
+Transition:
+	name=T23
+	src=S3
+	tgt=S4
+	event=tea()
+	cond=((k==1)&&(s==1))
+	action=k=k-1
+Transition:
+	name=T24
+	src=S4
+	tgt=S4
+	event=coin()
+	cond=
+	action=
+Transition:
+	name=T25
+	src=S4
+	tgt=S1
+	event=insertlargecups(n)
+	cond=(n>0) 
+	action=k=n
+Transition:
+	name=T26
+	src=S5
+	tgt=S5
+	event=coin()
+	cond=
+	action=
+Transition:
+	name=T27
+	src=S5
+	tgt=S1
+	event=insertsmallcups(n)
+	cond=(n>0) 
+	action=k1=n
+Transition:
+	name=T28
+	src=S3
+	tgt=S1
+	event=tea()
+	cond=((k>1)&&(s==1))
+	action=k=k-1

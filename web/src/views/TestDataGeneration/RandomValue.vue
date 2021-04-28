@@ -26,27 +26,37 @@ export default {
         {
           id: 1,
           type: '全状态',
-          case: '[t1,t2,t3,t4]',
+          case: '[T1,T2,T14]',
         },
         {
           id: 2,
           type: '全状态',
-          case: '[t5,t6,t7,t8]',
+          case: '[T1,T2,T7,T8,T14]',
         },
         {
           id: 3,
           type: '全状态',
-          case: '[t9,t10,t11,t12]',
+          case: '[T1,T2,T3,T5,T16]',
         },
         {
           id: 4,
-          type: '全迁移',
-          case: '[t6,t5,t3,t4]',
+          type: '全状态',
+          case: '[T1,T2,T7,T11,T12,T17]',
         },
         {
           id: 5,
+          type: '全状态',
+          case: '[T1,T2,T7,T9,T10,T8,T7,T17]',
+        },
+        {
+          id: 6,
           type: '全迁移',
-          case: '[t9,t12,t7,t5]',
+          case: '[T1,T2,T14]',
+        },
+        {
+          id: 7,
+          type: '全迁移',
+          case: '[T1,T2,T7,T8,T14]',
         },
       ],
       spanArr: [], //用于存放每一行记录的合并数

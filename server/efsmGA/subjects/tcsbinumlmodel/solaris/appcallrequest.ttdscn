@@ -1,0 +1,2 @@
+[FileFormatVersion] 2
+output from env[1] to mm_cp.router[1] : ::Implementation::AppCallRequest ( AppCallRequest_t (.CallClass = CLASS_EXTERNAL, CallingPartyNumber = CallingPartyNumber_t (.NType = NumberType_International, NumberingPlanID = NumberingPlan_ISDN, PresentationIndicator = PRES_ALLOWED, ScreeningIndicator = SCR_USER_PASSED, NumberDigits = "18477777777".), CalledPartyNumber = CalledPartyNumber_t (.NType = NumberType_International, NumberingPlanID = NumberingPlan_ISDN, NumberDigits = "01133145454545".).))

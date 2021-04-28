@@ -1,0 +1,171 @@
+State:
+	name=START
+State:
+	name=S1
+State:
+	name=S2
+State:
+	name=S3
+State:
+	name=S4
+State:
+	name=S5
+State:
+	name=S6
+State:
+	name=S7
+State:
+	name=S8
+State:
+	name=S9
+State:
+	name=S10
+State:
+	name=EXIT
+Transition:
+	name=T1
+	src=START
+	tgt=S1
+	event=Prompt_Scan()
+	cond=
+	action=total=0;pin=49;change=0;accept=False;garauntee=False;b=0
+Transition:
+	name=T2
+	src=S1
+	tgt=S1
+	event=scan_Barcode(name, price)
+	cond=
+	action=Add_to_basket(name); total=total+price
+Transition:
+	name=T3
+	src=S1
+	tgt=S2
+	event=Prompt_Payment()
+	cond=
+	action=write(total)
+Transition:
+	name=T4
+	src=S2
+	tgt=S3
+	event=Pay_by_card();
+	cond=
+	action=
+Transition:
+	name=T5
+	src=S3
+	tgt=S4
+	event=Swipe(b);
+	cond=
+	action=Prompt_for_Signature()
+Transition:
+	name=T6
+	src=S4
+	tgt=S5
+	event=Check_signature(accept)
+	cond=
+	action=
+Transition:
+	name=T7
+	src=S5
+	tgt=S2
+	event=Not_Authorised();
+	cond=(accept==False)
+	action=
+Transition:
+	name=T8
+	src=S5
+	tgt=EXIT
+	event=Authorise()
+	cond=(accept==True)
+	action=b=b-total;Write("Receipt=", total)
+Transition:
+	name=T9
+	src=S3
+	tgt=S6
+	event=ChipandPin(p,b)
+	cond=
+	action=attempts=0
+Transition:
+	name=T10
+	src=S6
+	tgt=S6
+	event=PIN(p);
+	cond=(p!=pin) & (attempts<3)
+	action=attempts=attempts+1
+Transition:
+	name=T11
+	src=S6
+	tgt=EXIT
+	event=Authorise();
+	cond=(p==pin) & (attempts<3)
+	action=b=b-total;write("Receipt=",  total)
+Transition:
+	name=T12
+	src=S2
+	tgt=S7
+	event=Pay_by_Cash(amount)
+	cond=
+	action=change=amount-total
+Transition:
+	name=T13
+	src=S7
+	tgt=S2
+	event=Insufficient_Cash()
+	cond=
+	action=
+Transition:
+	name=T14
+	src=S7
+	tgt=EXIT
+	event=Receipt()
+	cond=change==0
+	action=write(change, total)
+Transition:
+	name=T15
+	src=S6
+	tgt=S2
+	event=PIN(p)
+	cond=(p!=pin) & (attempts==3)
+	action=
+Transition:
+	name=T16
+	src=S2
+	tgt=S8
+	event=Pay_by_cheque()
+	cond=
+	action=
+Transition:
+	name=T17
+	src=S8
+	tgt=S9
+	event=SwipeCard(garauntee)
+	cond=
+	action=
+Transition:
+	name=T18
+	src=S9
+	tgt=S2
+	event=Not_Authorised()
+	cond=garauntee==False
+	action=
+Transition:
+	name=T19
+	src=S9
+	tgt=S10
+	event=Check_Signature(accept)
+	cond=garauntee==True
+	action=
+Transition:
+	name=T20
+	src=S10
+	tgt=EXIT
+	event=Authorise()
+	cond=accept==True
+	action=b=b-total;Write("Receipt=", total)
+Transition:
+	name=T21
+	src=S10
+	tgt=S2
+	event=Not_Authorised()
+	cond=accept==False
+	action=

@@ -1,0 +1,192 @@
+1.
+element:
+状态迁移
+name:
+取消交易
+describe:
+The passenger chooses to cancel the purchase of delay insurance within 30 minutes after purchasing the ticket, and the insurance ends;
+content:
+source:S1:开始
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S2:初始化
+source:S2:初始化
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S3:空闲
+source:S3:空闲
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S4:维护
+source:S4:维护
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S5:自检
+source:S5:自检
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S6:维护
+source:S6:维护
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S7:空闲
+2.
+element:
+状态迁移
+name:
+超时未操作
+describe:
+After the passenger purchases the ticket, if he fails to operate within 30 minutes, the insurance ends;
+content:
+source:S8:开始
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S9:初始化
+source:S9:初始化
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S10:空闲
+source:S10:空闲
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S11:准备完成
+source:S11:准备完成
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S12:校准
+source:S12:校准
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S13:准备完成
+source:S13:准备完成
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S14:空闲
+3.
+element:
+状态迁移
+name:
+保险公司倒闭
+describe:
+After the passenger purchases the ticket, he chooses to purchase the delay insurance within 30 minutes. The passenger pre-deposits an insurance premium of 10 yuan and the insurance is successful; the insurance company does not pre-deposit 1,000 yuan in compensation within 60 minutes, and the insurance ends;
+content:
+source:S15:初始化
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S16:空闲
+source:S16:空闲
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S17:准备完成
+source:S17:准备完成
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S18:拍照
+source:S18:拍照
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S19:准备完成
+source:S19:准备完成
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S20:空闲
+4.
+element:
+状态迁移
+name:
+飞机未延误
+describe:
+After the passenger purchases the ticket, he chooses to purchase the delay insurance within 30 minutes. The passenger pre-deposits an insurance premium of 10 yuan, and the insurance is successful; the insurance company pre-deposits a 1,000 yuan compensation within 60 minutes, and the insurance takes effect; the plane is not delayed or the delay time is less than 4h , The settlement is carried out, and the insurance ends;
+content:
+source:S21:初始化
+event:Cancel()
+condition:x<=30
+action:Write("The end"),x=0
+target:S22:空闲
+source:S22:空闲
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S23:结束
+5.
+element:
+状态迁移
+name:
+飞机未延误
+describe:
+After the passenger purchases the ticket, he chooses to purchase the delay insurance within 30 minutes. The passenger pre-deposits an insurance premium of 10 yuan, and the insurance is successful; the insurance company pre-deposits a 1,000 yuan compensation within 60 minutes, and the insurance takes effect; the plane is not delayed or the delay time is less than 4h , The settlement is carried out, and the insurance ends;
+content:
+source:S24:维护
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S25:结束
+6.
+element:
+状态迁移
+name:
+飞机未延误
+describe:
+After the passenger purchases the ticket, he chooses to purchase the delay insurance within 30 minutes. The passenger pre-deposits an insurance premium of 10 yuan, and the insurance is successful; the insurance company pre-deposits a 1,000 yuan compensation within 60 minutes, and the insurance takes effect; the plane is not delayed or the delay time is less than 4h , The settlement is carried out, and the insurance ends;
+content:
+source:S26:自检
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S27:结束
+7.
+element:
+状态迁移
+name:
+飞机未延误
+describe:
+After the passenger purchases the ticket, he chooses to purchase the delay insurance within 30 minutes. The passenger pre-deposits an insurance premium of 10 yuan, and the insurance is successful; the insurance company pre-deposits a 1,000 yuan compensation within 60 minutes, and the insurance takes effect; the plane is not delayed or the delay time is less than 4h , The settlement is carried out, and the insurance ends;
+content:
+source:S28:准备完成
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S29:结束
+8.
+element:
+状态迁移
+name:
+飞机未延误
+describe:
+After the passenger purchases the ticket, he chooses to purchase the delay insurance within 30 minutes. The passenger pre-deposits an insurance premium of 10 yuan, and the insurance is successful; the insurance company pre-deposits a 1,000 yuan compensation within 60 minutes, and the insurance takes effect; the plane is not delayed or the delay time is less than 4h , The settlement is carried out, and the insurance ends;
+content:
+source:S30:校准
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S31:结束
+9.
+element:
+状态迁移
+name:
+飞机未延误
+describe:
+After the passenger purchases the ticket, he chooses to purchase the delay insurance within 30 minutes. The passenger pre-deposits an insurance premium of 10 yuan, and the insurance is successful; the insurance company pre-deposits a 1,000 yuan compensation within 60 minutes, and the insurance takes effect; the plane is not delayed or the delay time is less than 4h , The settlement is carried out, and the insurance ends;
+content:
+source:S32:拍照
+event:Buy(ticket,x)
+condition:null
+action:Write("Confirm purchase"),x=0
+target:S33:结束

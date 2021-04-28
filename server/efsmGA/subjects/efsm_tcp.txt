@@ -1,0 +1,455 @@
+State:
+	name=START
+State:
+	name=CLOSED
+State:
+	name=LISTEN
+State:
+	name=SYN-RECEIVED
+State:
+	name=SYN-SENT
+State:
+	name=ESTABLISHED
+State:
+	name=FIN-WAIT-1
+State:
+	name=FIN-WAIT-2
+State:
+	name=CLOSING
+State:
+	name=TIME-WAIT
+State:
+	name=CLOSE-WAIT
+State:
+	name=LAST-ACK
+
+Transition:
+	name=T57
+	src=START
+	tgt=CLOSED
+	event=
+	cond=
+	action=
+Transition:
+	name=T1
+	src=CLOSED
+	tgt=LISTEN
+	event=OPENCall()
+	cond=ActiveOpen==False
+	action=Create(TCB);
+Transition:
+	name=T2
+	src=CLOSED
+	tgt=SYN-SENT
+	event=OPENCall()
+	cond=(ActiveOpen==False) && (ForeignSocketSpecified==True);
+	action=Create(TCB); SNew(ISS); SEQ=ISS; CTL=SYN; SND_UNA=ISS; SND_NXT=ISS+1;
+Transition:
+	name=T3
+	src=LISTEN
+	tgt=SYN-SENT
+	event=OPENCall()
+	cond=ForeignSocketSpecified==True
+	action=Update(TCB); SNew(ISS); SEQ=ISS; CTL=SYN; SND_UNA=ISS; SND_NXT=ISS+1;
+Transition:
+	name=T4
+	src=LISTEN
+	tgt=SYN-SENT
+	event=SENDCall()
+	cond=ForeignSocketSpecified==True
+	action=update(TCB); SNew(ISS); SEQ=ISS; CTL=SYN; SND_UNA=ISS; SND_NXT=ISS+1;
+Transition:
+	name=T5
+	src=LISTEN
+	tgt=CLOSED
+	event=CLOSECall()
+	cond=QueuedRECEIVE==FALSE
+	action=Delete(TCB)
+Transition:
+	name=T6
+	src=LISTEN
+	tgt=CLOSED
+	event=CLOSECall()
+	cond=QueuedRECEIVE==TRUE
+	action=ConnectionClose(); Delete(TCB)
+Transition:
+	name=T7
+	src=LISTEN
+	tgt=CLOSED
+	event=ABORTCall()
+	cond=QueuedRECEIVE==FALSE
+	action=Delete(TCB)
+Transition:
+	name=T8
+	src=LISTEN
+	tgt=CLOSED
+	event=ABORTCall()
+	cond=QueuedRECEIVE==TRUE
+	action=ConnectionClose(); Delete(TCB)
+Transition:
+	name=T9
+	src=LISTEN
+	tgt=SYN-RECEIVED
+	event=SEGMENTARRIVE()
+	cond=SEG_RST_on==FALSE && SEG_ACK_on==FALSE && SEG_SYN_on=TRUE;
+	action=RCV_NXT=SEG_SEQ+1; IRS=SEQ_SEQ;SNew(ISS); SEQ=ISS; ACK=RCV_NXT; CTL=SYN_ACK; SND_NXT=ISS+1; SND_UNA=ISS;
+Transition:
+	name=T10
+	src=SYN-SENT
+	tgt=CLOSED
+	event=CLOSECall()
+	cond=
+	action=Delete(TCB)
+Transition:
+	name=T11
+	src=SYN-SENT
+	tgt=CLOSED
+	event=ABORTCall()
+	cond=
+	action=Delete(TCB)
+Transition:
+	name=T12
+	src=SYN-SENT
+	tgt=SYN-RECEIVED
+	event=SEGMENTARRIVE()
+	cond=SEG_ACK_on==FALSE && SEG_RST_on==FALSE && SEG_SYN_on=TRUE;
+	action=RCV_NXT=SEG_SEG+1; IRS=SEQ_SEQ; SEQ=ISS; ACK=RCV_NXT; CTL=SYN_ACK;
+Transition:
+	name=T13
+	src=SYN-SENT
+	tgt=SYN-RECEIVED
+	event=SEGMENTARRIVE()
+	cond=SEG_ACK_on==TRUE && (SEQ_ACK<=ISS || SEQ_ACK>SND_NXT)==FALSE && SEG_ACK>=SND_UNA && SEG_ACK<=SND_NXT && SEG_RST_on==FALSE && SND_UNA<=ISS;
+	action=SEQ=ISS; ACK=RCV_NXT; CTL=SYN;
+Transition:
+	name=T14
+	src=SYN-SENT
+	tgt=ESTABLISHED
+	event=SEGMENTARRIVE()
+	cond=SEG_ACK_on==TRUE && (SEQ_ACK<=ISS || SEQ_ACK>SND_NXT)==FALSE && SEG_ACK>=SND_UNA && SEG_ACK<=SND_NXT && SEG_RST_on==FALSE && SND_UNA>ISS;
+	action=SEQ=SND_NXT; ACK=RCV_NXT; CTL=ACK;
+Transition:
+	name=T15
+	src=SYN-SENT
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=SEG_ACK_on==TRUE && (SEQ_ACK<=ISS || SEQ_ACK>SND_NXT)==FALSE && SEG_ACK>=SND_UNA && SEG_ACK<=SND_NXT && SEG_RST_on==TRUE;
+	action=ConnectionReset(); Delete(TCB);
+Transition:
+	name=T16
+	src=SYN-RECEIVED
+	tgt=FIN-WAIT-1
+	event=CLOSECall()
+	cond=newSENDs()==FALSE || QueuedSENDs()==FALSE
+	action=SEQ=SND_NXT; CTL=FIN;
+Transition:
+	name=T17
+	src=SYN-RECEIVED
+	tgt=CLOSED
+	event=ABORTCall()
+	cond=
+	action=Delete(TCB)
+Transition:
+	name=T18
+	src=SYN-RECEIVED
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECK(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TURE && SEG_RST_on==FLASE && SEG_SYN_on=TRUE
+	action=SEQ=SND_NXT; CTL=RST; Delete(TCB);
+
+Transition:
+	name=T19
+	src=SYN-RECEIVED
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECK(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TURE && SEG_RST_on==FALSE && SEG_SYN_on==FALSE && SEG_ACK_on==TRUE && SND_UNA>SEG_ACK || SEG_ACK>SND_NXT && SEG_FIN_on==FALSE;
+	action=SEQ=SND_NXT; CTL=RST; Delete(TCB);
+Transition:
+	name=T20
+	src=SYN-RECEIVED
+	tgt=ESTABLISHED
+	event=SEGMENTARRIVE()
+	cond=CHECK(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TURE && SEG_RST_on==FALSE && SEG_SYN_on==FALSE && SEG_ACK_on==TRUE && SND_UNA<=SEG_ACK && SEG_ACK<=SND_NXT
+	action=
+Transition:
+	name=T21
+	src=SYN-RECEIVED
+	tgt=CLOSE-WAIT
+	event=SEGMENTARRIVE()
+	cond=CHECK(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TURE && SEG_RST_on==FALSE && SEG_SYN_on==FALSE && SEG_ACK_on==TRUE && SND_UNA>SEG_ACK || SEG_ACK>SND_NXT && SEG_FIN_on==TRUE
+	action=FINBITPROCESSING(SND_NXT, RCV_NXT, SEG_SEQ)
+
+Transition:
+	name=T22
+	src=SYN-RECEIVED
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECK(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TURE && SEG_RST_on==TRUE && PRIVIOUSSTATE!=LISTEN
+	action=ConnectionRefused(); RexmtQueue=NULL; Delete(TCB);
+Transition:
+	name=T23
+	src=SYN-RECEIVED
+	tgt=LISTEN
+	event=SEGMENTARRIVE()
+	cond=CHECK(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TURE && SEG_RST_on==TRUE && PRIVIOUSSTATE==LISTEN
+	action=RexmtQueue=NULL;
+Transition:
+	name=T24
+	src=ESTABLISHED
+	tgt=FIN-WAIT-1
+	event=CLOSECall()
+	cond=
+	action=SEQ=SND_NXT; CTL=FIN;
+Transition:
+	name=T25
+	src=ESTABLISHED
+	tgt=CLOSED
+	event=ABORTCall()
+	cond=
+	action=SEQ=SND_NXT; CTL=RST; Delete(TCB);
+Transition:
+	name=T26
+	src=ESTABLISHED
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECK(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TURE && SEG_RST_on==FALSE && SEG_SYN_on=TRUE
+	action=SEQ=SND_NXT; CTL=RST; Delete(TCB);
+
+Transition:
+	name=T27
+	src=ESTABLISHED
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECK(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TURE && SEG_RST_on==TRUE
+	action=ConnectionReset(); Delete(TCB);
+
+Transition:
+	name=T28
+	src=ESTABLISHED
+	tgt=CLOSE-WAIT
+	event=SEGMENTARRIVE()
+	cond=CHECK(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TURE && SEG_RST_on==FALSE && SEG_SYN_on==FALSE && SEG_ACK_on==TRUE && SND_UNA<SEG_ACK && SEG_ACK<SND_NXT && SEG_FIN_on==TRUE
+	action=FINBITPROCESSING(SND_NXT, RCV_NXT, SEG_SEQ)
+
+Transition:
+	name=T29
+	src=ESTABLISHED
+	tgt=CLOSE-WAIT
+	event=SEGMENTARRIVE()
+	cond=CHECK(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TURE && SEG_RST_on==FALSE && SEG_SYN_on==FALSE && SEG_ACK_on==TRUE && (SND_UNA>=SEG_ACK || SEG_ACK>=SND_NX)T && SEG_ACK==SND_UNA && dACK==1 &&  SEG_FIN_on==TRUE
+	action=FINBITPROCESSING(SND_NXT, RCV_NXT, SEG_SEQ)
+
+Transition:
+	name=T30
+	src=ESTABLISHED
+	tgt=CLOSE-WAIT
+	event=SEGMENTARRIVE()
+	cond=CHECK(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TURE && SEG_RST_on==FALSE && SEG_SYN_on==FALSE && SEG_ACK_on==TRUE && (SND_UNA>=SEG_ACK || SEG_ACK>=SND_NX)T && SEG_ACK==SND_UNA && dACK!=2 &&  SEG_FIN_on==TRUE
+	action=FINBITPROCESSING(SND_NXT, RCV_NXT, SEG_SEQ)
+
+Transition:
+	name=T31
+	src=FIN-WAIT-1
+	tgt=CLOSED
+	event=ABORTCall()
+	cond=
+	action=SEQ=SND_NXT; CTL=RST; Delete(TCB);
+
+Transition:
+	name=T32
+	src=FIN-WAIT-1
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECK(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==TRUE
+	action=ConnectionReset(); Delete(TCB);
+
+Transition:
+	name=T33
+	src=FIN-WAIT-1
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECK(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==FALSE && SEG_SYN_on=TRUE 
+	action=SEQ=SND_NXT; CTL=RST; Delete(TCB)
+
+Transition:
+	name=T34
+	src=FIN-WAIT-1
+	tgt=CLOSING
+	event=SEGMENTARRIVE()
+	cond=CHECK(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==FALSE && SEG_SYN_on=FALSE && SEG_ACK_on==TRUE && SEG_ACK_FIN==FALSE && SEG_FIN_on==TRUE
+	action=FINBITPROCESSING(SND_NXT, RCV_NXT, SEG_SEQ)
+
+Transition:
+	name=T35
+	src=FIN-WAIT-1
+	tgt=FIN-WAIT-2
+	event=SEGMENTARRIVE()
+	cond=CHECK(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==FALSE && SEG_SYN_on=FALSE && SEG_ACK_on==TRUE && SEG_ACK_FIN==TRUE && SEG_FIN_on==FALSE
+	action=
+
+Transition:
+	name=T36
+	src=FIN-WAIT-1
+	tgt=TIME-WAIT
+	event=SEGMENTARRIVE()
+	cond=CHECK(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==FALSE && SEG_SYN_on=FALSE && SEG_ACK_on==TRUE && SEG_ACK_FIN==TRUE && SEG_FIN_on==TRUE
+	action=FINBITPROCESSING(SND_NXT, RCV_NXT, SEG_SEQ); TURNOFF(timers); SET(TWtimeout, TIMEWAIT)
+
+Transition:
+	name=T37
+	src=FIN-WAIT-2
+	tgt=CLOSED
+	event=ABORTCall()
+	cond=
+	action=SEQ=SND_NXT; CTL=RST; Delete(TCB);
+
+Transition:
+	name=T38
+	src=FIN-WAIT-2
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECKSEGMENTSEQ(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==TRUE
+	action=ConnectionReset(); Delete(TCB);
+
+Transition:
+	name=T39
+	src=FIN-WAIT-2
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECKSEGMENTSEQ(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==FALSE && SEG_SYN_on=TRUE
+	action=SEQ=SND_NXT; CTL=RST; Delete(TCB);
+
+Transition:
+	name=T40
+	src=FIN-WAIT-2
+	tgt=TIME-WAIT
+	event=SEGMENTARRIVE()
+	cond=CHECKSEGMENTSEQ(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==FALSE && SEG_SYN_on=FALSE && SEG_ACK_on==TRUE && SEG_FIN_on==TRUE
+	action=FINBITPROCESSING(SND_NXT, RCV_NXT, SEG_SEQ); TURNOFF(timers); SET(2MSL, TIMEWAIT)
+
+Transition:
+	name=T41
+	src=CLOSING
+	tgt=CLOSED
+	event=ABORTCall()
+	cond=
+	action=RETURN(OK); Delete(TCB);
+
+Transition:
+	name=T42
+	src=CLOSING
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECKSEGMENTSEQ(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==TRUE
+	action=Delete(TCB);
+
+Transition:
+	name=T43
+	src=CLOSING
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECKSEGMENTSEQ(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==FALSE && SEG_SYN_on==TRUE
+	action=Delete(TCB);
+Transition:
+	name=T44
+	src=CLOSING
+	tgt=TIME-WAIT
+	event=SEGMENTARRIVE()
+	cond=CHECKSEGMENTSEQ(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==FALSE && SEG_SYN_on==FALSE && SEG_ACK_on==TRUE && SND_UNA<SEG_ACK && SND_ACK<SND_NXT && ACKED(FINE)
+	action=TURNOFF(timers); SET(2MSL, TIMEWAIT);
+
+Transition:
+	name=T45
+	src=TIME-WAIT
+	tgt=CLOSED
+	event=ABORTCall()
+	cond=
+	action=RETURN(OK); Delete(TCB);
+
+Transition:
+	name=T46
+	src=TIME-WAIT
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECKSEGMENTSEQ(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==TRUE
+	action=Delete(TCB)
+
+Transition:
+	name=T47
+	src=TIME-WAIT
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECKSEGMENTSEQ(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==FALSE && SEG_SYN_on==TRUE
+	action=SEQ=SND_NXT; CTL=RST; Delete(TCB);
+
+Transition:
+	name=T48
+	src=TIME-WAIT
+	tgt=CLOSED
+	event=TIMEWAITTIEMOUT
+	cond=
+	action=Delete(TCB)
+
+Transition:
+	name=T49
+	src=CLOSE-WAIT
+	tgt=LAST-ACK
+	event=CLOSECall()
+	cond=
+	action=SEQ=SND_NXT; CTL=FIN;
+
+Transition:
+	name=T50
+	src=CLOSE-WAIT
+	tgt=CLOSED
+	event=ABORTCall()
+	cond=
+	action=SEQ=SND_NXT; CTL=RST; Delete(TCB);
+
+Transition:
+	name=T51
+	src=CLOSE-WAIT
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECKSEGMENTSEQ(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==FALSE && SEG_SYN_on==TRUE
+	action=SEQ=SND_NXT; CTL=RST; Delete(TCB);
+
+Transition:
+	name=T52
+	src=CLOSE-WAIT
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECKSEGMENTSEQ(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==TRUE
+	action=ConnectionReset(); Delete(TCB);
+
+Transition:
+	name=T53
+	src=LAST-ACK
+	tgt=CLOSED
+	event=ABORTCall()
+	cond=
+	action=RETURN(OK); Delete(TCB);
+
+Transition:
+	name=T54
+	src=LAST-ACK
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECKSEGMENTSEQ(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==TRUE
+	action=Delete(TCB)
+
+Transition:
+	name=T55
+	src=LAST-ACK
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECKSEGMENTSEQ(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==FALSE && SEG_SYN_on==TRUE
+	action=SEQ=SND_NXT; CTL=RST; Delete(TCB);
+
+Transition:
+	name=T56
+	src=LAST-ACK
+	tgt=CLOSED
+	event=SEGMENTARRIVE()
+	cond=CHECKSEGMENTSEQ(SEG_SEQ, SEG_LEN, RCV_NXT, RCV_WND)==TRUE && SEG_RST_on==FALSE && SEG_SYN_on==FALSE && SEG_ACK_on==TRUE && SND_UNA<SEG_ACK && SND_ACK<SND_NXT && ACKED(FINE)
+	action=Delete(TCB)

@@ -1,0 +1,208 @@
+State:
+	name=START
+State:
+	name=S1
+State:
+	name=S2
+State:
+	name=S3
+State:
+	name=S4
+State:
+	name=S5
+State:
+	name=S6
+State:
+	name=S7
+State:
+	name=S8
+State:
+	name=S9
+State:
+	name=S10
+State:
+	name=S11
+State:
+	name=S12
+Transition:
+	name=T1
+	src=START
+	tgt=S1
+	event=Activate(Rprice,Mprice,Sprice)
+	cond=
+	action=Rprice=0;Mprice=0;Sprice=0;Charge=0;Regular= 1;Medium = 1;Super = 1;carwash=0;True=1;False=0;amount=0;total=0
+Transition:
+	name=T2
+	src=S1
+	tgt=S2
+	event=Cash()
+	cond=
+	action=write("Insert Credit Card")
+Transition:
+	name=T3
+	src=S1
+	tgt=S3
+	event=Credit()
+	cond=
+	action=write("Please Insert Your Credit Card")
+Transition:
+	name=T4
+	src=S3
+	tgt=S1
+	event=Reject()
+	cond=
+	action=write("Invalid Credit Card")
+Transition:
+	name=T5
+	src=S2
+	tgt=S4
+	event=Accept()
+	cond=
+	action=write("Select Fuell Menu")
+Transition:
+	name=T6
+	src=S3
+	tgt=S4
+	event=Accept()
+	cond=
+	action=write("Select Fuell Menu")
+Transition:
+	name=T7
+	src=S4
+	tgt=S5
+	event=Regular()
+	cond=
+	action=Regular=1;write("Pulll Handle to pum Gas");write("Push Start")
+Transition:
+	name=T8
+	src=S4
+	tgt=S5
+	event=Medium()
+	cond=
+	action=Medium=1;write("Pulll Handle to pum Gas");write("Push Start")
+Transition:
+	name=T9
+	src=S4
+	tgt=S5
+	event=Super()
+	cond=
+	action=Super=1;write("Pulll Handle to pum Gas");write("Push Start")
+Transition:
+	name=T10
+	src=S5
+	tgt=S6
+	event=Handle()
+	cond=
+	action=write("Start Filling! push the lever")
+Transition:
+	name=T11
+	src=S6
+	tgt=S7
+	event=Lever()
+	cond=
+	action=write("Pumping in Progress")
+Transition:
+	name=T12
+	src=S7
+	tgt=S7
+	event=Lever()
+	cond=
+	action=write("Pumping in Progress")
+Transition:
+	name=T13
+	src=S7
+	tgt=S8
+	event=Flowoff()
+	cond=
+	action=write("Stop Pumping")
+Transition:
+	name=T14
+	src=S8
+	tgt=S7
+	event=Lever()
+	cond=
+	action=write("Start Pumping")
+Transition:
+	name=T15
+	src=S8
+	tgt=S8
+	event=Handeloff()
+	cond=
+	action=write("Pumping Stop")
+Transition:
+	name=T16
+	src=S8
+	tgt=S9
+	event=Handelon()
+	cond=
+	action=write("Do You Want Car Wash")
+Transition:
+	name=T17
+	src=S9
+	tgt=S10
+	event=Carwash(carwash,amount)
+	cond=(carwash==False)
+	action=Charge=amount*Rprice;total=total+Charge;write(Charge)
+Transition:
+	name=T18
+	src=S9
+	tgt=S10
+	event=Carwash(carwash,amount)
+	cond=(carwash==False)
+	action=Charge= amount*Mprice;total=total+Charge;write(Charge)
+Transition:
+	name=T19
+	src=S9
+	tgt=S10
+	event=Carwash(carwash,amount)
+	cond=(carwash==False)
+	action=Charge= amount*Sprice;total=total+Charge;write(Charge)
+Transition:
+	name=T20
+	src=S9
+	tgt=S10
+	event=Carwash(carwash,amount)
+	cond=((carwash == True) and (Regular==True) and (amount<=40))
+	action=Charge=amount*Rprice+5;total=total+Charge;write(Charge)
+Transition:
+	name=T21
+	src=S9
+	tgt=S10
+	event=Carwash(carwash,amount)
+	cond=((carwash == True) && (Medium==True)&& (amount>40)&& (amount<=60))
+	action=Charge=amount*Mprice+4.75;total=total+Charge;write(Charge)
+Transition:
+	name=T22
+	src=S9
+	tgt=S10
+	event=Carwash(carwash,amount)
+	cond=((carwash == True)&&(Super=True)&& (amount>60)&& (amount<=100))
+	action=Charge= amount*Sprice+5;total=total+Charge;write(Charge)
+Transition:
+	name=T23
+	src=S9
+	tgt=S10
+	event=Carwash(carwash,amount)
+	cond=((carwash == True)&&(Super==True)&& (amount>100))
+	action=Charge=amount*Sprice+5;total=total+Charge;write(Charge)
+Transition:
+	name=T24
+	src=S10
+	tgt=S11
+	event=Receipt()
+	cond=
+	action=write(Charge);write("Thank You for Shoping");write(" Come back again")
+Transition:
+	name=T25
+	src=S11
+	tgt=S12
+	event=Exit()
+	cond=
+	action=write("Thank You for Shoping")
+Transition:
+	name=T26
+	src=S12
+	tgt=START
+	event=Restart()
+	cond=
+	action=

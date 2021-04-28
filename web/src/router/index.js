@@ -106,6 +106,26 @@ const routes = [
         name: 'randomValue',
         component: () => import('@/views/TestDataGeneration/RandomValue'),
       },
+      {
+        path: '/increase',
+        name: 'increase',
+        component: () => import('@/views/TestDataGeneration/Increase'),
+      },
+      {
+        path: '/decrease',
+        name: 'decrease',
+        component: () => import('@/views/TestDataGeneration/Decrease'),
+      },
+      {
+        path: '/mcDcCoverage',
+        name: 'mcDcCoverage',
+        component: () => import('@/views/TestDataGeneration/McDcCoverage'),
+      },
+      {
+        path: '/communicationProtocol',
+        name: 'communicationProtocol',
+        component: () => import('@/views/TestDataGeneration/CommunicationProtocol'),
+      },
     ],
   },
 ]

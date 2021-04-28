@@ -1,0 +1,323 @@
+State:
+	name=START
+State:
+	name=S1
+State:
+	name=S2
+State:
+	name=S3
+State:
+	name=S4
+State:
+	name=S5
+State:
+	name=S6
+State:
+	name=S7
+State:
+	name=S8
+State:
+	name=S9
+State:
+	name=S10
+State:
+	name=S11
+State:
+	name=S12
+State:
+	name=S13
+State:
+	name=S14
+State:
+	name=S15
+State:
+	name=S16
+State:
+	name=S17
+State:
+	name=S18
+State:
+	name=S19
+State:
+	name=S20
+
+Transition:
+	name=T1
+	src=START
+	tgt=S1
+	event=On()
+	cond=
+	action=
+Transition:
+	name=T2
+	src=S1
+	tgt=S1
+	event=Input_Digit(d)
+	cond=
+	action=no=no+d
+Transition:
+	name=T3
+	src=S1
+	tgt=S6
+	event=Receive_Call(no)
+	cond=
+	action=
+Transition:
+	name=T4
+	src=S6
+	tgt=S7
+	event=Accept_Call()
+	cond=
+	action=time=0
+Transition:
+	name=T5
+	src=S7
+	tgt=S7
+	event=Talk()
+	cond=
+	action=time=time+1
+Transition:
+	name=T6
+	src=S7
+	tgt=S8
+	event=Hang_Up()
+	cond=
+	action=Call_Hist_Add(no, time)
+Transition:
+	name=T7
+	src=S8
+	tgt=S1
+	event=Return_to_Home_Screen()
+	cond=
+	action=
+Transition:
+	name=T8
+	src=S1
+	tgt=S7
+	event=Call_No(no)
+	cond=
+	action=time=0
+Transition:
+	name=T9
+	src=S6
+	tgt=S1
+	event=Hang_Up()
+	cond=
+	action=
+Transition:
+	name=T10
+	src=S1
+	tgt=S2
+	event=Send_Text()
+	cond=no!=NULL
+	action=Prompt_Input();receipeints=no
+Transition:
+	name=T11
+	src=S2
+	tgt=S2
+	event=Input_Char(c)
+	cond=
+	action=message=message+c
+Transition:
+	name=T12
+	src=S2
+	tgt=S3
+	event=Add_More_Receipients()
+	cond=
+	action=
+Transition:
+	name=T13
+	src=S3
+	tgt=S3
+	event=Add_Receipient(r)
+	cond=
+	action=receipeints=receipeints+r
+Transition:
+	name=T14
+	src=S3
+	tgt=S4
+	event=Send()
+	cond=no!=NULL
+	action=Send_SM()
+Transition:
+	name=T15
+	src=S2
+	tgt=S4
+	event=Send()
+	cond=no!=NULL
+	action=Send_SM()
+Transition:
+	name=T16
+	src=S4
+	tgt=S5
+	event=Add_to_Send(msg)
+	cond=
+	action=Send_Add(msg)
+Transition:
+	name=T17
+	src=S5
+	tgt=S1
+	event=Done()
+	cond=
+	action=
+Transition:
+	name=T18
+	src=S1
+	tgt=S9
+	event=Main_Menu()
+	cond=
+	action=Display_Options()
+Transition:
+	name=T19
+	src=S9
+	tgt=S2
+	event=Send_Text()
+	cond=
+	action=
+Transition:
+	name=T20
+	src=S9
+	tgt=S10
+	event=Add_Contact()
+	cond=
+	action=Prompt_Input_No()
+Transition:
+	name=T21
+	src=S10
+	tgt=S11
+	event=Prompt_Name()
+	cond=
+	action=name=""
+Transition:
+	name=T22
+	src=S11
+	tgt=S12
+	event=Save_Name()
+	cond=
+	action=Prompt_Address();Display_Done()
+Transition:
+	name=T23
+	src=S12
+	tgt=S13
+	event=Save_Add()
+	cond=
+	action=Prompt_Email();Display_Done()
+Transition:
+	name=T24
+	src=S13
+	tgt=S14
+	event=Save_Email()
+	cond=
+	action=Display_Done()
+Transition:
+	name=T25
+	src=S14
+	tgt=S1
+	event=Done()
+	cond=
+	action=
+Transition:
+	name=T26
+	src=S13
+	tgt=S1
+	event=Done()
+	cond=
+	action=
+Transition:
+	name=T27
+	src=S12
+	tgt=S1
+	event=Done()
+	cond=
+	action=
+Transition:
+	name=T28
+	src=S1
+	tgt=S11
+	event=Add_to_Contacts()
+	cond=
+	action=
+Transition:
+	name=T29
+	src=S10
+	tgt=S10
+	event=Input_No()
+	cond=
+	action=
+Transition:
+	name=T30
+	src=S11
+	tgt=S11
+	event=Input_Char()
+	cond=
+	action=
+Transition:
+	name=T31
+	src=S12
+	tgt=S12
+	event=Input_Char()
+	cond=
+	action=
+Transition:
+	name=T32
+	src=S9
+	tgt=S17
+	event=SMS_Inbox()
+	cond=
+	action=
+Transition:
+	name=T33
+	src=S17
+	tgt=S20
+	event=Choose_Message(id)
+	cond=
+	action=
+Transition:
+	name=T34
+	src=S20
+	tgt=S19
+	event=Display_Message(id)
+	cond=
+	action=
+Transition:
+	name=T35
+	src=S19
+	tgt=S1
+	event=Done()
+	cond=
+	action=
+Transition:
+	name=T36
+	src=S1
+	tgt=S18
+	event=Reveive_Message()
+	cond=
+	action=Prompt_New_Message(id)
+Transition:
+	name=T37
+	src=S18
+	tgt=S19
+	event=Display_Message(id)
+	cond=
+	action=
+Transition:
+	name=T38
+	src=S9
+	tgt=S15
+	event=Call_Contact()
+	cond=
+	action=List_Contact()
+Transition:
+	name=T39
+	src=S15
+	tgt=S16
+	event=Choose_Contact(r)
+	cond=
+	action=no=r
+Transition:
+	name=T40
+	src=S16
+	tgt=S7
+	event=Call(no)
+	cond=
+	action=
