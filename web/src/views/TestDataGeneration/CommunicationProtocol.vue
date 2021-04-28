@@ -1,10 +1,165 @@
 <template>
-  <div></div>
+  <div>
+    <el-card style="height: 650px">
+      <div>
+        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+          <el-form-item label="主题名称">
+            <el-input v-model="formInline.name" placeholder="主题名称"></el-input>
+          </el-form-item>
+          <el-form-item label="日期">
+            <el-input v-model="formInline.date" placeholder="日期"></el-input>
+          </el-form-item>
+          <el-form-item label="版本">
+            <el-input v-model="formInline.version" placeholder="版本"></el-input>
+          </el-form-item>
+        </el-form>
+        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+          <el-form-item label="总线类型">
+            <el-input v-model="formInline.type" placeholder="总线类型"></el-input>
+          </el-form-item>
+          <el-form-item label="通讯方式">
+            <el-input v-model="formInline.method" placeholder="通讯方式"></el-input>
+          </el-form-item>
+          <el-form-item label="刷新周期">
+            <el-input v-model="formInline.period" placeholder="刷新周期"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div>
+        <el-table :data="tableData" border style="width: 100%; height: 100%">
+          <el-table-column prop="id" label="序号" width="80"> </el-table-column>
+          <el-table-column prop="name" label="名称" width="180"> </el-table-column>
+          <el-table-column prop="describe" label="内容">
+            <template slot-scope="scope">
+              <el-select
+                v-model="scope.row.describe"
+                filterable
+                allow-create
+                default-first-option
+                placeholder="请选择文章标签"
+                style="border: 0; margin: 0; padding: 0"
+                @change="frame"
+              >
+                <el-option v-for="item in scope.row.options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+              </el-select>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-divider></el-divider>
+        <span>指令：{{ result }}</span>
+      </div>
+    </el-card>
+  </div>
 </template>
 
 <script>
 export default {
   name: 'CommunicationProtocol',
+  data() {
+    return {
+      tableData: [
+        {
+          id: '1',
+          name: '帧头',
+          describe: '00055',
+          options: [
+            {
+              value: '00056',
+              label: '00056',
+            },
+            {
+              value: '00057',
+              label: '00057',
+            },
+            {
+              value: '00067',
+              label: '00067',
+            },
+            {
+              value: '00068',
+              label: '00068',
+            },
+          ],
+        },
+        {
+          id: '2',
+          name: '消息长度',
+          describe: '4byte',
+        },
+        {
+          id: '3',
+          name: '消息内容',
+          describe: '00001 00123',
+          options: [
+            {
+              value: '00007 02069',
+              label: '00007 02069',
+            },
+            {
+              value: '01196 00190',
+              label: '01196 00190',
+            },
+            {
+              value: '04273 00561',
+              label: '04273 00561',
+            },
+            {
+              value: '06550 05198',
+              label: '06550 05198',
+            },
+          ],
+        },
+        {
+          id: '4',
+          name: '校验和',
+          describe: '02278',
+        },
+        {
+          id: '5',
+          name: '帧尾',
+          describe: '00066',
+          options: [
+            {
+              value: '00056',
+              label: '00056',
+            },
+            {
+              value: '00057',
+              label: '00057',
+            },
+            {
+              value: '00067',
+              label: '00067',
+            },
+            {
+              value: '00068',
+              label: '00068',
+            },
+          ],
+        },
+      ],
+      result: '',
+      formInline: {
+        name: '采集控制',
+        date: '',
+        version: '',
+        type: 'RS232',
+        method: '点对点',
+        period: '事件',
+      },
+    }
+  },
+  methods: {
+    frame() {
+      this.result = ''
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (i !== 1) this.result += this.tableData[i].describe.replace(/\s*/g, '')
+      }
+    },
+  },
+  mounted() {
+    this.frame()
+  },
 }
 </script>
 
