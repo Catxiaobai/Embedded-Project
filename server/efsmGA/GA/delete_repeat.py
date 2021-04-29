@@ -12,10 +12,6 @@ if __name__ == '__main__':  # not execute when import as a module
 
 
 
-
-
-
-
     print len(pop)
     delpop=delete_repeat_chrom(pop)
     print delpop

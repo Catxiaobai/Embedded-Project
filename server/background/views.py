@@ -289,3 +289,14 @@ def dsp_test(request):
     dsp.main.start()
     return JsonResponse({**error_code.CLACK_SUCCESS})
 
+
+# 删除项目
+def delete_item(request):
+    request_json = json.loads(request.body)
+    try:
+        aim_id = request_json['id']
+        Item.objects.get(id=aim_id).delete()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+

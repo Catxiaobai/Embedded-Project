@@ -82,6 +82,11 @@ const routes = [
         component: () => import('@/views/Model/XmiImport'),
       },
       {
+        path: '/itemMember',
+        name: 'itemMember',
+        component: () => import('@/views/ItemMember/ItemMember'),
+      },
+      {
         path: '/boundaryValue',
         name: 'boundaryValue',
         component: () => import('@/views/TestDataGeneration/BoundaryValue'),

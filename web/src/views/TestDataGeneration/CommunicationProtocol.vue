@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card style="height: 650px">
+    <el-card style="height: 653px">
       <div>
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
           <el-form-item label="主题名称">
@@ -46,8 +46,9 @@
           </el-table-column>
         </el-table>
         <el-divider></el-divider>
-        <span>指令：{{ result }}</span>
+        <span>数据：{{ result }}</span>
       </div>
+      <el-button type="primary" style="margin-left: 60%">数据打包</el-button>
     </el-card>
   </div>
 </template>
@@ -152,9 +153,10 @@ export default {
   methods: {
     frame() {
       this.result = ''
-      for (let i = 0; i < this.tableData.length; i++) {
-        if (i !== 1) this.result += this.tableData[i].describe.replace(/\s*/g, '')
-      }
+      this.result += this.tableData[2].describe.replace(/\s*/g, '')
+      // for (let i = 0; i < this.tableData.length; i++) {
+      //   if (i !== 1) this.result += this.tableData[i].describe.replace(/\s*/g, '')
+      // }
     },
   },
   mounted() {

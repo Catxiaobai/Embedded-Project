@@ -38,36 +38,43 @@ export default {
           id: 1,
           type: '全状态',
           case: '[T1,T2,T14]',
+          data: '',
         },
         {
           id: 2,
           type: '全状态',
           case: '[T1,T2,T7,T8,T14]',
+          data: '',
         },
         {
           id: 3,
           type: '全状态',
           case: '[T1,T2,T3,T5,T16]',
+          data: '',
         },
         {
           id: 4,
           type: '全状态',
           case: '[T1,T2,T7,T11,T12,T17]',
+          data: '',
         },
         {
           id: 5,
           type: '全状态',
           case: '[T1,T2,T7,T9,T10,T8,T7,T17]',
+          data: '',
         },
         {
           id: 6,
           type: '全迁移',
           case: '[T1,T2,T14]',
+          data: '',
         },
         {
           id: 7,
           type: '全迁移',
           case: '[T1,T2,T7,T8,T14]',
+          data: '',
         },
       ],
       spanArr: [], //用于存放每一行记录的合并数
@@ -106,6 +113,12 @@ export default {
           colspan: _col,
         }
       }
+    },
+    handleEdit() {
+      console.log(a, b)
+      b.data = 'test'
+      console.log(a, b)
+      this.tableData[0].data = 'test2'
     },
   },
   created() {

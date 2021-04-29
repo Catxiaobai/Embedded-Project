@@ -5,6 +5,16 @@
         <el-table-column prop="id" label="ID" width="80"> </el-table-column>
         <el-table-column prop="type" label="类别" width="180"> </el-table-column>
         <el-table-column prop="case" label="测试路径"> </el-table-column>
+        <el-table-column prop="time" label="定时">
+          <template>
+            <el-input></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column prop="data" label="定量">
+          <template>
+            <el-input></el-input>
+          </template>
+        </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" type="primary">随机值生成</el-button>

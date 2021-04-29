@@ -1,18 +1,18 @@
 <template>
   <div>
     <el-card style="height: 640px">
-      <div class="edit_dev">
-        <el-transfer
-          filterable
-          :filter-method="filterMethod"
-          filter-placeholder="请输入关键字"
-          v-model="value"
-          :data="data"
-          :titles="['测试用例集', '脚本']"
-          style="height: 300px"
-        >
-        </el-transfer>
-      </div>
+      <!--      <div class="edit_dev">-->
+      <!--        <el-transfer-->
+      <!--          filterable-->
+      <!--          :filter-method="filterMethod"-->
+      <!--          filter-placeholder="请输入关键字"-->
+      <!--          v-model="value"-->
+      <!--          :data="data"-->
+      <!--          :titles="['测试用例集', '脚本']"-->
+      <!--          style="height: 300px"-->
+      <!--        >-->
+      <!--        </el-transfer>-->
+      <!--      </div>-->
       <el-button type="primary" style="margin-top: 30px; margin-left: 35%" @click="dsp">DSP输入</el-button>
     </el-card>
   </div>

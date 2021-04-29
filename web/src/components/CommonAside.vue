@@ -9,7 +9,12 @@
           </template>
           <el-menu-item index="/xmiImport"><i class="el-icon-folder"></i>XMI文件导入</el-menu-item>
           <el-submenu index="1-1">
-            <template slot="title"><i class="el-icon-folder"></i>模型构建</template>
+            <template slot="title"><i class="el-icon-folder"></i>静态模型构建</template>
+            <el-menu-item index="/"><i class="el-icon-folder"></i>模型描述</el-menu-item>
+            <el-menu-item index="/"><i class="el-icon-folder"></i>模型查看与编辑</el-menu-item>
+          </el-submenu>
+          <el-submenu index="2-1">
+            <template slot="title"><i class="el-icon-folder"></i>动态模型构建</template>
             <el-menu-item index="/modelInfo"><i class="el-icon-folder"></i>模型描述</el-menu-item>
             <el-menu-item index="/modelEdit"><i class="el-icon-folder"></i>模型查看与编辑</el-menu-item>
           </el-submenu>
@@ -33,7 +38,7 @@
             <el-menu-item index="/mcDcCoverage"><i class="el-icon-folder"></i>MC/DC覆盖</el-menu-item>
             <!--            <el-menu-item index="/interfaceProtocol"><i class="el-icon-folder"></i>接口协议</el-menu-item>-->
           </el-submenu>
-          <el-menu-item index="/communicationProtocol"><i class="el-icon-folder"></i>通信协议</el-menu-item>
+          <!--          <el-menu-item index="/communicationProtocol"><i class="el-icon-folder"></i>通信协议</el-menu-item>-->
         </el-submenu>
         <!--        <el-menu-item index="/script"><i class="el-icon-folder"></i>脚本</el-menu-item>-->
       </el-menu>
