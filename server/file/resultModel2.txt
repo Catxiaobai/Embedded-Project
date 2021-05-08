@@ -19,7 +19,7 @@ State:
 Transition:
 	name=t1
 	src=S2
-	tgt=S5
+	tgt=S3
 	event=Buy(ticket,x)
 	condition=
 	action=Write("Confirm purchase");x=0
@@ -32,60 +32,60 @@ Transition:
 	action=Write("The end");x=0
 Transition:
 	name=t3
-	src=S4
-	tgt=S8
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm purchase");x=0
-Transition:
-	name=t4
-	src=S4
-	tgt=S3
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm purchase");x=0
-Transition:
-	name=t5
-	src=S5
-	tgt=S8
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm purchase");x=0
-Transition:
-	name=t6
-	src=S6
+	src=S2
 	tgt=S5
 	event=Buy(ticket,x)
 	condition=
 	action=Write("Confirm purchase");x=0
 Transition:
-	name=t7
-	src=S7
-	tgt=S8
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm purchase");x=0
-Transition:
-	name=t8
+	name=t4
 	src=S5
 	tgt=S2
 	event=Cancel()
 	condition=(x<=30)
 	action=Write("The end");x=0
 Transition:
-	name=t9
-	src=S2
-	tgt=S3
+	name=t5
+	src=S7
+	tgt=S8
 	event=Buy(ticket,x)
 	condition=
 	action=Write("Confirm purchase");x=0
 Transition:
-	name=t10
+	name=t6
+	src=S7
+	tgt=S5
+	event=Buy(ticket,x)
+	condition=
+	action=Write("Confirm purchase");x=0
+Transition:
+	name=t7
+	src=S6
+	tgt=S8
+	event=Buy(ticket,x)
+	condition=
+	action=Write("Confirm purchase");x=0
+Transition:
+	name=t8
+	src=S3
+	tgt=S2
+	event=Cancel()
+	condition=(x<=30)
+	action=Write("The end");x=0
+Transition:
+	name=t9
 	src=S5
 	tgt=S7
 	event=Cancel()
 	condition=(x<=30)
 	action=Write("The end");x=0
+Transition:
+	name=t10
+	src=S6
+	tgt=S5
+	event=Buy(ticket,x)
+	condition=
+	action=Write("Confirm purchase");x=0
 Transition:
 	name=t11
 	src=START
@@ -96,20 +96,20 @@ Transition:
 Transition:
 	name=t12
 	src=S3
-	tgt=S2
+	tgt=S4
 	event=Cancel()
 	condition=(x<=30)
 	action=Write("The end");x=0
 Transition:
 	name=t13
-	src=S3
+	src=S2
 	tgt=S8
 	event=Buy(ticket,x)
 	condition=
 	action=Write("Confirm purchase");x=0
 Transition:
 	name=t14
-	src=S6
+	src=S5
 	tgt=S8
 	event=Buy(ticket,x)
 	condition=
@@ -117,28 +117,28 @@ Transition:
 Transition:
 	name=t15
 	src=S3
-	tgt=S4
-	event=Cancel()
-	condition=(x<=30)
-	action=Write("The end");x=0
-Transition:
-	name=t16
-	src=S7
-	tgt=S5
+	tgt=S8
 	event=Buy(ticket,x)
 	condition=
 	action=Write("Confirm purchase");x=0
 Transition:
-	name=t17
+	name=t16
 	src=S5
 	tgt=S6
 	event=Cancel()
 	condition=(x<=30)
 	action=Write("The end");x=0
 Transition:
-	name=t18
-	src=S2
+	name=t17
+	src=S4
 	tgt=S8
+	event=Buy(ticket,x)
+	condition=
+	action=Write("Confirm purchase");x=0
+Transition:
+	name=t18
+	src=S4
+	tgt=S3
 	event=Buy(ticket,x)
 	condition=
 	action=Write("Confirm purchase");x=0

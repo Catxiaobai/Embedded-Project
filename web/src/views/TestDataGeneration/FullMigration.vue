@@ -6,7 +6,7 @@
           <div class="grid-content">
             <div id="action" style="display: flex; margin-bottom: 20px">
               <div id="stateAction" style="margin-left: 35%">
-                <el-button type="primary" @click="modeling">全迁移覆盖</el-button>
+                <el-button type="primary" @click="fullMigration">全迁移覆盖</el-button>
               </div>
             </div>
             <div
@@ -14,13 +14,16 @@
               v-show="diagram.state"
               style="background-color: whitesmoke; border: solid 1px black; width: 100%; height: 550px"
               ref="generatePicture"
-            ></div></div
-        ></el-col>
+            ></div>
+          </div>
+        </el-col>
         <el-col :span="8">
           <div class="grid-content">
             <div>
               <a style="font-size: 30px; margin-left: 30%">测试用例集</a>
-              <el-card style="margin-top: 30px; height: 500px">{{ test_cases_result }}</el-card>
+              <el-card style="margin-top: 30px; height: 500px">
+                <div style="white-space: pre-line">{{ test_cases_result }}</div>
+              </el-card>
             </div>
           </div></el-col
         >
@@ -469,9 +472,16 @@ export default {
     getItemInfo() {
       this.itemInfo = this.$store.state.item
     },
-    modeling() {
-      console.log('test')
-      this.test_cases_result = ['t1,t2,t3,t4', 't5,t6,t7,t8']
+    fullMigration() {
+      this.$http
+        .post(this.Global_Api + '/api/generation/full_migration', { item: this.itemInfo })
+        .then((response) => {
+          console.log(response.data)
+          this.test_cases_result = response.data.results
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     },
     handleImport(res) {
       if (res.error_code === -1) {

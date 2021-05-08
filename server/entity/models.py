@@ -87,3 +87,24 @@ class Scenes(models.Model):
     def reset_pk(self):
         self.id = None
 
+
+# 场景
+class Paths(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    type = models.TextField(default='')
+    path = models.TextField(default='')
+
+    def to_dict(self):
+        type2 = ''
+        if self.type == 'state':
+            type2 = '全状态'
+        elif self.type == 'migration':
+            type2 = '全迁移'
+        return {
+            'id': self.id,
+            'type': self.type,
+            'type2': type2,
+            'item': self.item.id,
+            'path': self.path
+        }
+

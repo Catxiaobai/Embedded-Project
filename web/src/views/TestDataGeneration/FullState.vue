@@ -6,7 +6,7 @@
           <div class="grid-content">
             <div id="action" style="display: flex; margin-bottom: 20px">
               <div id="stateAction" style="margin-left: 35%">
-                <el-button type="primary" @click="modeling">全状态覆盖</el-button>
+                <el-button type="primary" @click="fullState">全状态覆盖</el-button>
               </div>
             </div>
             <div
@@ -471,11 +471,10 @@ export default {
     getItemInfo() {
       this.itemInfo = this.$store.state.item
     },
-    modeling() {
-      console.log('test')
+    fullState() {
       // this.test_cases_result = ['t1,t2,t3,t4', 't5,t6,t7,t8']
       this.$http
-        .get(this.Global_Api + '/api/generation/full_state')
+        .post(this.Global_Api + '/api/generation/full_state', { item: this.itemInfo })
         .then((response) => {
           console.log(response.data)
           this.test_cases_result = response.data.results

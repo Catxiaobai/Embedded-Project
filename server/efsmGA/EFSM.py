@@ -11,6 +11,7 @@ from datetime import datetime
 import time
 import copy
 import INTBYTE
+import collections
 intByte=INTBYTE.INTBYTE()
 
 class SLIMException (Exception):
@@ -107,24 +108,23 @@ class GA:
         self.max = 8191  ### Cashier, ATM: max=10000,
         #    self.max=500   ### fulePump
         self.min = 0
-
     def genome(self, vartype, genomeLen=0):
         gens = []
 
         for i in range(genomeLen):
-            boolFlag = 0
             for key, value in vartype.iteritems():
-                if key == i and value == 'Boolean':
-                    gens.append(random.randint(self.min, 1))
-                    boolFlag = 1
-                    break
-            if (boolFlag == 0):
-                gens.append(random.randint(self.min, self.max))
+                if key == i:
+                    if value == 'Boolean':
+                        gens.append(random.randint(self.min, 1))
+                        break
+                    else:
+                        intByte.NAME(value)
+                        gens.append(intByte.IntByte_Random(self.min,self.max))
+                        break
         return gens
 
     def creatStartPopulation(self, varType):
         self.genomes = []
-
         for i in range(self.populationSize):
             self.genomes.append(self.genome(varType, self.genomeLen))
         return self.genomes
@@ -956,12 +956,10 @@ class EFSM(object):
 
         leftValue=eval(leftstr, {},predVarValue)
         if type(leftValue)==type(leftstr):      
-            leftValue=ord(leftValue)            
-       
+            leftValue=ord(leftValue)
         rightValue=eval(rightstr,{}, predVarValue)       
         if type(rightValue)==type(rightstr):            
             rightValue=ord(rightValue)
-     
         distance=abs(leftValue - rightValue)+ K           
         if "!=" in predicate:
             distance=K    
@@ -994,7 +992,133 @@ class EFSM(object):
                             renameAndVarValue[1]=self.pathVarValue[tempsubsub]
                             return renameAndVarValue                            
         return renameAndVarValue                    
-               
+    def bianJie(self, currPath,pathVarType,accuracy,noInput):
+        condVuseValueDict =  collections.OrderedDict()  ## key: variables used in condition
+        actionVdefValueDict = {}  ## key: variables defined in action
+        actionVuseValueDict = {}  ## key: variables used in action
+        approachLevel = len(currPath) - 1
+        i = 0
+        k = 0
+        ans=[]
+        while (i < len(currPath)):
+            currTrans = currPath[i]
+            for vtran, vdict in self.currPathTranVarDict.iteritems():
+                if vtran == currTrans:  # find currTrans transition 's tran discrption
+                    for ftran, fdict in self.currPathTranFuncDict.iteritems():
+                        if ftran == currTrans:  ### find currTrans transition 's tranFuncDict()#
+                            executActFlag = 0
+                            ###########deal with event variables#############################
+                            if self.tranVarDict[currTrans]['eventVdef'] != []:
+                                for var in self.tranVarDict[currTrans]['eventVdef']:
+                                    intByte.NAME(pathVarType[i])
+                                    dt = intByte.IntByte_Random(0, 9999)
+                                    condVuseValueDict[var] = [dt]
+
+                                    k += 1
+                            ###### execute condition#########
+                            if fdict['condFunc'] != ['null'] and fdict['condFunc'] != [''] and fdict['condFunc'] != []:
+                                condStr = fdict['condFunc'][0]
+                                if '&' in condStr:
+                                    for predStr in condStr.split(" & "):
+                                        predStr = predStr.strip()
+                                        predStr = predStr.strip("(")
+                                        predStr = predStr.strip(")")
+                                        subList = []
+                                        predStr = predStr.strip()
+                                        predStr = predStr.strip("(")
+                                        predStr = predStr.strip(")")
+                                        subList = self.identifyLeftRight(predStr)
+                                        rightstr = subList.pop(0)
+                                        leftstr = subList.pop(0)
+                                        leftValue = int(leftstr)
+                                        if len(condVuseValueDict[rightstr])==1:
+                                            condVuseValueDict[rightstr].pop()
+                                        condVuseValueDict[rightstr].append(leftValue-accuracy)
+                                        condVuseValueDict[rightstr].append(leftValue)
+                                        condVuseValueDict[rightstr].append(leftValue+accuracy)
+                                else:
+                                    subList = []
+                                    condStr = condStr.strip()
+                                    condStr = condStr.strip("(")
+                                    condStr = condStr.strip(")")
+                                    subList = self.identifyLeftRight(condStr)
+                                    rightstr = subList.pop(0)
+                                    leftstr = subList.pop(0)
+                                    leftValue = int(leftstr)
+                                    if len(condVuseValueDict[rightstr]) == 1:
+                                        condVuseValueDict[rightstr].pop()
+                                    condVuseValueDict[rightstr].append(leftValue - accuracy)
+                                    condVuseValueDict[rightstr].append(leftValue)
+                                    condVuseValueDict[rightstr].append(leftValue + accuracy)
+                            ans.append(condVuseValueDict.copy())
+                            break
+                    break
+            i+=1
+        return ans
+    def CDMD(self, currPath,pathVarType, noInput):
+        condVuseValueDict =  collections.OrderedDict()  ## key: variables used in condition
+        actionVdefValueDict = {}  ## key: variables defined in action
+        actionVuseValueDict = {}  ## key: variables used in action
+        approachLevel = len(currPath) - 1
+        tranVarValue = collections.OrderedDict()
+        i = 0
+        k = 0
+        ans=[]
+        while (i < len(currPath)):
+            currTrans = currPath[i]
+            for vtran, vdict in self.currPathTranVarDict.iteritems():
+                if vtran == currTrans:  # find currTrans transition 's tran discrption
+                    for ftran, fdict in self.currPathTranFuncDict.iteritems():
+                        if ftran == currTrans:  ### find currTrans transition 's tranFuncDict()#
+                            executActFlag = 0
+                            vis={}
+                            ###########deal with event variables#############################
+                            if self.tranVarDict[currTrans]['eventVdef'] != []:
+                                for var in self.tranVarDict[currTrans]['eventVdef']:
+                                    intByte.NAME(pathVarType[i])
+                                    dt = intByte.IntByte_Random(0,9999)
+                                    condVuseValueDict[var] = dt
+                                    tranVarValue[var]=[dt]
+                                    vis[var]=[False,False,False]
+                            ###### execute condition#########
+                            if fdict['condFunc'] != ['null'] and fdict['condFunc'] != [''] and fdict['condFunc'] != []:
+                                condStr = fdict['condFunc'][0]
+                                if '&' in condStr:
+                                    for predStr in condStr.split(" & "):
+                                        predStr = predStr.strip()
+                                        predStr = predStr.strip("(")
+                                        predStr = predStr.strip(")")
+                                        subList = []
+                                        predStr = predStr.strip()
+                                        predStr = predStr.strip("(")
+                                        predStr = predStr.strip(")")
+                                        subList = self.identifyLeftRight(predStr)
+                                        rightstr = subList.pop(0)
+                                        leftstr = subList.pop(0)
+                                        leftValue = int(leftstr)
+                                        if vis[rightstr][0]==False:
+                                            tranVarValue[rightstr]=[0,0]
+                                            vis[rightstr][0] = True
+                                        if vis[rightstr][1]==False or vis[rightstr][2]==False:
+                                            for j in range(leftValue-20,leftValue+20):
+                                                condVuseValueDict[rightstr]=j
+                                                boolF=eval(condStr, {}, condVuseValueDict)
+                                                if boolF==True:
+                                                    if vis[rightstr][1]==False:
+                                                        tranVarValue[rightstr][0]=j
+                                                        vis[rightstr][1] == True
+                                                else:
+                                                    if vis[rightstr][2]==False:
+                                                        tranVarValue[rightstr][1]=j
+                                                        vis[rightstr][2] == True
+                                                if vis[rightstr][1] == True and vis[rightstr][2] == True:
+                                                    break
+                                ans.append(tranVarValue.copy())
+                            break
+                    break
+            i+=1
+        return ans
+
 
 
 
@@ -1033,7 +1157,6 @@ class EFSM(object):
                             ###### execute condition#########
                             if fdict['condFunc']!=['null'] and fdict['condFunc']!=[''] and fdict['condFunc']!=[]:
                                 condStr = fdict['condFunc'][0]
-                                print condStr,condVuseValueDict
                                 if eval(condStr,{},condVuseValueDict) == False:
                                     if '&' in condStr:
                                         totalFitness=0.0
@@ -1041,10 +1164,9 @@ class EFSM(object):
                                             predStr=predStr.strip()
                                             predStr=predStr.strip("(")
                                             predStr=predStr.strip(")")
-                                            
                                             branchDis=self.branchDistanceCompute(predStr,condVuseValueDict)
                                             totalFitness=totalFitness+branchDis
-                                           # fitness=totalFitness+approachLevel
+                                            #fitness=totalFitness+approachLevel
                                         distance=1-1.001**(-totalFitness)
                                     else:
                                         branchDis=self.branchDistanceCompute(condStr,condVuseValueDict)
@@ -1537,7 +1659,8 @@ def efsmFromFile(inputfile):
         for block in SMBlockList:
            if block[0] == 'State':
                for (key, value) in block[1]:
-                   SM.addState(State(value))
+                   if key=='name':
+                       SM.addState(State(value))
            elif block[0] == 'Transition':
                (name, srcName, tgtName, event, cond, action) = [item[1] for item in block[1]]
                if srcName != '':      #old code is !=''
