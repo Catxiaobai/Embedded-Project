@@ -2,20 +2,20 @@
   <div id="fullState">
     <el-card>
       <el-table :data="tableData" :span-method="objectSpanMethod" border style="width: 100%; margin-top: 20px">
-        <el-table-column prop="page_id" label="ID" width="80"> </el-table-column>
-        <el-table-column prop="type2" label="类别" width="180"> </el-table-column>
-        <el-table-column prop="path" label="测试路径"> </el-table-column>
-        <el-table-column prop="time" label="定时">
+        <el-table-column prop="page_id" label="ID" width="40"> </el-table-column>
+        <el-table-column prop="type2" label="类别" width="80"> </el-table-column>
+        <el-table-column prop="path" label="测试路径" width="280"> </el-table-column>
+        <el-table-column prop="time" label="定时" width="100">
           <template>
             <el-input></el-input>
           </template>
         </el-table-column>
-        <el-table-column prop="data" label="定量">
+        <el-table-column prop="data" label="定量" width="100">
           <template>
             <el-input></el-input>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="114">
           <template slot-scope="scope">
             <el-button size="mini" @click="generateRandom(scope.$index, scope.row)" type="primary">随机值生成</el-button>
           </template>
@@ -26,7 +26,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="page"
-        :page-sizes="[1, 5, 10]"
+        :page-sizes="[1, 5, 10, 1000]"
         :page-size="limit"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -51,9 +51,9 @@ export default {
     }
   },
   methods: {
-    getSpanArr() {
+    getSpanArr(data) {
       // data就是我们从后台拿到的数据
-      var data = this.tableData
+      this.spanArr = []
       for (var i = 0; i < data.length; i++) {
         if (i === 0) {
           this.spanArr.push(1)
@@ -106,7 +106,6 @@ export default {
           }
 
           this.getList()
-          this.getSpanArr()
         })
         .catch(function (error) {
           console.log(error)
@@ -120,6 +119,7 @@ export default {
       this.adjustId(list)
       this.tableData = list.filter((item, index) => index < this.page * this.limit && index >= this.limit * (this.page - 1))
       this.total = list.length
+      this.getSpanArr(this.tableData)
     },
     adjustId(list) {
       for (let i = 0; i < list.length; i++) {

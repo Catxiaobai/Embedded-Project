@@ -16,7 +16,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="page"
-        :page-sizes="[1, 5, 10]"
+        :page-sizes="[1, 5, 10, 1000]"
         :page-size="limit"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -45,9 +45,9 @@ export default {
     getItemInfo() {
       this.itemInfo = this.$store.state.item
     },
-    getSpanArr() {
+    getSpanArr(data) {
       // data就是我们从后台拿到的数据
-      var data = this.tableData
+      this.spanArr = []
       for (var i = 0; i < data.length; i++) {
         if (i === 0) {
           this.spanArr.push(1)
@@ -99,7 +99,6 @@ export default {
             this.options.push({ value: this.data[i].name, label: this.data[i].name })
           }
           this.getList()
-          this.getSpanArr()
         })
         .catch(function (error) {
           console.log(error)
@@ -113,6 +112,7 @@ export default {
       this.adjustId(list)
       this.tableData = list.filter((item, index) => index < this.page * this.limit && index >= this.limit * (this.page - 1))
       this.total = list.length
+      this.getSpanArr(this.tableData)
     },
     adjustId(list) {
       for (let i = 0; i < list.length; i++) {

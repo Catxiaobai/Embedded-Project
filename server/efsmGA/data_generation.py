@@ -1,31 +1,23 @@
 # encoding:utf-8
+import json
 import random
+import time
+from collections import OrderedDict
+
 import EFSM
 import obtain_efsm_info
 import protocol
-import time
-import INTBYTE
-path = './efsmGA/files/'
-fo=open(path+'input.txt','r')
-lines=fo.readlines()
-fo.close()
-setting={}
-for line in lines:
-    line=line.strip()
-    if '"' not in line:
-        continue
-    line=line.replace('"','')
-    index=line.find(':')
-    key=line[:index]
-    value=line[index+1:]
-    setting[key]=value
+
 modelfiledir = './efsmGA/files/'
-#模型
-modelfile = "EFSM_ATM.txt"
+filepath = './efsmGA/files/'
+# 模型
+modelfile = "efsm_atm.txt"
 inputfile = modelfiledir + modelfile
-SM = EFSM.efsmFromFile(inputfile)    #对efsm类实例化
+SM = EFSM.efsmFromFile(inputfile)  # 对efsm类实例化
 SM.allPathNum()
-#获得路径上的变量名
+
+
+# 获得路径上的变量名
 def obtain_var_from_path(SM, currPathT):
     SM.repeatTranVarDict = {}
     SM.repeatTranFuncDict = {}  ####store repeat transition
@@ -41,194 +33,215 @@ def obtain_var_from_path(SM, currPathT):
     varname = SM.originalDef
     return varname
 
-#根据变量名获得变量的类型
+
+# 根据变量名获得变量的类型
 def obtain_vartype_from_varname(SM, varnme):
-    pathVarType={}
+    pathVarType = {}
     for i in range(len(varnme)):
-        pathVarType[i]=('INT16')
+        pathVarType[i] = ('INT16')
     return pathVarType
 
-def random_int(l,r):
-    return  random.randint( l, r)
 
-def Initial_data(SM,currPath, varname, pathVarType, populationSize):#根据GA进行测试数据生成
-    noInputVar=0
+def random_int(l, r):
+    return random.randint(l, r)
+
+
+def Initial_data(SM, currPath, varname, pathVarType, populationSize):  # 根据GA进行测试数据生成
+    noInputVar = 0
     gaSample = EFSM.GA(populationSize, len(SM.pathDefVar))
     population = gaSample.creatStartPopulation(pathVarType)  ###initiate Population according to input variable number
     j = 1
     data = []
     while 1:
-        oldInvidualFit = SM.obtainIndividualFitness(currPath, population, populationSize, noInputVar,varname)
+        oldInvidualFit = SM.obtainIndividualFitness(currPath, population, populationSize, noInputVar, varname)
         if oldInvidualFit[0] == 0:
             data.extend(SM.pathVarValue)
             break  # break for j loop
         j += 1
         population = gaSample.GeneticAlgorithm(oldInvidualFit, population, pathVarType)
-        invidualFitness = SM.obtainIndividualFitness(currPath, population, populationSize, noInputVar,varname)
+        invidualFitness = SM.obtainIndividualFitness(currPath, population, populationSize, noInputVar, varname)
         if invidualFitness[0] == 0:
             data.extend(SM.pathVarValue)
             break  # break for j loop
         population = gaSample.basicSurvive(oldInvidualFit, invidualFitness, population)
-        if  j >= 20000:
-            print 'this path is not feasible'
+        if j >= 20000:
+            print
+            'this path is not feasible'
             return []
     return data
-def dfs(data,tmp,k):
-    if k==len(data):
-        fo = open(path+'output.txt', 'a')
+
+
+def dfs(data, tmp, k):
+    if k == len(data):
+        fo = open(filepath + 'output.txt', 'a')
         for i in range(len(tmp)):
             fo.write(tmp[i])
-            if i <len(tmp)-1:
+            if i < len(tmp) - 1:
                 fo.write(' ')
         fo.write("\n")
         fo.close()
         return None
-    for i in [0,1]:
-        if i==0:
-            tmp.append(('\"F\":\"')+str(data[k]['ctr'][i])+'"')
+    for i in [0, 1]:
+        if i == 0:
+            tmp.append(('\"F\":\"') + str(data[k]['ctr'][i]) + '"')
         else:
             tmp.append(('\"T\":\"') + str(data[k]['ctr'][i]) + '"')
-        dfs(data,tmp,k+1)
+        dfs(data, tmp, k + 1)
         tmp.pop()
 
-def testProcee(SM, currPathT,flag,num=0,accuracy=1,TIME=0):
+
+def testProcee(SM, currPathT, flag, num=0, accuracy=1, TIME=0):
     coverage = 0
-    populationSize=20
-    varname = obtain_var_from_path(SM, currPathT)  #获得序列上的变量名
-    pathVarType=obtain_vartype_from_varname(SM, varname)#获得变量类型
-    if len(SM.originalDef) ==0:
-        print"The path has no variables"
-        data = []
+    populationSize = 20
+    varname = obtain_var_from_path(SM, currPathT)  # 获得序列上的变量名
+    pathVarType = obtain_vartype_from_varname(SM, varname)  # 获得变量类型
+    data = []
+
+    if len(SM.originalDef) == 0:
+        print
+        "The path has no variables"
         SM.executePath(currPathT, 0)
-    elif flag==1:  ##There exist input variables on the path
-        vecdata = []
-        if num>0:
+    elif flag == 1:  ##There exist input variables on the path
+        if num > 0:
             while (num > 0):
-                vecdata.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize))  # 测试数据生成
+                data.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize))  # 测试数据生成
                 num -= 1
-        elif TIME>0:
+        elif TIME > 0:
             startTime = time.time()
-            while(time.time()-startTime<TIME):
-                vecdata.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize))  # 测试数据生成
-        #vecdata[0].read()
-        fo = open(path+'output.txt', 'w')
-        fo.write('{\n\"name\":\"random test data generation\"')
-        data=vecdata
-        for i in range(len(data)):
-            strf='\n"'+"测试用例"+str(i+1)+'"'
-            fo.write(strf)
-            k = 0
-            for currTrans in currPathT:
-                strf='\n'+currTrans
-                fo.write(strf)
-                for ftran, fdict in SM.currPathTranFuncDict.iteritems():
-                    if ftran == currTrans:
-                        ###########deal with event variables#############################
-                        if SM.tranVarDict[currTrans]['eventVdef'] != []:
-                            for var in SM.tranVarDict[currTrans]['eventVdef']:
-                                strf=' "'+ str(var) +'_var'+currTrans[1:]+'"'+':'+'"'+str(data[i][k])+'"'
-                                fo.write(strf)
-                                k += 1
-        fo.write('\n}')
-        fo.close()
-    elif flag==2 :
-        data=SM.bianJie(currPathT,pathVarType,accuracy,1)
-        fo = open(path+'output.txt', 'w')
-        fo.write('{\n\"name\":\"边界值 test data generation\"')
-        k = 0
-        for currTrans in currPathT:
-            strf = '\n' + currTrans
-            fo.write(strf)
-            for ftran, fdict in SM.currPathTranFuncDict.iteritems():
-                if ftran == currTrans:
-                    ###########deal with event variables#############################
-                    if SM.tranVarDict[currTrans]['eventVdef'] != []:
-                        for var in SM.tranVarDict[currTrans]['eventVdef']:
-                            strf = ' "' + str(var) + '_var' + currTrans[1:] + '"' + ':' + '"' + str(data[k][var]) + '"'
-                            fo.write(strf)
-                        k += 1
-        fo.write('\n}')
-        fo.close()
-    elif flag==3:#逐渐增加
+            while (time.time() - startTime < TIME):
+                data.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize))  # 测试数据生成
+    elif flag == 2:
+        data = SM.bianJie(currPathT, pathVarType, accuracy, 1)
+    elif flag == 3:  # 逐渐增加
         ans = []
-        vecdata = []
-        while(num>0):
-            vecdata.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize))  # 测试数据生成
-            num-=1
-        for j in range(len(vecdata[0])):
-            ans.append([])
-            for i in range(len(vecdata)):
-                ans[j].append(vecdata[i][j])
-            ans[j].sort()
-        data=ans
-        k = 0
-        fo = open(path+'output.txt', 'w')
-        fo.write('{\n\"name\":\"increase test data generation\"')
-        for currTrans in currPathT:
-            strf = '\n' + currTrans
-            fo.write(strf)
-            for ftran, fdict in SM.currPathTranFuncDict.iteritems():
-                if ftran == currTrans:
-                    ###########deal with event variables#############################
-                    if SM.tranVarDict[currTrans]['eventVdef'] != []:
-                        for var in SM.tranVarDict[currTrans]['eventVdef']:
-                            strf = ' "' + str(var) + '_var' + currTrans[1:] + '"' + ':' + '"' + str(data[k]) + '"'
-                            fo.write(strf)
-                            k += 1
-        fo.write('\n}')
-        fo.close()
+        while (num > 0):
+            ans.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize))  # 测试数据生成
+            num -= 1
+        for j in range(len(ans[0])):
+            data.append([])
+            for i in range(len(ans)):
+                data[j].append(ans[i][j])
+            data[j].sort()
     elif flag == 4:  # 逐渐减少
         ans = []
-        vecdata = []
         while (num > 0):
-            vecdata.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize))  # 测试数据生成
+            ans.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize))  # 测试数据生成
             num -= 1
-        for j in range(len(vecdata[0])):
-            ans.append([])
-            for i in range(len(vecdata)):
-                ans[j].append(vecdata[i][j])
-            ans[j].sort(reverse=True)
-        data = ans
-        k = 0
-        fo = open(path+'output.txt', 'w')
-        fo.write('{\n\"name\":\"descending test data generation\"')
-        for currTrans in currPathT:
-            strf = '\n' + currTrans
-            fo.write(strf)
-            for ftran, fdict in SM.currPathTranFuncDict.iteritems():
-                if ftran == currTrans:
-                    ###########deal with event variables#############################
-                    if SM.tranVarDict[currTrans]['eventVdef'] != []:
-                        for var in SM.tranVarDict[currTrans]['eventVdef']:
-                            strf = ' "' + str(var) + '_var' + currTrans[1:] + '"' + ':' + '"' + str(data[k]) + '"'
-                            fo.write(strf)
-                            k += 1
-        fo.write('\n}')
-        fo.close()
-    elif flag == 5:  #CDMD
-        tmp=[]
-        data = SM.CDMD(currPathT,pathVarType, 1)
-        fo = open(path+'output.txt', 'w')
-        fo.write('{\n\"name\":\"MC/DC test data generation\"\n')
-        for i in currPathT:
-            fo.write('   \"'+i+'\"   ')
-        fo.write("\n")
-        fo.close()
-        dfs(data,tmp,0)
-        fo = open(path+'output.txt', 'a')
-        fo.write("}")
-        fo.close()
-    return varname,data
+        for j in range(len(ans[0])):
+            data.append([])
+            for i in range(len(ans)):
+                data[j].append(ans[i][j])
+            data[j].sort(reverse=True)
+    elif flag == 5:  # CDMD
+        data = SM.CDMD(currPathT, pathVarType, 1)
+    return data
+
+
+def tran_var_macth(currPathT):
+    tran_var = {}
+    for currTrans in currPathT:
+        tran_var[currTrans] = []
+        for ftran, fdict in SM.currPathTranFuncDict.iteritems():
+            if ftran == currTrans:
+                ###########deal with event variables#############################
+                if SM.tranVarDict[currTrans]['eventVdef'] != []:
+                    for var in SM.tranVarDict[currTrans]['eventVdef']:
+                        tran_var[currTrans].append(var)
+    return tran_var
+
+
+def dfsF2(keys, data, tmp, k, ans, protocol1):
+    if k == len(keys):
+        protocol1.set(tmp)
+        ans.append(protocol1.read())
+        return None
+    for i in data[keys[k]]:
+        if i < 0:
+            continue
+        tmp.append(i)
+        dfsF2(keys, data, tmp, k + 1, ans, protocol1)
+        tmp.pop()
+
+
+def dfsF3(keys, data, tmp, k, ans, protocol1):
+    if k == len(keys):
+        protocol1.set(tmp)
+        ans.append(protocol1.read())
+        return None
+    for i in data[k]:
+        if i < 0:
+            continue
+        tmp.append(i)
+        dfsF3(keys, data, tmp, k + 1, ans, protocol1)
+        tmp.pop()
+
+
+def cover_data(path, data, flag):
+    protocol1 = protocol.protocol()
+    tran_var = tran_var_macth(path)
+    test = OrderedDict()
+    if flag == 1:
+        test['name'] = "随机测试"
+        for i in range(len(data)):
+            k = 0
+            case = OrderedDict()
+            name = "case" + str(i + 1)
+            for tran in path:
+                tmp = []
+                for j in tran_var[tran]:
+                    tmp.append(data[i][k])
+                    k += 1
+                protocol1.set(tmp)
+                case[tran] = protocol1.read()
+            test[name] = case
+    elif flag == 2:
+        test['name'] = "边界值测试"
+        for i in range(len(path)):
+            tmp = []
+            ans = []
+            dfsF2(tran_var[path[i]], data[i], tmp, 0, ans, protocol1)
+            test[path[i]] = ans
+    elif flag == 3 or flag == 4:
+        if flag == 3:
+            test['name'] = "递增测试"
+        else:
+            test['name'] = "递减测试"
+        l = 0
+        r = 0
+        for tran in path:
+            tmp = []
+            ans = []
+            r += len(tran_var[tran])
+            dfsF3(tran_var[tran], data[l:r], tmp, 0, ans, protocol1)
+            l = r
+            test[tran] = ans
+    elif flag == 5:
+        test['name'] = "MC/DC测试"
+        for i in range(len(path)):
+            tmp = []
+            ans = []
+            dfsF2(tran_var[path[i]], data[i], tmp, 0, ans, protocol1)
+            test[path[i]] = ans
+    with open(filepath + 'output.txt', 'w') as f:
+        json.dump(test, f, indent=4, ensure_ascii=False)
+        print("数据写入json文件完成...")
+
 
 if __name__ == '__main__':
-    flag =int(setting['type'])
+    fo = open(filepath + 'input.txt', 'r')
+    setting = json.load(fo)
+    fo.close()
+    flag = int(setting['type'])
     traninfolist = obtain_efsm_info.obtain_tran_info()  # 迁移信息全部在这
-    pathstr=setting['path']
+    pathstr = setting['path']
     pathstr = pathstr.lstrip('[')
     pathstr = pathstr.rstrip(']')
     path = pathstr.split(',')
 
-    num=int(setting['amount'])
-    TIME=int(setting['time'])
-    precision = float(setting['precision'])
-    vername,data = testProcee(SM, path,flag,num,precision,TIME)
+    num = int(setting['amount'])
+    TIME = int(setting['time'])
+    precision = int(setting['precision'])
+    data = testProcee(SM, path, flag, num, precision, TIME)
+    # print
+    # data
+    cover_data(path, data, flag)

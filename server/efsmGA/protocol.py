@@ -1,110 +1,113 @@
-class protocol(object):
+class CRC():
+    def __init__(self, info, crc_n=32):
+        self.info = info
+        loc=[]
+        if crc_n == 8:
+            loc = [8, 2, 1, 0]
+        elif crc_n == 32:
+            loc = [32, 26, 23, 22, 16, 12, 11, 10, 8, 7, 5, 2, 1, 0]
+        elif crc_n == 16:
+            loc = [16, 15, 2, 0]
+        elif crc_n == 4:
+            loc = [4, 3, 0]
+        p = [0 for i in range(crc_n + 1)]
+        for i in loc:
+            p[i] = 1
+        p = p[::-1]
+        info = self.info[:]
+        times = len(info)
+        n = crc_n + 1
+        for i in range(crc_n):
+            info.append(0)
+        q = []
+        for i in range(times):
+            if info[i] == 1:
+                q.append(1)
+                for j in range(n):
+                    info[j + i] = info[j + i] ^ p[j]
+            else:
+                q.append(0)
+        check_code = info[-crc_n::]
+        code = self.info[:]
+        for i in check_code:
+            code.append(i)
+        self.crc_n = crc_n
+        self.p = p
+        self.q = q
+        self.check_code = check_code
+        self.code = code
+class protocol:
     def __init__(self):
-        self.frame_head=1431655765
-        self.message_length=0
-        self.message_ID=513
-        self.message_send_time=0
-        self.message_send_sequence_number=1
-        self.start_or_stop=1
-        self.reservations1=0
-        self.reservations2=0
-        self.type_of_data_collected=1
-        self.reservations3=0
-        self.frame_end=2863311530
-
+        self.fhead="00055"
+        self.message = []
+        self.crc16=""
+        self.fend="00066"
+    def set(self,message):
+        self.message = []
+        for i in message:
+            j=str(i)
+            num=5-len(j)
+            for k in range(num):
+                j='0'+j
+            self.message.append(j)
+        self.crc16 = self.getCrc()
+    def getCrc(self,crcnum=16):
+        binstr=str(bin(int(self.fhead)))[2:]
+        for i in self.message:
+            binstr=binstr+str(bin(int(i)))[2:]
+        m = []
+        for i in range(len(binstr)):
+            m.append(int(binstr[i]))
+        crc =CRC(m,crcnum)
+        jyh=crc.check_code
+        jyh1 = ''
+        for i in jyh:
+            jyh1 += str(i)
+        jyh1 = str(int(jyh1, 2))
+        if len(jyh1) < 5:
+            for i in range(5 - len(jyh1)):
+                jyh1 = '0' + jyh1
+        return jyh1
     def read(self):
-        print "This Message:",self.frame_head,",",self.message_length,",",self.message_ID,",",self.message_send_time,",",self.message_send_sequence_number,",",self.start_or_stop,",",self.reservations1,",",self.reservations2,",",self.type_of_data_collected,",",self.reservations3,",",self.frame_end
-        return self.frame_head,self.message_length,self.message_ID,self.message_send_time,self.message_send_sequence_number,self.start_or_stop,self.reservations1,self.reservations2,self.type_of_data_collected,self.reservations3,self.frame_end
-
-    def check(self):
-        Error=""
-        flag=True
-        if self.frame_head!=1431655765 or self.frame_head<0 or self.frame_head> 2**32-1:
-            Error="frame_head"
-            flag=False
-        if self.message_length<0 or self.message_length> 2**32-1:
-            Error = "message_length"
-            flag = False
-        if self.message_ID != 513 or self.message_ID<0 or self.message_ID> 2**16-1:
-            Error = "message_ID"
-            flag = False
-        if self.message_send_time<0 or self.message_send_time> 2**64-1:
-            Error = "message_send_time"
-            flag = False
-        if self.message_send_sequence_number<0 or self.message_send_sequence_number>2**16-1:
-            Error = "message_send_sequence_number"
-            flag = False
-        if self.start_or_stop not in [0,1] or self.start_or_stop < 0 or self.start_or_stop > 2**8-1:
-            Error = "start_or_stop"
-            flag = False
-        if self.reservations1< 0 or self.reservations1 > 2**16-1:
-            Error = "reservations1"
-            flag = False
-        if self.reservations2 < 0 or self.reservations2 > 2**16-1:
-            Error = "reservations2"
-            flag = False
-        if self.type_of_data_collected not in [1,2,3,4] or self.type_of_data_collected < 0 or self.type_of_data_collected > 2**8-1:
-            Error = "type_of_data_collected"
-            flag = False
-        if self.reservations3 < 0 or self.reservations3  > 2**16-1:
-            Error = "reservations3"
-            flag = False
-        if self.frame_end != 2863311530 or self.frame_end<0 or self.frame_end> 2**32-1:
-            Error = "frame_end"
-            flag = False
-        return flag,Error
-    def set_message_length(self,temp):
-        self.message_length = temp
-
-    def set_message_ID(self,temp):
-        self.message_ID = temp
-
-    def set_message_send_time(self,temp):
-        self.message_send_time = temp
-
-    def set_message_send_sequence_number(self,temp):
-        self.message_send_sequence_number = temp
-
-    def set_start_or_stop(self,temp):
-        self.start_or_stop = temp
-
-    def set_reservations1(self,temp):
-        self.reservations1 = temp
-
-    def set_reservations2(self,temp):
-        self.reservations2 = temp
-
-    def set_type_of_data_collected(self,temp):
-        self.type_of_data_collected = temp
-
-    def set_reservations3(self,temp):
-        self.reservations3 = temp
-
-    def set_ALL(self,temp1,temp2,temp3,temp4,temp5,temp6,temp7,temp8,temp9):
-        self.message_length = temp1
-        self.message_ID = temp2
-        self.message_send_time = temp3
-        self.message_send_sequence_number = temp4
-        self.start_or_stop = temp5
-        self.reservations1 = temp6
-        self.reservations2 = temp7
-        self.type_of_data_collected = temp8
-        self.reservations3 = temp9
-    def clear(self):
-        self.frame_head = 1431655765
-        self.message_length = 0
-        self.message_ID = 513
-        self.message_send_time = 0
-        self.message_send_sequence_number = 1
-        self.start_or_stop = 1
-        self.reservations1 = 0
-        self.reservations2 = 0
-        self.type_of_data_collected = 1
-        self.reservations3 = 0
-        self.frame_end = 2863311530
+        ans=self.fhead
+        for i in self.message:
+            ans+=i
+        ans+=self.crc16+self.fend
+        return ans
+    def readBadHead(self,badhead=0):
+        badheadstr=str(badhead)
+        num = 5 - len(badheadstr)
+        for k in range(num):
+            badheadstr = '0' + badheadstr
+        ans = badheadstr
+        for i in self.message:
+            ans += i
+        ans += self.crc16 + self.fend
+        return ans
+    def readBadEnd(self,badend=0):
+        badendstr=str(badend)
+        num = 5 - len(badendstr)
+        for k in range(num):
+            badendstr = '0' + badendstr
+        ans = self.fhead
+        for i in self.message:
+            ans += i
+        ans += self.crc16 + badendstr
+        return ans
+    def readBadCrc(self,badcrc=0):
+        badendcrc=str(badcrc)
+        num = 5 - len(badendcrc)
+        for k in range(num):
+            badendcrc = '0' + badendcrc
+        ans = self.fhead
+        for i in self.message:
+            ans += i
+        ans += badendcrc+self.fend
+        return ans
 if __name__ == '__main__':
     protocol1=protocol()
+    protocol1.set([11123,123])
     protocol1.read()
-    protocol1.set_ALL(1,513,1,1,1,1,1,1,1)
-    print protocol1.check()
-    protocol1.read()
+    protocol1.readBadEnd(77)
+    protocol1.readBadHead(88)
+    protocol1.readBadCrc(90)

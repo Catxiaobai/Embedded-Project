@@ -19,6 +19,7 @@
             <el-menu-item index="/modelEdit"><i class="el-icon-folder"></i>模型查看与编辑</el-menu-item>
           </el-submenu>
         </el-submenu>
+        <el-menu-item index="/communicationProtocol"><i class="el-icon-folder"></i>通信协议</el-menu-item>
         <el-submenu index="2">
           <template slot="title">
             <i class="el-icon-folder"></i>
@@ -31,14 +32,13 @@
           </el-submenu>
           <el-submenu index="2-2">
             <template slot="title"><i class="el-icon-folder"></i>数据生成准则</template>
+            <el-menu-item index="/randomValue"><i class="el-icon-folder"></i>随机值</el-menu-item>
+            <el-menu-item index="/boundaryValue"><i class="el-icon-folder"></i>边界值</el-menu-item>
             <el-menu-item index="/increase"><i class="el-icon-folder"></i>递增值</el-menu-item>
             <el-menu-item index="/decrease"><i class="el-icon-folder"></i>递减值</el-menu-item>
-            <el-menu-item index="/boundaryValue"><i class="el-icon-folder"></i>边界值</el-menu-item>
-            <el-menu-item index="/randomValue"><i class="el-icon-folder"></i>随机值</el-menu-item>
             <el-menu-item index="/mcDcCoverage"><i class="el-icon-folder"></i>MC/DC覆盖</el-menu-item>
             <!--            <el-menu-item index="/interfaceProtocol"><i class="el-icon-folder"></i>接口协议</el-menu-item>-->
           </el-submenu>
-          <el-menu-item index="/communicationProtocol"><i class="el-icon-folder"></i>通信协议</el-menu-item>
         </el-submenu>
         <!--        <el-menu-item index="/script"><i class="el-icon-folder"></i>脚本</el-menu-item>-->
       </el-menu>

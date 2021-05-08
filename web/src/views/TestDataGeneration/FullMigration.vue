@@ -22,7 +22,7 @@
             <div>
               <a style="font-size: 30px; margin-left: 30%">测试用例集</a>
               <el-card style="margin-top: 30px; height: 500px">
-                <div style="white-space: pre-line">{{ test_cases_result }}</div>
+                <div>{{ test_cases_result }}</div>
               </el-card>
             </div>
           </div></el-col

@@ -1,4 +1,5 @@
 import json
+import os
 
 from django.http import JsonResponse
 
@@ -6,33 +7,37 @@ from entity.models import Paths
 from server import error_code
 
 
+# 从txt读取内容，返回json解析数据
+def read_txt(path, filename):
+    with open(path + filename, 'r', encoding='utf-8') as f:
+        content = f.read()
+    content_json = json.loads(content)
+    # print(content_json)
+    return content_json
+
+
+# 将json数据写入txt中
+def write_txt(path, filename, content):
+    with open(path + filename, 'w+', encoding='utf-8') as f:
+        json.dump(content, f)
+
+
 # 全状态
 def full_state(request):
     request_json = json.loads(request.body)
     aim_item_id = request_json['item']['id']
     try:
-        # print(request_json)
-
-        # 先在input填入type=1
-        filename = 'input.txt'
+        # 将input.txt文件的type改为1
         path = './efsmGA/files/'
-        with open(path + filename, 'w+', encoding='utf-8') as f:
-            content = {"type": 1}
-            json.dump(content, f)
-
+        filename = 'input.txt'
+        old_input = read_txt(path, filename)
+        old_input['type'] = 1
+        write_txt(path, filename, old_input)
         # 读取输入文件，运行ga程序
-        # with open(path + filename, 'r', encoding='utf-8') as f:
-        #     content = f.read()
-        #     print(content)
-        #     os.system('py -2 ' + './efsmGA/ga.py')
-
+        os.system('py -2 ' + './efsmGA/ga.py')
         # 读取生成的output.txt
-        filename = 'json格式样例2.txt'
-        with open(path + filename, 'r', encoding='utf-8') as f:
-            results = f.read()
-        results_json = json.loads(results)
-        print(results_json)
-
+        filename = 'output.txt'
+        results_json = read_txt(path, filename)
         # 写入数据库中，先判断这个模型是否之前跑过，如果有就删，无直接加
         new_type = 'state'
         Paths.objects.filter(item_id=aim_item_id, type=new_type).delete()
@@ -44,7 +49,7 @@ def full_state(request):
                 new_paths.save()
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
-    return JsonResponse({**error_code.CLACK_SUCCESS, "results": results})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "results": results_json})
 
 
 # 全迁移
@@ -52,28 +57,17 @@ def full_migration(request):
     request_json = json.loads(request.body)
     aim_item_id = request_json['item']['id']
     try:
-        # print(request_json)
-
-        # 先在input填入type=1
-        filename = 'input.txt'
+        # 将input.txt文件的type改为2
         path = './efsmGA/files/'
-        with open(path + filename, 'w+', encoding='utf-8') as f:
-            content = {"type": 2}
-            json.dump(content, f)
-
+        filename = 'input.txt'
+        old_input = read_txt(path, filename)
+        old_input['type'] = 2
+        write_txt(path, filename, old_input)
         # 读取输入文件，运行ga程序
-        # with open(path + filename, 'r', encoding='utf-8') as f:
-        #     content = f.read()
-        #     print(content)
-        #     os.system('py -2 ' + './efsmGA/ga.py')
-
+        os.system('py -2 ' + './efsmGA/ga.py')
         # 读取生成的output.txt
-        filename = 'json格式样例2.txt'
-        with open(path + filename, 'r', encoding='utf-8') as f:
-            results = f.read()
-        results_json = json.loads(results)
-        print(results_json)
-
+        filename = 'output.txt'
+        results_json = read_txt(path, filename)
         # 写入数据库中，先判断这个模型是否之前跑过，如果有就删，无直接加
         new_type = 'migration'
         Paths.objects.filter(item_id=aim_item_id, type=new_type).delete()
@@ -85,7 +79,7 @@ def full_migration(request):
                 new_paths.save()
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
-    return JsonResponse({**error_code.CLACK_SUCCESS, "results": results})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "results": results_json})
 
 
 # 路径列表

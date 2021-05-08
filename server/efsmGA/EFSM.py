@@ -1636,9 +1636,9 @@ class EFSM(object):
 
         for path in pathList:
             startTime = datetime.now()
-            print
-            print "测试路径：",
-            print path, len(path)
+            # print
+            # print "测试路径：",
+            # print path, len(path)
             self.testGenforPath(path)
             endTime = datetime.now()
             print 'endTime - startTime:\t', endTime - startTime
