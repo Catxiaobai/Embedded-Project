@@ -233,15 +233,12 @@ if __name__ == '__main__':
     fo.close()
     flag = int(setting['type'])
     traninfolist = obtain_efsm_info.obtain_tran_info()  # 迁移信息全部在这
-    pathstr = setting['path']
-    pathstr = pathstr.lstrip('[')
-    pathstr = pathstr.rstrip(']')
-    path = pathstr.split(',')
+    path = setting['path']
 
     num = int(setting['amount'])
     TIME = int(setting['time'])
     precision = int(setting['precision'])
     data = testProcee(SM, path, flag, num, precision, TIME)
-    # print
-    # data
+    print
+    data
     cover_data(path, data, flag)

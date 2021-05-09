@@ -5,14 +5,14 @@
         <el-table-column prop="page_id" label="ID" width="40"> </el-table-column>
         <el-table-column prop="type2" label="类别" width="80"> </el-table-column>
         <el-table-column prop="path" label="测试路径" width="280"> </el-table-column>
-        <el-table-column prop="time" label="定时" width="100">
-          <template>
-            <el-input></el-input>
+        <el-table-column prop="amount" label="定量" width="100">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.amount" class="tableCell"></el-input>
           </template>
         </el-table-column>
-        <el-table-column prop="data" label="定量" width="100">
-          <template>
-            <el-input></el-input>
+        <el-table-column prop="time" label="定时" width="100">
+          <template slot-scope="scope">
+            <el-input class="tableCell" autosize v-model="scope.row.time"> </el-input>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="114">
@@ -20,7 +20,11 @@
             <el-button size="mini" @click="generateRandom(scope.$index, scope.row)" type="primary">随机值生成</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="result" label="测试数据"> </el-table-column>
+        <el-table-column prop="result" label="测试数据">
+          <template>
+            <el-link @click="gotoShow">data</el-link>
+          </template>
+        </el-table-column>
       </el-table>
       <el-pagination
         @size-change="handleSizeChange"
@@ -48,6 +52,7 @@ export default {
       page: 1, //第几页
       tableData: [],
       spanArr: [], //用于存放每一行记录的合并数
+      itemInfo: '',
     }
   },
   methods: {
@@ -87,7 +92,7 @@ export default {
     generateRandom(index, row) {
       console.log(index, row)
       this.$http
-        .post(this.Global_Api + '/api/generation/generate_random', { info: row })
+        .post(this.Global_Api + '/api/generation/generate_random', row)
         .then((response) => {
           console.log(response.data)
         })
@@ -97,14 +102,16 @@ export default {
     },
     pageList() {
       this.$http
-        .get(this.Global_Api + '/api/generation/path_list')
+        .post(this.Global_Api + '/api/generation/path_list', this.itemInfo)
         .then((response) => {
           this.data = response.data.path_list
-          this.options = []
+          // this.options = []
           for (let i = 0; i < this.data.length; i++) {
-            this.options.push({ value: this.data[i].name, label: this.data[i].name })
+            // this.options.push({ value: this.data[i].name, label: this.data[i].name })
+            this.data[i].time = 0
+            this.data[i].amount = 0
           }
-
+          console.log(this.data)
           this.getList()
         })
         .catch(function (error) {
@@ -138,19 +145,26 @@ export default {
       this.page = val
       this.getList()
     },
+    getItemInfo() {
+      this.itemInfo = this.$store.state.item
+    },
+    gotoShow() {
+      this.$router.replace('/dataShow')
+    },
   },
   created() {
+    this.getItemInfo()
     this.pageList()
   },
 }
 </script>
 
-<style lang="scss" scoped>
-.divHelp {
-  margin-left: 55%;
-  height: 40px;
-  margin-top: -40px;
-  z-index: 1;
-  position: absolute;
+<style scoped></style>
+<style lang="scss">
+.tableCell {
+  .el-textarea__inner {
+    border: none;
+    resize: none;
+  }
 }
 </style>

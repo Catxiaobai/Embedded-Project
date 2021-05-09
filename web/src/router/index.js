@@ -131,6 +131,11 @@ const routes = [
         name: 'communicationProtocol',
         component: () => import('@/views/TestDataGeneration/CommunicationProtocol'),
       },
+      {
+        path: '/dataShow',
+        name: 'dataShow',
+        component: () => import('@/views/TestDataGeneration/DataShow'),
+      },
     ],
   },
 ]

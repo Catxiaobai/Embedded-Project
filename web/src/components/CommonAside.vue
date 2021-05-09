@@ -37,6 +37,7 @@
             <el-menu-item index="/increase"><i class="el-icon-folder"></i>递增值</el-menu-item>
             <el-menu-item index="/decrease"><i class="el-icon-folder"></i>递减值</el-menu-item>
             <el-menu-item index="/mcDcCoverage"><i class="el-icon-folder"></i>MC/DC覆盖</el-menu-item>
+            <el-menu-item index="/dataShow"><i class="el-icon-folder"></i>测试界面</el-menu-item>
             <!--            <el-menu-item index="/interfaceProtocol"><i class="el-icon-folder"></i>接口协议</el-menu-item>-->
           </el-submenu>
         </el-submenu>

@@ -33,11 +33,12 @@ def full_state(request):
         old_input = read_txt(path, filename)
         old_input['type'] = 1
         write_txt(path, filename, old_input)
-        # 读取输入文件，运行ga程序
+        # 运行ga程序
         os.system('py -2 ' + './efsmGA/ga.py')
         # 读取生成的output.txt
         filename = 'output.txt'
         results_json = read_txt(path, filename)
+        print(results_json)
         # 写入数据库中，先判断这个模型是否之前跑过，如果有就删，无直接加
         new_type = 'state'
         Paths.objects.filter(item_id=aim_item_id, type=new_type).delete()
@@ -84,8 +85,9 @@ def full_migration(request):
 
 # 路径列表
 def path_list(request):
+    request_json = json.loads(request.body)
     try:
-        paths = Paths.objects.all()
+        paths = Paths.objects.filter(item_id=request_json['id'])
         result = [p.to_dict() for p in paths]
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
@@ -117,9 +119,24 @@ def generate_decrease(request):
 # 生成随机值
 def generate_random(request):
     request_json = json.loads(request.body)
-    print(request_json['info'])
+    print(request_json)
     try:
-        pass
+        # 修改输入信息
+        path = "./efsmGA/files/"
+        filename = 'input.txt'
+        old_input = read_txt(path, filename)
+        old_input['type'] = 1
+        print('test', request_json['path'])
+        # print('aa', request_json['path'])
+        old_input['path'] = eval(request_json['path'])
+        old_input['time'] = request_json['time']
+        old_input['amount'] = request_json['amount']
+        write_txt(path, filename, old_input)
+        # 运行data程序
+        os.system('py -2 ' + './efsmGA/data_generation.py')
+        # 读取output.txt信息
+        filename = 'output.txt'
+        result = read_txt(path, filename)
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})
