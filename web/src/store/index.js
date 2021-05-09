@@ -10,19 +10,26 @@ const store = new Vuex.Store({
     name: 'helloVueX',
     item: '',
     user: '',
+    path: '',
   },
   getters: {
     getItem(state) {
       return state.item
     },
+    getPath(state) {
+      return state.path
+    },
   },
   mutations: {
     changeItem(state, newItem) {
       state.item = newItem
-      console.log('changeItem', state.item)
+      // console.log('changeItem', state.item)
     },
     setUser(state, newUser) {
       state.user = newUser
+    },
+    setPath(state, newPath) {
+      state.path = newPath
     },
   },
 })

@@ -72,10 +72,10 @@ export default {
     },
     getItemInfo() {
       this.itemInfo = this.$store.state.item
-      console.log('item', this.itemInfo)
+      // console.log('item', this.itemInfo)
     },
     handleClose(key, keyPath) {
-      console.log(key, keyPath + '关闭')
+      // console.log(key, keyPath + '关闭')
     },
   },
   mounted() {

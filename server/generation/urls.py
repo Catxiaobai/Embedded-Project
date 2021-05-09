@@ -22,9 +22,11 @@ urlpatterns = [
     path('full_state', views.full_state, name='full_state'),  # 全状态
     path('full_migration', views.full_migration, name='full_migration'),  # 全迁移
     path('path_list', views.path_list, name='path_list'),  # 路径列表
+    path('data_list', views.data_list, name='data_list'),  # 数据列表
     path('generate_increase', views.generate_increase, name='generate_increase'),  # 递增值
     path('generate_decrease', views.generate_decrease, name='generate_decrease'),  # 递减值
     path('generate_random', views.generate_random, name='generate_random'),  # 随机值
     path('generate_boundary', views.generate_boundary, name='generate_boundary'),  # 边界值
     path('generate_mcdc', views.generate_mcdc, name='generate_mcdc'),  # MC/DC覆盖
+
 ]

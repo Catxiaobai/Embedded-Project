@@ -55,7 +55,7 @@ export default {
     let value1 = this.$store.state.user
     this.user = value1
     this.getUserItem()
-    console.log('this.itemInfo', this.itemInfo)
+    // console.log('this.itemInfo', this.itemInfo)
     // if (this.itemInfo.name === ' ') {
     // }
   },
@@ -98,8 +98,8 @@ export default {
     getItemInfo() {
       this.itemInfo = this.$store.state.item
       this.value = this.itemInfo.name
-      console.log('header', this.itemInfo)
-      console.log('header', this.value)
+      // console.log('header', this.itemInfo)
+      // console.log('header', this.value)
     },
     getUserInfo() {
       this.userInfo = this.$store.state.user
@@ -119,10 +119,10 @@ export default {
       })
     },
     getUserItem() {
-      console.log(this.userInfo)
+      // console.log(this.userInfo)
       this.$http.post(this.Global_Api + '/api/user_item', this.userInfo).then((response) => {
         this.tableData = response.data.item_list
-        console.log(this.tableData)
+        // console.log(this.tableData)
         this.options = []
         for (let i = 0; i < this.tableData.length; i++) {
           this.options.push({ value: this.tableData[i].item_name, label: this.tableData[i].item_name })

@@ -16,7 +16,7 @@ export default {
   methods: {
     getItemInfo() {
       this.itemInfo = this.$store.state.item
-      console.log('main', this.itemInfo)
+      // console.log('main', this.itemInfo)
       if (!this.itemInfo['name']) {
         this.vShow = false
       }

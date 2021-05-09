@@ -48,7 +48,7 @@ export default {
         .post(this.Global_Api + '/api/login', { account: this.loginForm.name, password: this.loginForm.password })
         .then((response) => {
           if (response.data.error_code === 0) {
-            console.log(response.data.user)
+            // console.log(response.data.user)
             localStorage.setItem('user', response.data.user)
             this.remember()
             this.$store.commit('setUser', response.data.user_info)
@@ -85,11 +85,11 @@ export default {
       // 字符串拼接cookie
       window.document.cookie = 'userName' + '=' + name + ';path=/;expires=' + exdate.toGMTString()
       window.document.cookie = 'userPwd' + '=' + pwd + ';path=/;expires=' + exdate.toGMTString()
-      console.log('设置cookie', window.document.cookie)
+      // console.log('设置cookie', window.document.cookie)
     },
     // 读取cookie 将用户名和密码回显到input框中
     getCookie() {
-      console.log(window.document.cookie)
+      // console.log(window.document.cookie)
       if (window.document.cookie.length > 0) {
         let arr = document.cookie.split('; ') // 这里显示的格式需要切割一下自己可输出看下
         for (let i = 0; i < arr.length; i++) {

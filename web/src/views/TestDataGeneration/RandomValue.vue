@@ -1,7 +1,16 @@
 <template>
   <div id="fullState">
     <el-card>
-      <el-table :data="tableData" :span-method="objectSpanMethod" border style="width: 100%; margin-top: 20px">
+      <el-table
+        v-loading="loading"
+        element-loading-text="数据生成中..."
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.8)"
+        :data="tableData"
+        :span-method="objectSpanMethod"
+        border
+        style="width: 100%; margin-top: 20px"
+      >
         <el-table-column prop="page_id" label="ID" width="40"> </el-table-column>
         <el-table-column prop="type2" label="类别" width="80"> </el-table-column>
         <el-table-column prop="path" label="测试路径" width="280"> </el-table-column>
@@ -21,8 +30,8 @@
           </template>
         </el-table-column>
         <el-table-column prop="result" label="测试数据">
-          <template>
-            <el-link @click="gotoShow">data</el-link>
+          <template slot-scope="scope">
+            <el-link @click="gotoShow(scope.row)">data</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -53,6 +62,7 @@ export default {
       tableData: [],
       spanArr: [], //用于存放每一行记录的合并数
       itemInfo: '',
+      loading: false,
     }
   },
   methods: {
@@ -91,9 +101,11 @@ export default {
     },
     generateRandom(index, row) {
       console.log(index, row)
+      this.loading = true
       this.$http
         .post(this.Global_Api + '/api/generation/generate_random', row)
         .then((response) => {
+          this.loading = false
           console.log(response.data)
         })
         .catch(function (error) {
@@ -105,9 +117,7 @@ export default {
         .post(this.Global_Api + '/api/generation/path_list', this.itemInfo)
         .then((response) => {
           this.data = response.data.path_list
-          // this.options = []
           for (let i = 0; i < this.data.length; i++) {
-            // this.options.push({ value: this.data[i].name, label: this.data[i].name })
             this.data[i].time = 0
             this.data[i].amount = 0
           }
@@ -148,7 +158,10 @@ export default {
     getItemInfo() {
       this.itemInfo = this.$store.state.item
     },
-    gotoShow() {
+    gotoShow(row) {
+      row['name'] = '随机值'
+      console.log('test', row)
+      this.$store.commit('setPath', row)
       this.$router.replace('/dataShow')
     },
   },

@@ -4,6 +4,7 @@ import os
 from django.http import JsonResponse
 
 from entity.models import Paths
+from generation.models import PathsData
 from server import error_code
 
 
@@ -94,6 +95,18 @@ def path_list(request):
     return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": result})
 
 
+# 数据列表
+def data_list(request):
+    request_json = json.loads(request.body)
+    print(request_json)
+    try:
+        path_data = PathsData.objects.filter(paths_id=request_json['id'], name=request_json['name'])
+        result = [p.to_dict() for p in path_data]
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "data_list": result})
+
+
 # 生成递增值
 def generate_increase(request):
     request_json = json.loads(request.body)
@@ -119,15 +132,12 @@ def generate_decrease(request):
 # 生成随机值
 def generate_random(request):
     request_json = json.loads(request.body)
-    print(request_json)
     try:
         # 修改输入信息
         path = "./efsmGA/files/"
         filename = 'input.txt'
         old_input = read_txt(path, filename)
         old_input['type'] = 1
-        print('test', request_json['path'])
-        # print('aa', request_json['path'])
         old_input['path'] = eval(request_json['path'])
         old_input['time'] = request_json['time']
         old_input['amount'] = request_json['amount']
@@ -137,6 +147,16 @@ def generate_random(request):
         # 读取output.txt信息
         filename = 'output.txt'
         result = read_txt(path, filename)
+        print('request_json', request_json)
+        print('result', str(result))
+        # 判断这条path这种方法name下有没有生成data，有就delete，无则save
+        aim_path_id = request_json['id']
+        new_type2 = request_json['type2']
+        new_name = '随机值'
+        new_data = result
+        PathsData.objects.filter(paths_id=aim_path_id, name=new_name).delete()
+        new_paths_data = PathsData(paths_id=aim_path_id, type2=new_type2, name=new_name, data=new_data)
+        new_paths_data.save()
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})

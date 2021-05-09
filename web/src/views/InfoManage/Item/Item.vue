@@ -245,7 +245,7 @@ export default {
       this.$refs[formName].resetFields()
     },
     handleOpen(index, row) {
-      console.log(row)
+      // console.log(row)
       this.$store.commit('changeItem', row)
       this.$router.replace('/itemMain')
     },
