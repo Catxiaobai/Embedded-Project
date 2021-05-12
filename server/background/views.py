@@ -1,18 +1,18 @@
 import json
 import os
-import random
 
+from django.core.files.storage import FileSystemStorage
+from django.http import JsonResponse
+
+import dsp.main
 import lwn_Graphic.combination
 import lwn_Graphic.combination2
 import lwn_Graphic.constructModel
 import lwn_Graphic.constructModel2
-import dsp.main
-
-from django.core.files.storage import FileSystemStorage
-from django.http import JsonResponse
-from server import error_code
-from entity.models import Personnel, Item, Scenes
 from background.models import ItemPerson
+from entity.models import Personnel, Item, Scenes
+from lwn_Graphic import analysisXMI
+from server import error_code
 
 
 # 登录权限
@@ -104,8 +104,11 @@ def upload_file(request):
 
 def import_xmi(request):
     request_json = json.loads(request.body)
+    filename = request_json['name']
     try:
-        pass
+        filepath = './file/'
+        # print(filename)
+        analysisXMI.analysis(filepath, filename)
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS})
@@ -173,7 +176,7 @@ def scenes_modeling(request):
     request_jsons = json.loads(request.body)
     print(request_jsons)
     try:
-        print('建模开始')
+        # print('建模开始')
         scenes = Scenes.objects.filter(
             item_id=request_jsons['item']['id'], type=request_jsons['type'], element=request_jsons['element'])
         if request_jsons['type'] == 'sub':
@@ -209,13 +212,6 @@ def scenes_modeling(request):
             with open(filepath + 'resultModelSaveCreate2.txt', 'wt+', encoding='utf-8') as f:
                 f.write(open(filepath + 'resultModel2.txt',
                              'r', encoding='utf-8').read())
-        # Models.objects.all().delete()
-        # scenes2 = Scenes.objects.filter(item_id=request_jsons['item']['id'])
-        # for s in scenes2:
-        #     model_name = s.to_dict['']
-        #     models = Models(name=s.to_dict[''])
-        #     Models.save(models)
-        print('建模结束')
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS})
@@ -299,4 +295,3 @@ def delete_item(request):
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS})
-

@@ -425,17 +425,15 @@
 import codecs
 import copy
 import json
-import copy
-import os
-import sys
-import json
+
 import numpy as np
-from graphviz import Digraph
 
 # 获取状态集跟迁移集
 # sys.path.append("")
 # writepath = r''
 filepath = './file/'
+
+
 # filename1 = "Trace.txt"
 
 
@@ -623,7 +621,7 @@ def constructModel1(inputfile):
     # output.close()
     T1 = mergeTrans(Trans2, State4)
     wf = codecs.open(filepath + "result.txt", 'w', encoding="utf-8")
-    wf1 = codecs.open(filepath+"resultModel.txt", 'w', encoding="utf-8")
+    wf1 = codecs.open(filepath + "resultModel.txt", 'w', encoding="utf-8")
     for key in sorted(State4.keys(), key=lambda x: int(x[1:])):
         if key == 'S0':
             wf1.write("State:\n\tname=" + 'START' + '\n')
@@ -668,19 +666,19 @@ def constructModel1(inputfile):
         if int(line[1][1:]) == 0 and int(line[2][1:]) == 0:
             wf1.write(
                 "Transition:\n\tname=" + line[0] + '\n\tsrc=' + 'START' + '\n\ttgt=' + 'START' + '\n\t' + line[
-                    3] + '\n\t' + line[4] + '\n\t' + line[5]+"\n")
+                    3] + '\n\t' + line[4] + '\n\t' + line[5] + "\n")
         elif line[1] == 'S0':
             wf1.write(
                 "Transition:\n\tname=" + line[0] + '\n\tsrc=' + 'START' + '\n\ttgt=' + line[2] + '\n\t' + line[
-                    3] + '\n\t' + line[4] + '\n\t' + line[5]+"\n")
+                    3] + '\n\t' + line[4] + '\n\t' + line[5] + "\n")
         elif line[2] == 'S0':
             wf1.write(
                 "Transition:\n\tname=" + line[0] + '\n\tsrc=' + line[1] + '\n\ttgt=' + 'START' + '\n\t' + line[
-                    3] + '\n\t' + line[4] + '\n\t' + line[5]+"\n")
+                    3] + '\n\t' + line[4] + '\n\t' + line[5] + "\n")
         else:
             wf1.write(
                 "Transition:\n\tname=" + line[0] + '\n\tsrc=' + line[1] + '\n\ttgt=' + line[2] + '\n\t' + line[
-                    3] + '\n\t' + line[4] + '\n\t' + line[5]+"\n")
+                    3] + '\n\t' + line[4] + '\n\t' + line[5] + "\n")
     wf1.close()
     wf.close()
     # # 画成png图
@@ -913,8 +911,10 @@ def main():
     elapsed = time.perf_counter() - t0
     print("Time used:", elapsed)
 
+
 if __name__ == '__main__':
     import time
+
     t0 = time.perf_counter()
     constructModel1('Trace.txt')
     elapsed = time.perf_counter() - t0

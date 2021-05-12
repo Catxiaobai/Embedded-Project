@@ -19,7 +19,7 @@ export default {
   methods: {
     handleImport(code, file) {
       this.$http
-        .post(this.Global_Api + '/api/import_xmi', { name: file.name, type: 'sub', item: this.itemInfo })
+        .post(this.Global_Api + '/api/import_xmi', { name: file.name, item: this.itemInfo })
         .then((response) => {
           if (response.data.error_code === 0) {
             console.log(response)

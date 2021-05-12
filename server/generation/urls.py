@@ -28,5 +28,5 @@ urlpatterns = [
     path('generate_random', views.generate_random, name='generate_random'),  # 随机值
     path('generate_boundary', views.generate_boundary, name='generate_boundary'),  # 边界值
     path('generate_mcdc', views.generate_mcdc, name='generate_mcdc'),  # MC/DC覆盖
-
+    path('xmi_modeling', views.xmi_modeling, name='xmi_modeling'),  # xmi建模
 ]

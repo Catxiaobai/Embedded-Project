@@ -94,6 +94,7 @@ export default {
   },
   mounted() {
     this.init()
+    this.modeling2()
   },
   methods: {
     save() {
@@ -545,35 +546,18 @@ export default {
       // link.download = 'a.png'
       // link.click()
     },
-    // clickGeneratePicture() {
-    //   // let self = this;
-    //   let ref = this.$refs.generatePicture // 截图区域
-    //   html2canvas(ref, {
-    //     backgroundColor: '#142E48',
-    //   })
-    //     .then((canvas) => {
-    //       let dataURL = canvas.toDataURL('image/png')
-    //       console.log(dataURL)
-    //       // this.dataURL = dataURL
-    //       this.$http
-    //         .post(this.Global_Api + '/api/upload_state_file', { item: this.itemInfo, src: dataURL })
-    //         .then((response) => {
-    //           console.log('response', response)
-    //           if (response.data.error_code === 0) {
-    //             console.log('response', response.data)
-    //           }
-    //         })
-    //         .catch(function (error) {
-    //           console.log(error)
-    //         })
-    //     })
-    //     .catch((err) => {
-    //       this.$message({
-    //         message: '图片生成失败',
-    //         type: 'error',
-    //       })
-    //     })
-    // },
+    modeling2() {
+      this.$http
+        .post(this.Global_Api + '/api/generation/xmi_modeling', { item: this.itemInfo })
+        .then((response) => {
+          console.log(response)
+          this.getData()
+          this.saveModel()
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
   },
   created() {
     this.getItemInfo()

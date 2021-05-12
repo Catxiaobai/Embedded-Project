@@ -136,6 +136,16 @@ const routes = [
         name: 'dataShow',
         component: () => import('@/views/TestDataGeneration/DataShow'),
       },
+      {
+        path: '/staticModels',
+        name: 'staticModels',
+        component: () => import('@/views/Model/StaticModels'),
+      },
+      {
+        path: '/staticModelInfo',
+        name: 'staticModelInfo',
+        component: () => import('@/views/Model/StaticModelInfo'),
+      },
     ],
   },
 ]

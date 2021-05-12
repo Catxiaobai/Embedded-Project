@@ -1,153 +1,99 @@
 State:
 	label=S0
-	name=开始
+	name=Pseudostate
 State:
 	label=S1
-	name=初始化
+	name=off
 State:
 	label=S2
-	name=空闲
+	name=上电
 State:
 	label=S3
-	name=维护
+	name=工作状态
 State:
 	label=S4
-	name=自检
+	name=FinalState
 State:
 	label=S5
-	name=准备完成
+	name=Pseudostate1
 State:
 	label=S6
-	name=校准
+	name=发射
 State:
 	label=S7
-	name=拍照
+	name=运行
 State:
 	label=S8
-	name=结束
+	name=分离
+State:
+	label=S9
+	name=入轨
+State:
+	label=S10
+	name=在轨运行
+State:
+	label=S11
+	name=回收
 Transition:
-	name=t1
-	src=S2
-	tgt=S3
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm purchase");x=0
+		name=T0
+		src=S0
+		tgt=S1
+		event=
+		condition=
+		action=
 Transition:
-	name=t2
-	src=S1
-	tgt=S2
-	event=Cancel()
-	condition=(x<=30)
-	action=Write("The end");x=0
+		name=T1
+		src=S1
+		tgt=S2
+		event=
+		condition=
+		action=
 Transition:
-	name=t3
-	src=S2
-	tgt=S5
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm purchase");x=0
+		name=T2
+		src=S2
+		tgt=S3
+		event=
+		condition=
+		action=
 Transition:
-	name=t4
-	src=S5
-	tgt=S2
-	event=Cancel()
-	condition=(x<=30)
-	action=Write("The end");x=0
+		name=T3
+		src=S5
+		tgt=S6
+		event=
+		condition=
+		action=
 Transition:
-	name=t5
-	src=S7
-	tgt=S8
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm purchase");x=0
+		name=T4
+		src=S6
+		tgt=S8
+		event=
+		condition=
+		action=
 Transition:
-	name=t6
-	src=S7
-	tgt=S5
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm purchase");x=0
+		name=T5
+		src=S8
+		tgt=S9
+		event=
+		condition=
+		action=
 Transition:
-	name=t7
-	src=S6
-	tgt=S8
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm purchase");x=0
+		name=T6
+		src=S9
+		tgt=S10
+		event=
+		condition=
+		action=
 Transition:
-	name=t8
-	src=S3
-	tgt=S2
-	event=Cancel()
-	condition=(x<=30)
-	action=Write("The end");x=0
+		name=T7
+		src=S10
+		tgt=S11
+		event=
+		condition=
+		action=
 Transition:
-	name=t9
-	src=S5
-	tgt=S7
-	event=Cancel()
-	condition=(x<=30)
-	action=Write("The end");x=0
-Transition:
-	name=t10
-	src=S6
-	tgt=S5
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm purchase");x=0
-Transition:
-	name=t11
-	src=S0
-	tgt=S1
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm purchase");x=0
-Transition:
-	name=t12
-	src=S3
-	tgt=S4
-	event=Cancel()
-	condition=(x<=30)
-	action=Write("The end");x=0
-Transition:
-	name=t13
-	src=S2
-	tgt=S8
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm purchase");x=0
-Transition:
-	name=t14
-	src=S5
-	tgt=S8
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm purchase");x=0
-Transition:
-	name=t15
-	src=S3
-	tgt=S8
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm purchase");x=0
-Transition:
-	name=t16
-	src=S5
-	tgt=S6
-	event=Cancel()
-	condition=(x<=30)
-	action=Write("The end");x=0
-Transition:
-	name=t17
-	src=S4
-	tgt=S8
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm purchase");x=0
-Transition:
-	name=t18
-	src=S4
-	tgt=S3
-	event=Buy(ticket,x)
-	condition=
-	action=Write("Confirm purchase");x=0
+		name=T8
+		src=S11
+		tgt=S11
+		event=
+		condition=
+		action=

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import json
 import codecs
-import re
+import json
+
 
 def combination():
     filepath = './file/'

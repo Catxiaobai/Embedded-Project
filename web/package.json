@@ -13,6 +13,7 @@
     "element-ui": "^2.15.1",
     "gojs": "^2.1.38",
     "html2canvas": "^1.0.0-rc.7",
+    "vfd": "^1.0.5",
     "vue": "^2.6.11",
     "vue-json-excel": "^0.3.0",
     "vue-router": "^3.2.0",
