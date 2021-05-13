@@ -3,9 +3,9 @@
     <el-card style="height: 634px">
       <el-table :data="tableData" style="width: 100%" border>
         <el-table-column prop="id" label="ID" width="80"> </el-table-column>
-        <el-table-column prop="part" label="部分" width="180"> </el-table-column>
+        <el-table-column prop="part" label="xxxx" width="180"> </el-table-column>
         <el-table-column prop="details" label="详情"> </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="接口">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" @click="gotoTest">CAN接口</el-button>
             <el-button size="mini" type="primary" @click="gotoTest(scope.$index, scope.row)">RS232接口</el-button>

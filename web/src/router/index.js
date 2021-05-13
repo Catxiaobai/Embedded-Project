@@ -129,7 +129,7 @@ const routes = [
       {
         path: '/communicationProtocol',
         name: 'communicationProtocol',
-        component: () => import('@/views/TestDataGeneration/CommunicationProtocol'),
+        component: () => import('@/views/CommunicationProtocol/CommunicationProtocol'),
       },
       {
         path: '/dataShow',
@@ -145,6 +145,16 @@ const routes = [
         path: '/staticModelInfo',
         name: 'staticModelInfo',
         component: () => import('@/views/Model/StaticModelInfo'),
+      },
+      {
+        path: '/testTarget',
+        name: 'testTarget',
+        component: () => import('@/views/TestTarget/TestTarget'),
+      },
+      {
+        path: '/scriptDatabase',
+        name: 'scriptDatabase',
+        component: () => import('@/views/Script/ScriptDatabase'),
       },
     ],
   },

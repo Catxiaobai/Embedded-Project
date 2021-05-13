@@ -19,6 +19,7 @@
             <el-menu-item index="/modelEdit"><i class="el-icon-folder"></i>模型查看与编辑</el-menu-item>
           </el-submenu>
         </el-submenu>
+        <el-menu-item index="/testTarget"><i class="el-icon-folder"></i>测试目标</el-menu-item>
         <el-menu-item index="/communicationProtocol"><i class="el-icon-folder"></i>通信协议</el-menu-item>
         <el-submenu index="2">
           <template slot="title">
@@ -40,6 +41,14 @@
             <el-menu-item index="/dataShow"><i class="el-icon-folder"></i>测试界面</el-menu-item>
             <!--            <el-menu-item index="/interfaceProtocol"><i class="el-icon-folder"></i>接口协议</el-menu-item>-->
           </el-submenu>
+        </el-submenu>
+        <el-submenu index="3">
+          <template slot="title">
+            <i class="el-icon-folder"></i>
+            <span>脚本生成</span>
+          </template>
+          <el-menu-item index="/scriptDatabase"><i class="el-icon-folder"></i>脚本库</el-menu-item>
+          <el-menu-item index="/script"><i class="el-icon-folder"></i>测试数据脚本生成</el-menu-item>
         </el-submenu>
         <!--        <el-menu-item index="/script"><i class="el-icon-folder"></i>脚本</el-menu-item>-->
       </el-menu>

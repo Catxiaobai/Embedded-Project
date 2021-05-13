@@ -106,8 +106,8 @@ export default {
       result: '',
       formInline: {
         name: '采集控制',
-        date: '',
-        version: '',
+        date: '2021/05/01',
+        version: 'V1.0',
         type: 'RS232',
         method: '点对点',
         period: '事件',

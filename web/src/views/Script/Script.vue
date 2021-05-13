@@ -1,19 +1,21 @@
 <template>
   <div>
     <el-card style="height: 640px">
-      <!--      <div class="edit_dev">-->
-      <!--        <el-transfer-->
-      <!--          filterable-->
-      <!--          :filter-method="filterMethod"-->
-      <!--          filter-placeholder="请输入关键字"-->
-      <!--          v-model="value"-->
-      <!--          :data="data"-->
-      <!--          :titles="['测试用例集', '脚本']"-->
-      <!--          style="height: 300px"-->
-      <!--        >-->
-      <!--        </el-transfer>-->
-      <!--      </div>-->
-      <el-button type="primary" style="margin-top: 30px; margin-left: 35%" @click="dsp">DSP输入</el-button>
+      <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="通道" prop="pass">
+          <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="指令" prop="checkPass">
+          <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="参数" prop="age">
+          <el-input v-model.number="ruleForm.age"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+          <el-button @click="resetForm('ruleForm')">重置</el-button>
+        </el-form-item>
+      </el-form>
     </el-card>
   </div>
 </template>
@@ -22,37 +24,67 @@
 export default {
   name: 'Script.vue',
   data() {
-    const generateData = (_) => {
-      const data = []
-      const cities = ['t1,t2,t3,t4', 't5,t6,t7,t8', 't9,t10,t11,t12', 't1,t2,t6,t9', 't8,t7,t3,t4', 't11,t12,t3,t4', 't6,t2,t7,t4']
-      const pinyin = ['1', '2', '3', '4', '5', '6', '7']
-      cities.forEach((city, index) => {
-        data.push({
-          label: city,
-          key: index,
-          pinyin: pinyin[index],
-        })
-      })
-      return data
+    var checkAge = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('年龄不能为空'))
+      }
+      setTimeout(() => {
+        if (!Number.isInteger(value)) {
+          callback(new Error('请输入数字值'))
+        } else {
+          if (value < 18) {
+            callback(new Error('必须年满18岁'))
+          } else {
+            callback()
+          }
+        }
+      }, 1000)
+    }
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else {
+        if (this.ruleForm.checkPass !== '') {
+          this.$refs.ruleForm.validateField('checkPass')
+        }
+        callback()
+      }
+    }
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.ruleForm.pass) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
     }
     return {
-      data: generateData(),
-      value: [],
-      filterMethod(query, item) {
-        return item.pinyin.indexOf(query) > -1
+      ruleForm: {
+        pass: '',
+        checkPass: '',
+        age: '',
+      },
+      rules: {
+        pass: [{ validator: validatePass, trigger: 'blur' }],
+        checkPass: [{ validator: validatePass2, trigger: 'blur' }],
+        age: [{ validator: checkAge, trigger: 'blur' }],
       },
     }
   },
   methods: {
-    dsp() {
-      this.$http
-        .get(this.Global_Api + '/api/dsp_test')
-        .then((response) => {
-          console.log(response.data)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          alert('submit!')
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
     },
   },
 }
