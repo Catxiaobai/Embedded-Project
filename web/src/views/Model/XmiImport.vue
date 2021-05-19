@@ -24,10 +24,8 @@ export default {
           if (response.data.error_code === 0) {
             console.log(response)
             this.$message.success('导入成功')
-            this.pageList()
           } else {
             this.$message.error(response.data.error_message)
-            this.pageList()
           }
         })
         .catch(function (error) {

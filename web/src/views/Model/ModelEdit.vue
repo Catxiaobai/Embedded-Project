@@ -2,7 +2,10 @@
   <div id="complexSceneModel">
     <el-card>
       <div id="action" style="display: flex; margin-bottom: 20px">
-        <div id="stateAction" style="margin-left: 80%">
+        <el-upload :action="doUpload" :on-success="handleImport" :show-file-list="false">
+          <a style="color: #38b2ff; margin-left: 30px"> XMI文件导入</a>
+        </el-upload>
+        <div id="stateAction" style="margin-left: 50%">
           <el-button type="primary" @click="modeling">模型构建</el-button>
         </div>
       </div>
@@ -34,7 +37,7 @@ export default {
   inject: ['reload'],
   data() {
     return {
-      doUpload: this.Global_Api + '/api/upload_umlfile',
+      doUpload: this.Global_Api + '/api/upload_file',
       nodeDataArray: [],
       linkDataArray: [],
       buttonShow: {
@@ -94,7 +97,6 @@ export default {
   },
   mounted() {
     this.init()
-    this.modeling2()
   },
   methods: {
     save() {
@@ -520,7 +522,7 @@ export default {
     modeling() {
       console.log('test')
       this.$http
-        .post(this.Global_Api + '/api/scenes_modeling', { item: this.itemInfo, type: 'complex', element: '状态迁移' })
+        .post(this.Global_Api + '/api/generation/scenes_modeling', { item: this.itemInfo, type: 'complex', element: '状态迁移' })
         .then((response) => {
           console.log(response)
           this.getData()
@@ -530,22 +532,22 @@ export default {
           console.log(error)
         })
     },
-    handleImport(res) {
-      if (res.error_code === -1) {
-        this.$message.error('上传的文件语法错误！')
-        return
-      }
-      var base64url = JSON.parse(res.url)
-      let src = 'data:image/png;base64,' + base64url['image_base64_string']
-      console.log(src)
-      this.umlSrc = src
-      this.umlSrcList.push(src)
-      // console.log(src)
-      // var link = document.createElement('a')
-      // link.href = src
-      // link.download = 'a.png'
-      // link.click()
-    },
+    // handleImport(res) {
+    //   if (res.error_code === -1) {
+    //     this.$message.error('上传的文件语法错误！')
+    //     return
+    //   }
+    //   var base64url = JSON.parse(res.url)
+    //   let src = 'data:image/png;base64,' + base64url['image_base64_string']
+    //   console.log(src)
+    //   this.umlSrc = src
+    //   this.umlSrcList.push(src)
+    //   // console.log(src)
+    //   // var link = document.createElement('a')
+    //   // link.href = src
+    //   // link.download = 'a.png'
+    //   // link.click()
+    // },
     modeling2() {
       this.$http
         .post(this.Global_Api + '/api/generation/xmi_modeling', { item: this.itemInfo })
@@ -553,6 +555,22 @@ export default {
           console.log(response)
           this.getData()
           this.saveModel()
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
+    handleImport(code, file) {
+      this.$http
+        .post(this.Global_Api + '/api/import_xmi', { name: file.name, item: this.itemInfo })
+        .then((response) => {
+          if (response.data.error_code === 0) {
+            console.log(response)
+            this.$message.success('导入成功')
+            this.modeling2()
+          } else {
+            this.$message.error(response.data.error_message)
+          }
         })
         .catch(function (error) {
           console.log(error)

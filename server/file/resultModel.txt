@@ -1,33 +1,24 @@
 State:
-	name=S0
-	label=开始
+	name=START
 State:
 	name=S1
-	label=初始化
 State:
 	name=S2
-	label=空闲
 State:
 	name=S3
-	label=维护
 State:
 	name=S4
-	label=自检
 State:
 	name=S5
-	label=准备完成
 State:
 	name=S6
-	label=校准
 State:
 	name=S7
-	label=拍照
 State:
-	name=S8
-	label=结束
+	name=EXIT
 Transition:
 	name=T1
-	src=S0
+	src=START
 	tgt=S1
 	event=Input(ctr,data);ReadL(road1,5)
 	condition=(ctr>=0)&(ctr<1000)
@@ -112,49 +103,49 @@ Transition:
 Transition:
 	name=T13
 	src=S1
-	tgt=S8
+	tgt=EXIT
 	event=Input(ctr);PBlockRead(xiyi1, )
 	condition=(ctr>=7000)&(ctr<8000)
 	action=led8()
 Transition:
 	name=T14
 	src=S2
-	tgt=S8
+	tgt=EXIT
 	event=Input(ctr);FromBytes(xiyi1,buffer)
 	condition=(ctr>=7000)&(ctr<8000)
 	action=led8()
 Transition:
 	name=T15
 	src=S3
-	tgt=S8
+	tgt=EXIT
 	event=Input(ctr);PWrite(xiyi1, )
 	condition=(ctr>=7000)&(ctr<8000)
 	action=led8()
 Transition:
 	name=T16
 	src=S4
-	tgt=S8
+	tgt=EXIT
 	event=Input(ctr);PToBytes(xiyi1,ToBytes)
 	condition=(ctr>=7000)&(ctr<8000)
 	action=led8()
 Transition:
 	name=T17
 	src=S5
-	tgt=S8
+	tgt=EXIT
 	event=Input(ctr)
 	condition=(ctr>=7000)&(ctr<8000)
 	action=led8()
 Transition:
 	name=T18
 	src=S6
-	tgt=S8
+	tgt=EXIT
 	event=Input(ctr)
 	condition=(ctr>=7000)&(ctr<8000)
 	action=led8()
 Transition:
 	name=T19
 	src=S7
-	tgt=S8
+	tgt=EXIT
 	event=Input(ctr)
 	condition=(ctr>=7000)&(ctr<8000)
 	action=led8()

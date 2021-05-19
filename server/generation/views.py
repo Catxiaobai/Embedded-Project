@@ -5,7 +5,7 @@ from django.http import JsonResponse
 
 from entity.models import Paths
 from generation.models import PathsData
-from lwn_Graphic import constructModel2
+from lwn_Graphic import script
 from server import error_code
 
 
@@ -202,3 +202,36 @@ def xmi_modeling(request):
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+def scenes_modeling(request):
+    request_jsons = json.loads(request.body)
+    print(request_jsons)
+    try:
+        # constructModel.main()
+        # print('建模')
+        filepath = './file/'
+        with open(filepath + 'result2.txt', 'wt+', encoding='utf-8') as f:
+            f.write(open(filepath + 'model.txt',
+                         'r', encoding='utf-8').read())
+        with open(filepath + 'resultSaveCreate2.txt', 'wt+', encoding='utf-8') as f:
+            f.write(open(filepath + 'result2.txt',
+                         'r', encoding='utf-8').read())
+        with open(filepath + 'resultModelSaveCreate2.txt', 'wt+', encoding='utf-8') as f:
+            f.write(open(filepath + 'resultModel2.txt',
+                         'r', encoding='utf-8').read())
+
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+def test(request):
+    request_jsons = json.loads(request.body)
+    print(request_jsons)
+    try:
+        result = script.main(request_jsons['pass'])
+        print(result)
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "result": result})

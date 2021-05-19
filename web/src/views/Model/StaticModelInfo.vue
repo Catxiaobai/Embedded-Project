@@ -3,7 +3,7 @@
     <el-card style="height: 634px">
       <el-table :data="tableData" style="width: 100%" border>
         <el-table-column prop="id" label="ID" width="80"> </el-table-column>
-        <el-table-column prop="part" label="xxxx" width="180"> </el-table-column>
+        <el-table-column prop="part" label="交联环境组件" width="180"> </el-table-column>
         <el-table-column prop="details" label="详情"> </el-table-column>
         <el-table-column label="接口">
           <template slot-scope="scope">

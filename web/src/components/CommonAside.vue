@@ -7,7 +7,7 @@
             <i class="el-icon-folder"></i>
             <span>模型</span>
           </template>
-          <el-menu-item index="/xmiImport"><i class="el-icon-folder"></i>XMI文件导入</el-menu-item>
+          <!--          <el-menu-item index="/xmiImport"><i class="el-icon-folder"></i>XMI文件导入</el-menu-item>-->
           <el-submenu index="1-1">
             <template slot="title"><i class="el-icon-folder"></i>静态模型构建</template>
             <el-menu-item index="/staticModelInfo"><i class="el-icon-folder"></i>模型描述</el-menu-item>
@@ -19,8 +19,8 @@
             <el-menu-item index="/modelEdit"><i class="el-icon-folder"></i>模型查看与编辑</el-menu-item>
           </el-submenu>
         </el-submenu>
-        <el-menu-item index="/testTarget"><i class="el-icon-folder"></i>测试目标</el-menu-item>
         <el-menu-item index="/communicationProtocol"><i class="el-icon-folder"></i>通信协议</el-menu-item>
+        <el-menu-item index="/testTarget"><i class="el-icon-folder"></i>测试目标</el-menu-item>
         <el-submenu index="2">
           <template slot="title">
             <i class="el-icon-folder"></i>

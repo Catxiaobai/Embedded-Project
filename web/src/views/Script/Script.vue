@@ -2,20 +2,20 @@
   <div>
     <el-card style="height: 640px">
       <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="通道" prop="pass">
-          <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="指令" prop="checkPass">
-          <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="参数" prop="age">
-          <el-input v-model.number="ruleForm.age"></el-input>
+        <el-form-item label="迁移" prop="pass">
+          <el-input v-model="ruleForm.pass" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
           <el-button @click="resetForm('ruleForm')">重置</el-button>
         </el-form-item>
       </el-form>
+      <div>
+        <a style="font-size: 30px; margin-left: 30%">脚本生成</a>
+        <el-card style="margin-top: 30px; height: 300px">
+          <div>{{ result }}</div>
+        </el-card>
+      </div>
     </el-card>
   </div>
 </template>
@@ -60,6 +60,7 @@ export default {
       }
     }
     return {
+      result: '',
       ruleForm: {
         pass: '',
         checkPass: '',
@@ -76,7 +77,16 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          this.$http
+            .post(this.Global_Api + '/api/generation/test', { pass: this.ruleForm.pass })
+            .then((response) => {
+              alert('submit!')
+              console.log(response.data.result)
+              this.result = response.data.result
+            })
+            .catch(function (error) {
+              console.log(error)
+            })
         } else {
           console.log('error submit!!')
           return false
