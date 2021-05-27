@@ -40,7 +40,7 @@
         <!--        <el-divider></el-divider>-->
         <!--        <span>数据：{{ result }}</span>-->
       </div>
-      <!--      <el-button type="primary" style="margin-left: 60%">数据打包</el-button>-->
+      <el-button type="primary" style="margin-left: 40%; margin-top: 30px">确定</el-button>
     </el-card>
   </div>
 </template>

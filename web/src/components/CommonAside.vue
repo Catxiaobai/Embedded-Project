@@ -38,7 +38,7 @@
             <el-menu-item index="/increase"><i class="el-icon-folder"></i>递增值</el-menu-item>
             <el-menu-item index="/decrease"><i class="el-icon-folder"></i>递减值</el-menu-item>
             <el-menu-item index="/mcDcCoverage"><i class="el-icon-folder"></i>MC/DC覆盖</el-menu-item>
-            <el-menu-item index="/dataShow"><i class="el-icon-folder"></i>测试界面</el-menu-item>
+            <!--            <el-menu-item index="/dataShow"><i class="el-icon-folder"></i>测试界面</el-menu-item>-->
             <!--            <el-menu-item index="/interfaceProtocol"><i class="el-icon-folder"></i>接口协议</el-menu-item>-->
           </el-submenu>
         </el-submenu>
@@ -48,7 +48,7 @@
             <span>脚本生成</span>
           </template>
           <el-menu-item index="/scriptDatabase"><i class="el-icon-folder"></i>脚本库</el-menu-item>
-          <el-menu-item index="/script"><i class="el-icon-folder"></i>测试数据脚本生成</el-menu-item>
+          <!--          <el-menu-item index="/script"><i class="el-icon-folder"></i>测试数据脚本生成</el-menu-item>-->
         </el-submenu>
         <!--        <el-menu-item index="/script"><i class="el-icon-folder"></i>脚本</el-menu-item>-->
       </el-menu>

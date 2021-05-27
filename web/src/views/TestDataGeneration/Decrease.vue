@@ -1,16 +1,34 @@
 <template>
   <div id="fullState">
     <el-card>
-      <el-table :data="tableData" :span-method="objectSpanMethod" border style="width: 100%; margin-top: 20px">
-        <el-table-column prop="page_id" label="ID" width="80"> </el-table-column>
-        <el-table-column prop="type2" label="类别" width="180"> </el-table-column>
+      <el-table
+        v-loading="loading"
+        element-loading-text="数据生成中..."
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.8)"
+        :data="tableData"
+        :span-method="objectSpanMethod"
+        border
+        style="width: 100%; margin-top: 20px"
+      >
+        <el-table-column prop="page_id" label="ID" width="40"> </el-table-column>
+        <el-table-column prop="type2" label="类别" width="80"> </el-table-column>
         <el-table-column prop="path" label="测试路径"> </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column prop="amount" label="定量" width="100">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.amount" class="tableCell"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="114">
           <template slot-scope="scope">
             <el-button size="mini" @click="generateDecrease(scope.$index, scope.row)" type="primary">递减值生成</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="result" label="测试数据"> </el-table-column>
+        <el-table-column prop="result" label="测试数据" width="100">
+          <template slot-scope="scope">
+            <el-link @click="gotoShow(scope.row)">data</el-link>
+          </template>
+        </el-table-column>
       </el-table>
       <el-pagination
         @size-change="handleSizeChange"
@@ -38,6 +56,8 @@ export default {
       page: 1, //第几页
       tableData: [],
       spanArr: [], //用于存放每一行记录的合并数
+      itemInfo: '',
+      loading: false,
     }
   },
   methods: {
@@ -76,9 +96,11 @@ export default {
     },
     generateDecrease(index, row) {
       console.log(index, row)
+      this.loading = true
       this.$http
-        .post(this.Global_Api + '/api/generation/generate_decrease', { info: row })
+        .post(this.Global_Api + '/api/generation/generate_decrease', row)
         .then((response) => {
+          this.loading = false
           console.log(response.data)
         })
         .catch(function (error) {
@@ -87,14 +109,14 @@ export default {
     },
     pageList() {
       this.$http
-        .get(this.Global_Api + '/api/generation/path_list')
+        .post(this.Global_Api + '/api/generation/path_list', this.itemInfo)
         .then((response) => {
           this.data = response.data.path_list
-          this.options = []
           for (let i = 0; i < this.data.length; i++) {
-            this.options.push({ value: this.data[i].name, label: this.data[i].name })
+            this.data[i].time = 0
+            this.data[i].amount = 1
           }
-
+          console.log(this.data)
           this.getList()
         })
         .catch(function (error) {
@@ -103,8 +125,6 @@ export default {
     },
     // 处理数据
     getList() {
-      // let list = this.data.filter((item, index) => item.name.includes(this.search))
-      // this.adjustId(list)
       let list = this.data
       this.adjustId(list)
       this.tableData = list.filter((item, index) => index < this.page * this.limit && index >= this.limit * (this.page - 1))
@@ -128,19 +148,29 @@ export default {
       this.page = val
       this.getList()
     },
+    getItemInfo() {
+      this.itemInfo = this.$store.state.item
+    },
+    gotoShow(row) {
+      row['name'] = '递减值'
+      console.log('test', row)
+      this.$store.commit('setPath', row)
+      this.$router.replace('/dataShow')
+    },
   },
   created() {
+    this.getItemInfo()
     this.pageList()
   },
 }
 </script>
 
-<style lang="scss" scoped>
-.divHelp {
-  margin-left: 55%;
-  height: 40px;
-  margin-top: -40px;
-  z-index: 1;
-  position: absolute;
+<style scoped></style>
+<style lang="scss">
+.tableCell {
+  .el-textarea__inner {
+    border: none;
+    resize: none;
+  }
 }
 </style>

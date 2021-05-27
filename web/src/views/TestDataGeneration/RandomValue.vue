@@ -13,7 +13,7 @@
       >
         <el-table-column prop="page_id" label="ID" width="40"> </el-table-column>
         <el-table-column prop="type2" label="类别" width="80"> </el-table-column>
-        <el-table-column prop="path" label="测试路径" width="280"> </el-table-column>
+        <el-table-column prop="path" label="测试路径"> </el-table-column>
         <el-table-column prop="amount" label="定量" width="100">
           <template slot-scope="scope">
             <el-input v-model="scope.row.amount" class="tableCell"></el-input>
@@ -29,7 +29,7 @@
             <el-button size="mini" @click="generateRandom(scope.$index, scope.row)" type="primary">随机值生成</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="result" label="测试数据">
+        <el-table-column prop="result" label="测试数据" width="100">
           <template slot-scope="scope">
             <el-link @click="gotoShow(scope.row)">data</el-link>
           </template>
@@ -119,7 +119,7 @@ export default {
           this.data = response.data.path_list
           for (let i = 0; i < this.data.length; i++) {
             this.data[i].time = 0
-            this.data[i].amount = 0
+            this.data[i].amount = 1
           }
           console.log(this.data)
           this.getList()

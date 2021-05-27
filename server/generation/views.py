@@ -103,6 +103,7 @@ def data_list(request):
     try:
         path_data = PathsData.objects.filter(paths_id=request_json['id'], name=request_json['name'])
         result = [p.to_dict() for p in path_data]
+        print(result)
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "data_list": result})
@@ -111,9 +112,30 @@ def data_list(request):
 # 生成递增值
 def generate_increase(request):
     request_json = json.loads(request.body)
-    print(request_json['info'])
     try:
-        pass
+        # 修改输入信息
+        path = "./efsmGA/files/"
+        filename = 'input.txt'
+        old_input = read_txt(path, filename)
+        old_input['type'] = 3
+        old_input['path'] = eval(request_json['path'])
+        old_input['amount'] = request_json['amount']
+        write_txt(path, filename, old_input)
+        # 运行data程序
+        os.system('py -2 ' + './efsmGA/data_generation.py')
+        # 读取output.txt信息
+        filename = 'output.txt'
+        result = read_txt(path, filename)
+        print('request_json', request_json)
+        print('result', str(result))
+        # 判断这条path这种方法name下有没有生成data，有就delete，无则save
+        aim_path_id = request_json['id']
+        new_type2 = request_json['type2']
+        new_name = '递增值'
+        new_data = result
+        PathsData.objects.filter(paths_id=aim_path_id, name=new_name).delete()
+        new_paths_data = PathsData(paths_id=aim_path_id, type2=new_type2, name=new_name, data=new_data)
+        new_paths_data.save()
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})
@@ -122,9 +144,30 @@ def generate_increase(request):
 # 生成递减值
 def generate_decrease(request):
     request_json = json.loads(request.body)
-    print(request_json['info'])
     try:
-        pass
+        # 修改输入信息
+        path = "./efsmGA/files/"
+        filename = 'input.txt'
+        old_input = read_txt(path, filename)
+        old_input['type'] = 4
+        old_input['path'] = eval(request_json['path'])
+        old_input['amount'] = request_json['amount']
+        write_txt(path, filename, old_input)
+        # 运行data程序
+        os.system('py -2 ' + './efsmGA/data_generation.py')
+        # 读取output.txt信息
+        filename = 'output.txt'
+        result = read_txt(path, filename)
+        print('request_json', request_json)
+        print('result', str(result))
+        # 判断这条path这种方法name下有没有生成data，有就delete，无则save
+        aim_path_id = request_json['id']
+        new_type2 = request_json['type2']
+        new_name = '递减值'
+        new_data = result
+        PathsData.objects.filter(paths_id=aim_path_id, name=new_name).delete()
+        new_paths_data = PathsData(paths_id=aim_path_id, type2=new_type2, name=new_name, data=new_data)
+        new_paths_data.save()
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})
@@ -166,9 +209,30 @@ def generate_random(request):
 # 生成边界值
 def generate_boundary(request):
     request_json = json.loads(request.body)
-    print(request_json['info'])
     try:
-        pass
+        # 修改输入信息
+        path = "./efsmGA/files/"
+        filename = 'input.txt'
+        old_input = read_txt(path, filename)
+        old_input['type'] = 2
+        old_input['path'] = eval(request_json['path'])
+        old_input['precision'] = request_json['precision']
+        write_txt(path, filename, old_input)
+        # 运行data程序
+        os.system('py -2 ' + './efsmGA/data_generation.py')
+        # 读取output.txt信息
+        filename = 'output.txt'
+        result = read_txt(path, filename)
+        print('request_json', request_json)
+        print('result', str(result))
+        # 判断这条path这种方法name下有没有生成data，有就delete，无则save
+        aim_path_id = request_json['id']
+        new_type2 = request_json['type2']
+        new_name = '边界值'
+        new_data = result
+        PathsData.objects.filter(paths_id=aim_path_id, name=new_name).delete()
+        new_paths_data = PathsData(paths_id=aim_path_id, type2=new_type2, name=new_name, data=new_data)
+        new_paths_data.save()
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})
@@ -177,9 +241,29 @@ def generate_boundary(request):
 # 生成MC/DC数据
 def generate_mcdc(request):
     request_json = json.loads(request.body)
-    print(request_json['info'])
     try:
-        pass
+        # 修改输入信息
+        path = "./efsmGA/files/"
+        filename = 'input.txt'
+        old_input = read_txt(path, filename)
+        old_input['type'] = 5
+        old_input['path'] = eval(request_json['path'])
+        write_txt(path, filename, old_input)
+        # 运行data程序
+        os.system('py -2 ' + './efsmGA/data_generation.py')
+        # 读取output.txt信息
+        filename = 'output.txt'
+        result = read_txt(path, filename)
+        print('request_json', request_json)
+        print('result', str(result))
+        # 判断这条path这种方法name下有没有生成data，有就delete，无则save
+        aim_path_id = request_json['id']
+        new_type2 = request_json['type2']
+        new_name = 'MC/DC'
+        new_data = result
+        PathsData.objects.filter(paths_id=aim_path_id, name=new_name).delete()
+        new_paths_data = PathsData(paths_id=aim_path_id, type2=new_type2, name=new_name, data=new_data)
+        new_paths_data.save()
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})

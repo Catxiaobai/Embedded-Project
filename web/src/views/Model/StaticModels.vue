@@ -1,5 +1,5 @@
 <template>
-  <el-card style="height: 600px">
+  <el-card style="height: 635px">
     <vfd></vfd>
   </el-card>
 </template>

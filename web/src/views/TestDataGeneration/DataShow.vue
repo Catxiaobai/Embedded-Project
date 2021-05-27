@@ -79,7 +79,13 @@ export default {
         .post(this.Global_Api + '/api/generation/data_list', this.pathInfo)
         .then((response) => {
           this.rawData = response.data.data_list
-          this.dataList(this.rawData[0].data)
+          console.log(this.rawData[0])
+          if (this.rawData[0].name === '随机值') {
+            this.dataList(this.rawData[0].data)
+          } else {
+            this.dataList2(this.rawData[0].data)
+          }
+
           this.getList()
         })
         .catch(function (error) {
@@ -129,6 +135,7 @@ export default {
     dataList(data) {
       data = eval('(' + data + ')') //神奇
       this.data = []
+      console.log(data)
       for (let key in data) {
         if (key !== 'name') {
           let temp = {
@@ -138,11 +145,36 @@ export default {
             name: this.rawData[0].name,
             type2: this.rawData[0].type2,
           }
+
           for (let i = 0; i < this.aimPath.length; i++) {
             temp[this.aimPath[i]] = data[key][this.aimPath[i]]
           }
           this.data.push(temp)
+          console.log(this.data)
         }
+      }
+    },
+    dataList2(data) {
+      data = eval('(' + data + ')') //神奇
+      this.data = []
+      console.log(data)
+      let max_len = data[this.aimPath[0]].length
+      for (let i = 0; i < this.aimPath.length; i++) {
+        max_len = Math.max(max_len, data[this.aimPath[i]].length)
+      }
+      for (let i = 0; i < max_len; i++) {
+        let temp = {
+          id: this.rawData[0].id,
+          path_id: this.rawData[0].path_id,
+          item_id: this.rawData[0].item_id,
+          name: this.rawData[0].name,
+          type2: this.rawData[0].type2,
+        }
+        for (let j = 0; j < this.aimPath.length; j++) {
+          temp[this.aimPath[j]] = data[this.aimPath[j]][i]
+        }
+        this.data.push(temp)
+        console.log(this.data)
       }
     },
   },
