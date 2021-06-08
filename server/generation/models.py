@@ -20,3 +20,6 @@ class PathsData(models.Model):
             'type2': self.type2,
             'name': self.name,
         }
+
+
+

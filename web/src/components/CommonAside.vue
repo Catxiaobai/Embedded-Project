@@ -5,51 +5,61 @@
         <el-submenu index="1">
           <template slot="title">
             <i class="el-icon-folder"></i>
-            <span>模型</span>
+            <span>模型构建</span>
           </template>
-          <!--          <el-menu-item index="/xmiImport"><i class="el-icon-folder"></i>XMI文件导入</el-menu-item>-->
           <el-submenu index="1-1">
             <template slot="title"><i class="el-icon-folder"></i>静态模型构建</template>
             <el-menu-item index="/staticModelInfo"><i class="el-icon-folder"></i>模型描述</el-menu-item>
-            <el-menu-item index="/staticModels"><i class="el-icon-folder"></i>模型查看与编辑</el-menu-item>
+            <el-menu-item index="/staticModels"><i class="el-icon-folder"></i>模型编辑</el-menu-item>
           </el-submenu>
           <el-submenu index="2-1">
             <template slot="title"><i class="el-icon-folder"></i>动态模型构建</template>
+            <el-menu-item index="/xmiImport"><i class="el-icon-folder"></i>XMI文件导入</el-menu-item>
             <el-menu-item index="/modelInfo"><i class="el-icon-folder"></i>模型描述</el-menu-item>
-            <el-menu-item index="/modelEdit"><i class="el-icon-folder"></i>模型查看与编辑</el-menu-item>
+            <el-menu-item index="/modelEdit"><i class="el-icon-folder"></i>模型构建与编辑</el-menu-item>
           </el-submenu>
         </el-submenu>
-        <el-menu-item index="/communicationProtocol"><i class="el-icon-folder"></i>通信协议</el-menu-item>
-        <el-menu-item index="/testTarget"><i class="el-icon-folder"></i>测试目标</el-menu-item>
+        <el-submenu index="4">
+          <template slot="title">
+            <i class="el-icon-folder"></i>
+            <span>通信协议设计</span>
+          </template>
+          <el-menu-item index="/communicationProtocol"><i class="el-icon-folder"></i>新建通信协议</el-menu-item>
+          <el-menu-item index="/ShowEdit"><i class="el-icon-folder"></i>查看与编辑</el-menu-item>
+          <!--          <el-menu-item index="/script"><i class="el-icon-folder"></i>测试数据脚本生成</el-menu-item>-->
+        </el-submenu>
+        <el-menu-item index="/scriptDatabase"><i class="el-icon-folder"></i>脚本库设计</el-menu-item>
         <el-submenu index="2">
           <template slot="title">
             <i class="el-icon-folder"></i>
             <span>测试生成</span>
           </template>
+
           <el-submenu index="2-1">
-            <template slot="title"><i class="el-icon-folder"></i>路径生成准则</template>
+            <template slot="title"><i class="el-icon-folder"></i>路径生成</template>
             <el-menu-item index="/fullState"><i class="el-icon-folder"></i>全状态</el-menu-item>
             <el-menu-item index="/fullMigration"><i class="el-icon-folder"></i>全迁移</el-menu-item>
           </el-submenu>
           <el-submenu index="2-2">
-            <template slot="title"><i class="el-icon-folder"></i>数据生成准则</template>
+            <template slot="title"><i class="el-icon-folder"></i>数据及脚本生成</template>
             <el-menu-item index="/randomValue"><i class="el-icon-folder"></i>随机值</el-menu-item>
             <el-menu-item index="/boundaryValue"><i class="el-icon-folder"></i>边界值</el-menu-item>
             <el-menu-item index="/increase"><i class="el-icon-folder"></i>递增值</el-menu-item>
             <el-menu-item index="/decrease"><i class="el-icon-folder"></i>递减值</el-menu-item>
+            <!--            <el-menu-item index="/conditionCoverage"><i class="el-icon-folder"></i>条件覆盖</el-menu-item>-->
             <el-menu-item index="/mcDcCoverage"><i class="el-icon-folder"></i>MC/DC覆盖</el-menu-item>
             <!--            <el-menu-item index="/dataShow"><i class="el-icon-folder"></i>测试界面</el-menu-item>-->
             <!--            <el-menu-item index="/interfaceProtocol"><i class="el-icon-folder"></i>接口协议</el-menu-item>-->
           </el-submenu>
         </el-submenu>
-        <el-submenu index="3">
-          <template slot="title">
-            <i class="el-icon-folder"></i>
-            <span>脚本生成</span>
-          </template>
-          <el-menu-item index="/scriptDatabase"><i class="el-icon-folder"></i>脚本库</el-menu-item>
-          <!--          <el-menu-item index="/script"><i class="el-icon-folder"></i>测试数据脚本生成</el-menu-item>-->
-        </el-submenu>
+        <!--        <el-submenu index="3">-->
+        <!--          <template slot="title">-->
+        <!--            <i class="el-icon-folder"></i>-->
+        <!--            <span>脚本生成</span>-->
+        <!--          </template>-->
+        <!--          <el-menu-item index="/scriptDatabase"><i class="el-icon-folder"></i>脚本库</el-menu-item>-->
+        <!--          <el-menu-item index="/script"><i class="el-icon-folder"></i>测试数据脚本生成</el-menu-item>-->
+        <!--        </el-submenu>-->
         <!--        <el-menu-item index="/script"><i class="el-icon-folder"></i>脚本</el-menu-item>-->
       </el-menu>
     </div>

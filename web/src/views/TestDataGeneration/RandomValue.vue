@@ -10,16 +10,17 @@
         :span-method="objectSpanMethod"
         border
         style="width: 100%; margin-top: 20px"
+        @filter-change="filterType"
       >
         <el-table-column prop="page_id" label="ID" width="40"> </el-table-column>
-        <el-table-column prop="type2" label="类别" width="80"> </el-table-column>
+        <el-table-column prop="type2" label="类别" width="80" :filters="filterItem"> </el-table-column>
         <el-table-column prop="path" label="测试路径"> </el-table-column>
-        <el-table-column prop="amount" label="定量" width="100">
+        <el-table-column prop="amount" label="规模" width="100">
           <template slot-scope="scope">
             <el-input v-model="scope.row.amount" class="tableCell"></el-input>
           </template>
         </el-table-column>
-        <el-table-column prop="time" label="定时" width="100">
+        <el-table-column prop="time" label="时长" width="100">
           <template slot-scope="scope">
             <el-input class="tableCell" autosize v-model="scope.row.time"> </el-input>
           </template>
@@ -63,6 +64,10 @@ export default {
       spanArr: [], //用于存放每一行记录的合并数
       itemInfo: '',
       loading: false,
+      filterItem: [
+        { text: '全状态', value: '全状态' },
+        { text: '全迁移', value: '全迁移' },
+      ],
     }
   },
   methods: {
@@ -116,12 +121,12 @@ export default {
       this.$http
         .post(this.Global_Api + '/api/generation/path_list', this.itemInfo)
         .then((response) => {
-          this.data = response.data.path_list
-          for (let i = 0; i < this.data.length; i++) {
-            this.data[i].time = 0
-            this.data[i].amount = 1
+          this.rawData = response.data.path_list
+          for (let i = 0; i < this.rawData.length; i++) {
+            this.rawData[i].time = 0
+            this.rawData[i].amount = 1
           }
-          console.log(this.data)
+          this.data = this.rawData
           this.getList()
         })
         .catch(function (error) {
@@ -163,6 +168,23 @@ export default {
       console.log('test', row)
       this.$store.commit('setPath', row)
       this.$router.replace('/dataShow')
+    },
+    filterType(value) {
+      let key = ''
+      for (key in value) {
+        console.log(value[key])
+      }
+      if (value[key].length === 1) {
+        this.data = []
+        for (let i = 0; i < this.rawData.length; i++) {
+          if (this.rawData[i].type2 === value[key][0]) {
+            this.data.push(this.rawData[i])
+          }
+        }
+      } else {
+        this.data = this.rawData
+      }
+      this.getList()
     },
   },
   created() {

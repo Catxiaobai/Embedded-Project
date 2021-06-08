@@ -125,6 +125,43 @@ def scenes_list(request):
     return JsonResponse({**error_code.CLACK_SUCCESS, "scenes_list": result})
 
 
+# 删除场景
+def delete_scenes(request):
+    request_json = json.loads(request.body)
+    try:
+        # print(request_json)
+        for i in range(len(request_json)):
+            aim_id = request_json[i]['id']
+            if not Scenes.objects.filter(id=aim_id).exists():
+                return JsonResponse({**error_code.CLACK_NOT_EXISTS})
+            Scenes.objects.get(id=aim_id).delete()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+# 编辑场景
+def edit_scenes(request):
+    request_json = json.loads(request.body)
+    try:
+        new_describe = request_json['describe']
+        new_element = request_json['element']
+        new_content = request_json['content']
+        aim_id = request_json['id']
+        new_name = request_json['name']
+        new_type = request_json['type']
+        if not Scenes.objects.filter(id=aim_id).exists():
+            return Scenes({**error_code.CLACK_NOT_EXISTS})
+        Scenes.objects.filter(id=aim_id).update(name=new_name)
+        Scenes.objects.filter(id=aim_id).update(type=new_type)
+        Scenes.objects.filter(id=aim_id).update(describe=new_describe)
+        Scenes.objects.filter(id=aim_id).update(element=new_element)
+        Scenes.objects.filter(id=aim_id).update(content=new_content)
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
 def import_scenes(request):
     request_json = json.loads(request.body)
     filename = request_json['name']
@@ -292,6 +329,173 @@ def delete_item(request):
     try:
         aim_id = request_json['id']
         Item.objects.get(id=aim_id).delete()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+# 添加点和边
+def add_node_link(request):
+    request_jsons = json.loads(request.body)
+    try:
+        print(request_jsons)
+        get_type = request_jsons['type']
+        get_item = request_jsons['item']
+        get_addForm = request_jsons['addForm']
+        file_path = './file/'
+
+        new_node = {"label": get_addForm['node_label_show'],
+                    "name": get_addForm['node_name']}
+        new_link = {"name": get_addForm['link_name_show'],
+                    "src": 'S' + str(get_addForm['source']),
+                    "tgt": 'S' + str(get_addForm['target']),
+                    "event": get_addForm['event'],
+                    "condition": get_addForm['condition'],
+                    "action": get_addForm['action']}
+        # 修改result.txt
+        if get_type == 'sub':
+            file_name = 'result.txt'
+        elif get_type == 'complex':
+            file_name = 'result2.txt'
+        with open(file_path + file_name, 'r', encoding='utf-8') as f:
+            lines = f.read().split('\n')
+        with open(file_path + file_name, 'w', encoding='utf-8') as f:
+            for i in range(len(lines)):
+                if lines[i] == 'Transition:' and lines[i - 3] == 'State:':
+                    f.write('State:\n')
+                    f.write('\tlabel=' + new_node['label'] + '\n')
+                    f.write('\tname=' + new_node['name'] + '\n')
+                if lines[i] != '':
+                    print(lines[i])
+                    f.write(lines[i] + '\n')
+            f.write('Transition:\n'
+                    + '\tname=' + new_link['name'] + '\n'
+                    + '\tsrc=' + new_link['src'] + '\n'
+                    + '\ttgt=' + new_link['tgt'] + '\n'
+                    + '\tevent=' + new_link['event'] + '\n'
+                    + '\tcondition=' + new_link['condition'] + '\n'
+                    + '\taction=' + new_link['action'])
+        # 修改resultModel.txt
+        if get_type == 'sub':
+            file_name = 'resultModel.txt'
+        elif get_type == 'complex':
+            file_name = 'resultModel2.txt'
+        with open(file_path + file_name, 'r', encoding='utf-8') as f:
+            lines = f.read().split('\n')
+        with open(file_path + file_name, 'w', encoding='utf-8') as f:
+            for i in range(len(lines)):
+                if lines[i] == 'Transition:' and lines[i - 2] == 'State:':
+                    f.write('State:\n')
+                    f.write('\tname=' + new_node['label'] + '\n')
+                if lines[i] != '':
+                    print(lines[i])
+                    f.write(lines[i] + '\n')
+            if new_link['src'] == 'S0':
+                new_link['src'] = 'START'
+            f.write('Transition:\n'
+                    + '\tname=' + new_link['name'] + '\n'
+                    + '\tsrc=' + new_link['src'] + '\n'
+                    + '\ttgt=' + new_link['tgt'] + '\n'
+                    + '\tevent=' + new_link['event'] + '\n'
+                    + '\tcondition=' + new_link['condition'] + '\n'
+                    + '\taction=' + new_link['action'])
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+# 添加边
+def add_link(request):
+    request_jsons = json.loads(request.body)
+    try:
+        print(request_jsons)
+        get_type = request_jsons['type']
+        get_item = request_jsons['item']
+        get_addForm = request_jsons['addForm']
+        file_path = './file/'
+        new_link = {"name": get_addForm['link_name_show'],
+                    "src": 'S' + str(get_addForm['source']),
+                    "tgt": 'S' + str(get_addForm['target']),
+                    "event": get_addForm['event'],
+                    "condition": get_addForm['condition'],
+                    "action": get_addForm['action']}
+        # 修改result.txt
+        if get_type == 'sub':
+            file_name = 'result.txt'
+        elif get_type == 'complex':
+            file_name = 'result2.txt'
+        with open(file_path + file_name, 'a', encoding='utf-8') as f:
+            f.write('Transition:\n'
+                    + '\tname=' + new_link['name'] + '\n'
+                    + '\tsrc=' + new_link['src'] + '\n'
+                    + '\ttgt=' + new_link['tgt'] + '\n'
+                    + '\tevent=' + new_link['event'] + '\n'
+                    + '\tcondition=' + new_link['condition'] + '\n'
+                    + '\taction=' + new_link['action'])
+
+        # 修改resultModel.txt
+        if get_type == 'sub':
+            file_name = 'resultModel.txt'
+        elif get_type == 'complex':
+            file_name = 'resultModel2.txt'
+        with open(file_path + file_name, 'a', encoding='utf-8') as f:
+            if new_link['src'] == 'S0':
+                new_link['src'] = 'START'
+            if new_link['tgt'] == 'S0':
+                new_link['tgt'] = 'START'
+            f.write('Transition:\n'
+                    + '\tname=' + new_link['name'] + '\n'
+                    + '\tsrc=' + new_link['src'] + '\n'
+                    + '\ttgt=' + new_link['tgt'] + '\n'
+                    + '\tevent=' + new_link['event'] + '\n'
+                    + '\tcondition=' + new_link['condition'] + '\n'
+                    + '\taction=' + new_link['action'])
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+# 保存删除前模型
+def save_delete(request):
+    request_jsons = json.loads(request.body)
+    try:
+        get_item = request_jsons['item']
+        get_type = request_jsons['type']
+        file_path = './file/'
+        if get_type == 'sub':
+            file_name1 = 'result.txt'
+            file_name2 = 'resultModel.txt'
+        elif get_type == 'complex':
+            file_name1 = 'result2.txt'
+            file_name2 = 'resultModel2.txt'
+        with open(file_path + 'deleteResult.txt', 'wt+', encoding='utf-8') as f:
+            f.write(open(file_path + file_name1, 'r', encoding='utf-8').read())
+        with open(file_path + 'deleteResultModel.txt', 'wt+', encoding='utf-8') as f:
+            f.write(open(file_path + file_name2, 'r', encoding='utf-8').read())
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+# 撤销删除边
+def redo_delete(request):
+    request_jsons = json.loads(request.body)
+    try:
+        get_item = request_jsons['item']
+        get_type = request_jsons['type']
+        file_path = './file/'
+        if get_type == 'sub':
+            file_name1 = 'result.txt'
+            file_name2 = 'resultModel.txt'
+        elif get_type == 'complex':
+            file_name1 = 'result2.txt'
+            file_name2 = 'resultModel2.txt'
+        with open(file_path + file_name1, 'wt+', encoding='utf-8') as f:
+            f.write(open(file_path + 'deleteResult.txt',
+                         'r', encoding='utf-8').read())
+        with open(file_path + file_name2, 'wt+', encoding='utf-8') as f:
+            f.write(open(file_path + 'deleteResultModel.txt',
+                         'r', encoding='utf-8').read())
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS})

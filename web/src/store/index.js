@@ -11,6 +11,7 @@ const store = new Vuex.Store({
     item: '',
     user: '',
     path: '',
+    scriptData: '',
   },
   getters: {
     getItem(state) {
@@ -18,6 +19,9 @@ const store = new Vuex.Store({
     },
     getPath(state) {
       return state.path
+    },
+    getScriptData(state) {
+      return state.scriptData
     },
   },
   mutations: {
@@ -30,6 +34,9 @@ const store = new Vuex.Store({
     },
     setPath(state, newPath) {
       state.path = newPath
+    },
+    setScriptData(state, newData) {
+      state.scriptData = newData
     },
   },
 })

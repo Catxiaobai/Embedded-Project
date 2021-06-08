@@ -20,8 +20,10 @@
           <div class="grid-content">
             <div>
               <a style="font-size: 30px; margin-left: 30%">测试用例集</a>
-              <el-card style="margin-top: 30px; height: 500px">
-                <div>{{ test_cases_result }}</div>
+              <el-card style="margin-top: 30px; height: 550px">
+                <div style="white-space: pre-wrap; overflow: auto; height: 500px">
+                  <p>{{ test_cases_result }}</p>
+                </div>
               </el-card>
             </div>
           </div></el-col
@@ -183,7 +185,7 @@ export default {
         // 图标的style
         $(go.Shape, 'Circle', {
           desiredSize: new go.Size(67, 67),
-          fill: $(go.Brush, 'Linear', { 0: 'rgb(0,191,255)', 1: 'rgb(30,144,255)' }),
+          fill: $(go.Brush, 'Linear', { 0: 'rgb(201, 218, 248)', 1: 'rgb(201, 218, 248)' }),
           stroke: 'black',
           portId: '',
           fromLinkable: true,

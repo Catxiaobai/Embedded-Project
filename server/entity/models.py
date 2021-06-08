@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 
 
@@ -108,3 +109,33 @@ class Paths(models.Model):
             'path': self.path
         }
 
+
+# 脚本
+class Protocol(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    subject_name = models.TextField(default='')
+    date = models.TextField(default='')
+    version = models.TextField(default='')
+    bus_type = models.TextField(default='')
+    communication_method = models.TextField(default='')
+    refresh_cycle = models.TextField(default='')
+    frame_header = models.TextField(default='')
+    frame_tail = models.TextField(default='')
+    message_length = models.TextField(default='')
+    check_method = models.TextField(default='')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'item': self.item.id,
+            'subject_name': self.subject_name,
+            'date': self.date,
+            'version': self.version,
+            'bus_type': self.bus_type,
+            'communication_method': self.communication_method,
+            'refresh_cycle': self.refresh_cycle,
+            'frame_header': self.frame_header,
+            'frame_tail': self.frame_tail,
+            'message_length': self.message_length,
+            'check_method': self.check_method
+        }

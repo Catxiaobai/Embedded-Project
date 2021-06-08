@@ -109,7 +109,7 @@ export default {
       }
     },
     gotoTest() {
-      this.$router.replace('/communicationProtocol')
+      this.$router.replace('/showEdit')
     },
   },
   mounted() {

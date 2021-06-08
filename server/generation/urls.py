@@ -28,7 +28,14 @@ urlpatterns = [
     path('generate_random', views.generate_random, name='generate_random'),  # 随机值
     path('generate_boundary', views.generate_boundary, name='generate_boundary'),  # 边界值
     path('generate_mcdc', views.generate_mcdc, name='generate_mcdc'),  # MC/DC覆盖
+    path('generate_condition', views.generate_condition, name='generate_condition'),  # 条件覆盖
     path('xmi_modeling', views.xmi_modeling, name='xmi_modeling'),  # xmi建模
     path('scenes_modeling', views.scenes_modeling, name='scenes_modeling'),  # 建模
-    path('test', views.test, name='test'),  # 建模
+    path('generate_script', views.generate_script, name='generate_script'),  # 脚本生成
+    path('add_protocol', views.add_protocol, name='add_protocol'),  # 添加通信协议
+    path('protocol_list', views.protocol_list, name='protocol_list'),  # 通信协议列表
+    path('edit_protocol', views.edit_protocol, name='edit_protocol'),  # 编辑通信协议
+    path('delete_protocol', views.delete_protocol, name='delete_protocol'),  # 删除通信协议
+    path('get_parameter', views.get_parameter, name='get_parameter'),  # 删除通信协议
+    path('test', views.test, name='test'),  # 测试
 ]

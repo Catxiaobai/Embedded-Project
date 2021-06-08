@@ -2,15 +2,15 @@
   <div id="complexSceneModel">
     <el-card>
       <div id="action" style="display: flex; margin-bottom: 20px">
-        <el-upload :action="doUpload" :on-success="handleImport" :show-file-list="false">
-          <a style="color: #38b2ff; margin-left: 30px"> XMI文件导入</a>
-        </el-upload>
-        <div id="stateAction" style="margin-left: 50%">
-          <el-button type="primary" @click="modeling">模型构建</el-button>
-        </div>
+        <!--        <el-upload :action="doUpload" :on-success="handleImport" :show-file-list="false">-->
+        <!--          <a style="color: #38b2ff; margin-left: 30px"> XMI文件导入</a>-->
+        <!--        </el-upload>-->
+        <!--        <div id="stateAction" style="margin-left: 45%">-->
+        <!--          <el-button type="primary" @click="modeling">模型构建</el-button>-->
+        <!--        </div>-->
       </div>
       <!--        <el-button type="primary" @click="reduction" v-show="buttonShow.reduction">模型还原</el-button>-->
-      <div v-show="diagram.uml" style="background-color: whitesmoke; border: solid 1px black; width: 100%; height: 520px">
+      <div v-show="diagram.uml" style="background-color: whitesmoke; border: solid 1px black; width: 100%; height: 600px">
         <!--        <span class="demonstration">请选择需要导入的文件</span>-->
         <el-image :src="umlSrc" style="width: 100%; height: 100%" fit="contain" :preview-src-list="umlSrcList">
           <div slot="error" class="image-slot">
@@ -21,10 +21,88 @@
       <div
         id="myDiagramDiv"
         v-show="diagram.state"
-        style="background-color: whitesmoke; border: solid 1px black; width: 100%; height: 520px"
+        style="background-color: whitesmoke; border: solid 1px black; width: 100%; height: 590px"
         ref="generatePicture"
       ></div>
     </el-card>
+    <div id="addNode">
+      <el-dialog :close-on-click-modal="false" title="ADD" :visible.sync="visible.addNodeDialog" center @close="resetForm('addForm')" width="55%">
+        <el-form :model="addForm" :rules="rules" ref="addForm" style="display: flex">
+          <el-card id="nodeCard">
+            State
+            <el-form-item label="State name" label-width="120px" prop="node_name">
+              <el-input v-model="addForm.node_name" clearable placeholder="please enter state name"></el-input>
+            </el-form-item>
+            <el-form-item label="State label" label-width="120px" prop="node_label_show">
+              <el-input v-model="addForm.node_label_show" clearable placeholder="please enter state label" disabled></el-input>
+            </el-form-item>
+          </el-card>
+          <el-card id="linkCard" style="margin-left: 10px">
+            link
+            <el-form-item label="link_name" label-width="120px" prop="link_name">
+              <el-input v-model="addForm.link_name_show" clearable placeholder="please enter link name" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="source" label-width="120px" prop="source">
+              <el-input v-model="addForm.source" clearable placeholder="please enter source" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="target" label-width="120px" prop="target">
+              <el-input v-model="addForm.target" clearable placeholder="please enter target" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="action" label-width="120px" prop="action">
+              <el-input v-model="addForm.action" clearable placeholder="please enter action"></el-input>
+            </el-form-item>
+            <el-form-item label="event" label-width="120px" prop="event">
+              <el-input v-model="addForm.event" clearable placeholder="please enter event"></el-input>
+            </el-form-item>
+            <el-form-item label="condition" label-width="120px" prop="condition">
+              <el-input v-model="addForm.condition" clearable placeholder="please enter condition"></el-input>
+            </el-form-item>
+          </el-card>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="visible.addNodeDialog = false">No</el-button>
+          <el-button type="primary" @click="handleAddNodeCommit('addForm')">Yes</el-button>
+        </div>
+      </el-dialog>
+    </div>
+    <div id="addLink">
+      <el-dialog
+        :close-on-click-modal="false"
+        title="添加边"
+        :visible.sync="visible.addLinkDialog"
+        center
+        @close="resetForm('addForm2')"
+        width="30%"
+        :show-close="false"
+      >
+        <el-form :model="addForm2" :rules="rules" ref="addForm2" style="display: flex">
+          <el-card style="margin-left: 10px">
+            <el-form-item label="link_name" label-width="120px" prop="link_name">
+              <el-input v-model="addForm2.link_name_show" clearable placeholder="请输入边的name" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="source" label-width="120px" prop="source">
+              <el-input v-model="addForm2.source" clearable placeholder="请输入source" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="target" label-width="120px" prop="target">
+              <el-input v-model="addForm2.target" clearable placeholder="请输入target" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="action" label-width="120px" prop="action">
+              <el-input v-model="addForm2.action" clearable placeholder="请输入action"></el-input>
+            </el-form-item>
+            <el-form-item label="event" label-width="120px" prop="event">
+              <el-input v-model="addForm2.event" clearable placeholder="请输入event"></el-input>
+            </el-form-item>
+            <el-form-item label="condition" label-width="120px" prop="condition">
+              <el-input v-model="addForm2.condition" clearable placeholder="请输入condition"></el-input>
+            </el-form-item>
+          </el-card>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="handleAddLinkCancel">取 消</el-button>
+          <el-button type="primary" @click="handleAddLinkCommit('addForm2')">确 定</el-button>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -82,6 +160,12 @@ export default {
       ],
       value: '',
       itemInfo: '',
+      visible: {
+        addNodeDialog: false,
+        addLinkDialog: false,
+        deleteTipDialog: false,
+        safeDeleteDialog: false,
+      },
       diagram: {
         state: true,
         activity: false,
@@ -89,6 +173,27 @@ export default {
         useCase: false,
         class: false,
         uml: false,
+      },
+      addForm: {
+        node_name: '',
+        node_label: '',
+        node_label_show: '',
+        link_name: '',
+        link_name_show: '',
+        source: '',
+        target: '',
+        event: '',
+        condition: '',
+        action: '',
+      },
+      addForm2: {
+        link_name: '',
+        link_name_show: '',
+        source: '',
+        target: '',
+        event: '',
+        condition: '',
+        action: '',
       },
       extrafile: '',
       umlSrc: '',
@@ -200,7 +305,7 @@ export default {
         // 图标的style
         $(go.Shape, 'Circle', {
           desiredSize: new go.Size(67, 67),
-          fill: $(go.Brush, 'Linear', { 0: 'rgb(0,191,255)', 1: 'rgb(30,144,255)' }),
+          fill: $(go.Brush, 'Linear', { 0: 'rgb(201, 218, 248)', 1: 'rgb(201, 218, 248)' }),
           stroke: 'black',
           portId: '',
           fromLinkable: true,
@@ -518,11 +623,12 @@ export default {
     },
     getItemInfo() {
       this.itemInfo = this.$store.state.item
+      this.modeling()
     },
     modeling() {
       console.log('test')
       this.$http
-        .post(this.Global_Api + '/api/generation/scenes_modeling', { item: this.itemInfo, type: 'complex', element: '状态迁移' })
+        .post(this.Global_Api + '/api/scenes_modeling', { item: this.itemInfo, type: 'complex', element: '状态迁移' })
         .then((response) => {
           console.log(response)
           this.getData()
@@ -575,6 +681,28 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
+    },
+    addNewNode(e, obj) {
+      console.log(e, obj)
+      let adorn = obj.part
+      let fromData = adorn.adornedPart.data
+      console.log(fromData)
+      this.visible.addNodeDialog = true
+      this.addForm.node_label_show = 'S' + this.addForm.node_label.toString()
+      this.addForm.link_name_show = 't' + this.addForm.link_name.toString()
+      this.addForm.target = this.addForm.node_label
+      this.addForm.source = fromData.id
+    },
+    addNewLink(e) {
+      console.log(e.subject.data)
+      this.visible.addLinkDialog = true
+      this.addForm2.link_name_show = 't' + this.addForm2.link_name.toString()
+      this.addForm2.target = e.subject.data.to
+      this.addForm2.source = e.subject.data.from
+    },
+    handleAddLinkCancel() {
+      this.myDiagram.undoManager.undo()
+      this.visible.addLinkDialog = false
     },
   },
   created() {

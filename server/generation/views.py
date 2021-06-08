@@ -1,9 +1,10 @@
 import json
 import os
+import re
 
 from django.http import JsonResponse
 
-from entity.models import Paths
+from entity.models import Paths, Protocol
 from generation.models import PathsData
 from lwn_Graphic import script
 from server import error_code
@@ -269,6 +270,37 @@ def generate_mcdc(request):
     return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})
 
 
+# 生成条件覆盖数据
+def generate_condition(request):
+    request_json = json.loads(request.body)
+    try:
+        # 修改输入信息
+        path = "./efsmGA/files/"
+        filename = 'input.txt'
+        old_input = read_txt(path, filename)
+        old_input['type'] = 6
+        old_input['path'] = eval(request_json['path'])
+        write_txt(path, filename, old_input)
+        # 运行data程序
+        os.system('py -2 ' + './efsmGA/data_generation.py')
+        # 读取output.txt信息
+        filename = 'output.txt'
+        result = read_txt(path, filename)
+        print('request_json', request_json)
+        print('result', str(result))
+        # 判断这条path这种方法name下有没有生成data，有就delete，无则save
+        aim_path_id = request_json['id']
+        new_type2 = request_json['type2']
+        new_name = '条件覆盖'
+        new_data = result
+        PathsData.objects.filter(paths_id=aim_path_id, name=new_name).delete()
+        new_paths_data = PathsData(paths_id=aim_path_id, type2=new_type2, name=new_name, data=new_data)
+        new_paths_data.save()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})
+
+
 def xmi_modeling(request):
     request_jsons = json.loads(request.body)
     print(request_jsons)
@@ -308,6 +340,121 @@ def scenes_modeling(request):
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+# 脚本生成
+def generate_script(request):
+    request_jsons = json.loads(request.body)
+    print(request_jsons)
+    try:
+        result = []
+        filepath = './efsmGA/files/'
+        filename = 'efsm_atm.txt'
+        for key in request_jsons:
+            regular = re.compile(r"T[0-9]+")
+            if regular.match(key):
+                print(key, request_jsons[key])
+                result.append(script.main(key, request_jsons[key], filepath + filename))
+        print(result)
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "result": result})
+
+
+# 新建协议
+def add_protocol(request):
+    request_json = json.loads(request.body)
+    try:
+        new_subject_name = request_json['subject_name']
+        new_date = request_json['date']
+        new_version = request_json['version']
+        new_bus_type = request_json['bus_type']
+        new_communication_method = request_json['communication_method']
+        new_refresh_cycle = request_json['refresh_cycle']
+        new_frame_header = request_json['frame_header']
+        new_frame_tail = request_json['frame_tail']
+        new_check_method = request_json['check_method']
+        new_item_id = request_json['item_id']
+        if Protocol.objects.filter(bus_type=new_bus_type):
+            return JsonResponse({**error_code.CLACK_NAME_EXISTS})
+        new_protocol = Protocol(
+            subject_name=new_subject_name,
+            date=new_date,
+            version=new_version,
+            bus_type=new_bus_type,
+            communication_method=new_communication_method,
+            refresh_cycle=new_refresh_cycle,
+            frame_header=new_frame_header,
+            frame_tail=new_frame_tail,
+            check_method=new_check_method,
+            item_id=new_item_id)
+        new_protocol.save()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+# 协议列表
+def protocol_list(request):
+    request_json = json.loads(request.body)
+    try:
+        protocols = Protocol.objects.filter(item_id=request_json['id'])
+        result = [p.to_dict() for p in protocols]
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "protocol_list": result})
+
+
+# 编辑协议
+def edit_protocol(request):
+    request_json = json.loads(request.body)
+    try:
+        aim_id = request_json['id']
+        new_subject_name = request_json['subject_name']
+        new_date = request_json['date']
+        new_version = request_json['version']
+        new_bus_type = request_json['bus_type']
+        new_communication_method = request_json['communication_method']
+        new_refresh_cycle = request_json['refresh_cycle']
+        new_frame_header = request_json['frame_header']
+        new_frame_tail = request_json['frame_tail']
+        new_check_method = request_json['check_method']
+        if not Protocol.objects.filter(id=aim_id).exists():
+            return Protocol({**error_code.CLACK_NOT_EXISTS})
+        Protocol.objects.filter(id=aim_id).update(subject_name=new_subject_name)
+        Protocol.objects.filter(id=aim_id).update(date=new_date)
+        Protocol.objects.filter(id=aim_id).update(version=new_version)
+        Protocol.objects.filter(id=aim_id).update(bus_type=new_bus_type)
+        Protocol.objects.filter(id=aim_id).update(communication_method=new_communication_method)
+        Protocol.objects.filter(id=aim_id).update(refresh_cycle=new_refresh_cycle)
+        Protocol.objects.filter(id=aim_id).update(frame_header=new_frame_header)
+        Protocol.objects.filter(id=aim_id).update(frame_tail=new_frame_tail)
+        Protocol.objects.filter(id=aim_id).update(check_method=new_check_method)
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+# 删除协议
+def delete_protocol(request):
+    request_json = json.loads(request.body)
+    try:
+        aim_id = request_json['id']
+        Protocol.objects.get(id=aim_id).delete()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+# 删除协议
+def get_parameter(request):
+    try:
+        path = "./efsmGA/files/"
+        filename = 'parameter.txt'
+        parameter = read_txt(path, filename)
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "parameter": parameter})
 
 
 def test(request):

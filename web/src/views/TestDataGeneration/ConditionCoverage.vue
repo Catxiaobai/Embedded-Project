@@ -10,19 +10,13 @@
         :span-method="objectSpanMethod"
         border
         style="width: 100%; margin-top: 20px"
-        @filter-change="filterType"
       >
         <el-table-column prop="page_id" label="ID" width="40"> </el-table-column>
-        <el-table-column prop="type2" label="类别" width="80" :filters="filterItem"> </el-table-column>
+        <el-table-column prop="type2" label="类别" width="80"> </el-table-column>
         <el-table-column prop="path" label="测试路径"> </el-table-column>
-        <el-table-column prop="amount" label="规模" width="100">
+        <el-table-column label="操作" width="151">
           <template slot-scope="scope">
-            <el-input v-model="scope.row.amount" class="tableCell"></el-input>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="114">
-          <template slot-scope="scope">
-            <el-button size="mini" @click="generateIncrease(scope.$index, scope.row)" type="primary">递增值生成</el-button>
+            <el-button size="mini" @click="generateCondition(scope.$index, scope.row)" type="primary">条件覆盖数据生成</el-button>
           </template>
         </el-table-column>
         <el-table-column prop="result" label="测试数据" width="100">
@@ -59,10 +53,6 @@ export default {
       spanArr: [], //用于存放每一行记录的合并数
       itemInfo: '',
       loading: false,
-      filterItem: [
-        { text: '全状态', value: '全状态' },
-        { text: '全迁移', value: '全迁移' },
-      ],
     }
   },
   methods: {
@@ -99,11 +89,11 @@ export default {
         }
       }
     },
-    generateIncrease(index, row) {
+    generateCondition(index, row) {
       console.log(index, row)
       this.loading = true
       this.$http
-        .post(this.Global_Api + '/api/generation/generate_increase', row)
+        .post(this.Global_Api + '/api/generation/generate_condition', row)
         .then((response) => {
           this.loading = false
           console.log(response.data)
@@ -116,12 +106,12 @@ export default {
       this.$http
         .post(this.Global_Api + '/api/generation/path_list', this.itemInfo)
         .then((response) => {
-          this.rawData = response.data.path_list
-          for (let i = 0; i < this.rawData.length; i++) {
-            this.rawData[i].time = 0
-            this.rawData[i].amount = 1
+          this.data = response.data.path_list
+          for (let i = 0; i < this.data.length; i++) {
+            this.data[i].time = 0
+            this.data[i].amount = 0
           }
-          this.data = this.rawData
+          console.log(this.data)
           this.getList()
         })
         .catch(function (error) {
@@ -159,27 +149,10 @@ export default {
       this.itemInfo = this.$store.state.item
     },
     gotoShow(row) {
-      row['name'] = '递增值'
+      row['name'] = '条件覆盖'
       console.log('test', row)
       this.$store.commit('setPath', row)
       this.$router.replace('/dataShow')
-    },
-    filterType(value) {
-      let key = ''
-      for (key in value) {
-        console.log(value[key])
-      }
-      if (value[key].length === 1) {
-        this.data = []
-        for (let i = 0; i < this.rawData.length; i++) {
-          if (this.rawData[i].type2 === value[key][0]) {
-            this.data.push(this.rawData[i])
-          }
-        }
-      } else {
-        this.data = this.rawData
-      }
-      this.getList()
     },
   },
   created() {

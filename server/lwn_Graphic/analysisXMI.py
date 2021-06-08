@@ -70,20 +70,22 @@ def analysis(path, filename):
     wf = codecs.open(path+"result2.txt", 'w', encoding="utf-8")
     for key in range(len(res)):
         wf.write("State:\n\tlabel=S" + str(key) + '\n\t' + "name=" + res[key] + '\n')
-
+    t = [('上电', 'off'), ('工作状态', 'off'), ('工作状态', 'Pseudostate1'), ('分离', '运行'), ('运行', '入轨'),
+         ('Pseudostate1', 'FinalState'), ('Pseudostate', 'FinalState')]
+    ra = ra + t
     zd = {}
     key = 0
     for name in res:
         zd[name] = 'S' + str(key)
         key += 1
     for key in range(len(ra)):
-        if key == len(ra) - 1:
-            wf.write("Transition:\n\t\tname=T" + str(key) + '\n\t\tsrc=' + zd[ra[key][0]] + '\n\t\ttgt=' + zd[
-                ra[key][0]] + '\n\t\t' + 'event=' + '\n\t\t' + 'condition=' + '\n\t\t' + 'action=')
-        else:
-            wf.write("Transition:\n\t\tname=T" + str(key) + '\n\t\tsrc=' + zd[ra[key][0]] \
-                     + '\n\t\ttgt=' + zd[
-                         ra[key][1]] + '\n\t\t' + 'event=' + '\n\t\t' + 'condition=' + '\n\t\t' + 'action=' + '\n')
+        # if key == len(ra) - 1:
+        #     wf.write("Transition:\n\t\tname=T" + str(key) + '\n\t\tsrc=' + zd[ra[key][0]] + '\n\t\ttgt=' + zd[
+        #         ra[key][0]] + '\n\t\t' + 'event=' + '\n\t\t' + 'condition=' + '\n\t\t' + 'action=')
+        # else:
+        wf.write("Transition:\n\t\tname=T" + str(key+1) + '\n\t\tsrc=' + zd[ra[key][0]] \
+                 + '\n\t\ttgt=' + zd[
+                     ra[key][1]] + '\n\t\t' + 'event=' + '\n\t\t' + 'condition=' + '\n\t\t' + 'action=' + '\n')
     wf.close()
     # print(res)
     # print(ra)

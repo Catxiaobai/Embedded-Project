@@ -5,8 +5,14 @@
         <el-table-column prop="page_id" label="ID" width="40" align="center"></el-table-column>
         <el-table-column prop="type2" label="类别" width="80" align="center"></el-table-column>
         <el-table-column prop="name" label="生成方法" width="80" align="center"></el-table-column>
+        <el-table-column v-for="(item, index) in desCol_mcdc" :prop="item.prop" :label="item.label" :key="index" align="center"></el-table-column>
         <el-table-column prop="path" label="测试路径" width="280" align="center">
-          <el-table-column v-for="(item, index) in desCol" :prop="item.prop" :label="item.label" :key="index" align="center"> </el-table-column>
+          <el-table-column v-for="(item, index) in desCol" :prop="item.prop" :label="item.label" :key="index" align="center"></el-table-column>
+        </el-table-column>
+        <el-table-column prop="script" label="脚本生成" align="center" width="102">
+          <template slot-scope="scope">
+            <el-button type="primary" size="small" @click="gotoLink(scope.row)">脚本生成</el-button>
+          </template>
         </el-table-column>
       </el-table>
       <el-pagination
@@ -37,7 +43,9 @@ export default {
       spanArr: [],
       tableData: [],
       desCol: [],
+      desCol_mcdc: [],
       aimPath: '',
+      param: '',
     }
   },
   methods: {
@@ -82,6 +90,8 @@ export default {
           console.log(this.rawData[0])
           if (this.rawData[0].name === '随机值') {
             this.dataList(this.rawData[0].data)
+          } else if (this.rawData[0].name === 'MC/DC') {
+            this.dataList3(this.rawData[0].data)
           } else {
             this.dataList2(this.rawData[0].data)
           }
@@ -127,9 +137,10 @@ export default {
     },
     columnList() {
       this.aimPath = eval(this.pathInfo.path)
+      console.log(this.aimPath)
       this.desCol = []
       for (let i = 0; i < this.aimPath.length; i++) {
-        this.desCol.push({ prop: this.aimPath[i], label: this.aimPath[i] })
+        this.desCol.push({ prop: this.aimPath[i], label: this.aimPath[i] + '(' + this.param[this.aimPath[i]] + ')' })
       }
     },
     dataList(data) {
@@ -174,14 +185,54 @@ export default {
           temp[this.aimPath[j]] = data[this.aimPath[j]][i]
         }
         this.data.push(temp)
-        console.log(this.data)
       }
+      console.log(this.data)
+    },
+    dataList3(data) {
+      data = eval('(' + data + ')') //神奇
+      this.data = []
+      console.log(data)
+      this.desCol_mcdc.push({ prop: 'TF', label: 'TF' })
+      for (let key in data) {
+        if (key !== 'name') {
+          let temp = {
+            id: this.rawData[0].id,
+            path_id: this.rawData[0].path_id,
+            item_id: this.rawData[0].item_id,
+            name: this.rawData[0].name,
+            type2: this.rawData[0].type2,
+          }
+          temp['TF'] = key
+          for (let i = 0; i < data[key].length; i++) {
+            temp[this.aimPath[i]] = data[key][i]
+          }
+          this.data.push(temp)
+        }
+      }
+    },
+    gotoLink(row) {
+      console.log('test', row)
+      this.$store.commit('setScriptData', row)
+      this.$router.replace('/script')
+    },
+    getParameter() {
+      this.$http
+        .get(this.Global_Api + '/api/generation/get_parameter')
+        .then((response) => {
+          console.log(response.data.parameter)
+          this.param = response.data.parameter
+          this.columnList()
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     },
   },
   created() {
     this.getItemInfo()
+    this.getParameter()
     this.getPathInfo()
-    this.columnList()
+    // this.columnList()
     this.pageList()
   },
 }

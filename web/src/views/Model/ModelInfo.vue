@@ -14,9 +14,6 @@
       <div id="actionButton" style="margin-left: 75%; margin-bottom: 20px; margin-top: -30px">
         <el-button type="primary" @click="handleAdd('addForm')">添加</el-button>
         <el-button type="success" :disabled="disabled.edit" @click="visible.editDialog = true">编辑</el-button>
-        <!--        <el-popconfirm icon="el-icon-info" iconColor="red" title="是否删除所选场景" style="margin-left: 10px" @confirm="handleDeleteCommit">-->
-        <!--          <el-button type="danger" :disabled="disabled.delete" slot="reference">删除</el-button>-->
-        <!--        </el-popconfirm>-->
         <el-button type="danger" :disabled="disabled.delete" @click="visible.deleteDialog = true">删除</el-button>
       </div>
       <div id="table">

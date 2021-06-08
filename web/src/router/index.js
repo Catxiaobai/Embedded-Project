@@ -156,6 +156,21 @@ const routes = [
         name: 'scriptDatabase',
         component: () => import('@/views/Script/ScriptDatabase'),
       },
+      {
+        path: '/conditionCoverage',
+        name: 'conditionCoverage',
+        component: () => import('@/views/TestDataGeneration/ConditionCoverage'),
+      },
+      {
+        path: '/test',
+        name: 'test',
+        component: () => import('@/views/CommunicationProtocol/Test'),
+      },
+      {
+        path: '/showEdit',
+        name: 'showEdit',
+        component: () => import('@/views/CommunicationProtocol/ShowEdit'),
+      },
     ],
   },
 ]
