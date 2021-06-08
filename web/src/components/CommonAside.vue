@@ -8,12 +8,12 @@
             <span>模型构建</span>
           </template>
           <el-submenu index="1-1">
-            <template slot="title"><i class="el-icon-folder"></i>静态模型构建</template>
+            <template slot="title"><i class="el-icon-folder"></i>静态结构模型构建</template>
             <el-menu-item index="/staticModelInfo"><i class="el-icon-folder"></i>模型描述</el-menu-item>
             <el-menu-item index="/staticModels"><i class="el-icon-folder"></i>模型编辑</el-menu-item>
           </el-submenu>
           <el-submenu index="2-1">
-            <template slot="title"><i class="el-icon-folder"></i>动态模型构建</template>
+            <template slot="title"><i class="el-icon-folder"></i>动态行为模型构建</template>
             <el-menu-item index="/xmiImport"><i class="el-icon-folder"></i>XMI文件导入</el-menu-item>
             <el-menu-item index="/modelInfo"><i class="el-icon-folder"></i>模型描述</el-menu-item>
             <el-menu-item index="/modelEdit"><i class="el-icon-folder"></i>模型构建与编辑</el-menu-item>
