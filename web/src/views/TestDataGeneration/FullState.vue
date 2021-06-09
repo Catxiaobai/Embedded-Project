@@ -2,7 +2,7 @@
   <div id="fullState">
     <el-card>
       <el-row :gutter="20">
-        <el-col :span="16">
+        <el-col :span="15">
           <div class="grid-content">
             <div id="action" style="display: flex; margin-bottom: 20px">
               <div id="stateAction" style="margin-left: 35%">
@@ -16,13 +16,13 @@
               ref="generatePicture"
             ></div></div
         ></el-col>
-        <el-col :span="8">
+        <el-col :span="9">
           <div class="grid-content">
             <div>
               <a style="font-size: 30px; margin-left: 30%">测试用例集</a>
               <el-card style="margin-top: 30px; height: 550px">
-                <div style="white-space: pre-wrap; overflow: auto; height: 500px">
-                  <p>{{ test_cases_result }}</p>
+                <div style="overflow: auto; height: 500px">
+                  <p v-for="(item, index) in test_cases_result" :key="index" style="margin-bottom: 20px">{{ item }}</p>
                 </div>
               </el-card>
             </div>

@@ -12,7 +12,7 @@
             <el-menu-item index="/staticModelInfo"><i class="el-icon-folder"></i>模型描述</el-menu-item>
             <el-menu-item index="/staticModels"><i class="el-icon-folder"></i>模型编辑</el-menu-item>
           </el-submenu>
-          <el-submenu index="2-1">
+          <el-submenu index="1-2">
             <template slot="title"><i class="el-icon-folder"></i>动态行为模型构建</template>
             <el-menu-item index="/xmiImport"><i class="el-icon-folder"></i>XMI文件导入</el-menu-item>
             <el-menu-item index="/modelInfo"><i class="el-icon-folder"></i>模型描述</el-menu-item>
@@ -37,8 +37,8 @@
 
           <el-submenu index="2-1">
             <template slot="title"><i class="el-icon-folder"></i>路径生成</template>
-            <el-menu-item index="/fullState"><i class="el-icon-folder"></i>全状态</el-menu-item>
-            <el-menu-item index="/fullMigration"><i class="el-icon-folder"></i>全迁移</el-menu-item>
+            <el-menu-item index="/fullState"><i class="el-icon-folder"></i>全状态覆盖</el-menu-item>
+            <el-menu-item index="/fullMigration"><i class="el-icon-folder"></i>全迁移覆盖</el-menu-item>
           </el-submenu>
           <el-submenu index="2-2">
             <template slot="title"><i class="el-icon-folder"></i>数据及脚本生成</template>
@@ -46,7 +46,7 @@
             <el-menu-item index="/boundaryValue"><i class="el-icon-folder"></i>边界值</el-menu-item>
             <el-menu-item index="/increase"><i class="el-icon-folder"></i>递增值</el-menu-item>
             <el-menu-item index="/decrease"><i class="el-icon-folder"></i>递减值</el-menu-item>
-            <!--            <el-menu-item index="/conditionCoverage"><i class="el-icon-folder"></i>条件覆盖</el-menu-item>-->
+            <el-menu-item index="/conditionCoverage"><i class="el-icon-folder"></i>多条件覆盖</el-menu-item>
             <el-menu-item index="/mcDcCoverage"><i class="el-icon-folder"></i>MC/DC覆盖</el-menu-item>
             <!--            <el-menu-item index="/dataShow"><i class="el-icon-folder"></i>测试界面</el-menu-item>-->
             <!--            <el-menu-item index="/interfaceProtocol"><i class="el-icon-folder"></i>接口协议</el-menu-item>-->

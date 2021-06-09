@@ -90,7 +90,7 @@ export default {
           console.log(this.rawData[0])
           if (this.rawData[0].name === '随机值') {
             this.dataList(this.rawData[0].data)
-          } else if (this.rawData[0].name === 'MC/DC') {
+          } else if (this.rawData[0].name === 'MC/DC' || this.rawData[0].name === '条件覆盖') {
             this.dataList3(this.rawData[0].data)
           } else {
             this.dataList2(this.rawData[0].data)

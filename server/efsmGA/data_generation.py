@@ -65,14 +65,15 @@ def Initial_data(SM, currPath, varname, pathVarType, populationSize):  # 根据G
             break  # break for j loop
         population = gaSample.basicSurvive(oldInvidualFit, invidualFitness, population)
         if j >= 20000:
-            print 'this path is not feasible'
+            print
+            'this path is not feasible'
             return []
     return data
 
 
 def dfs(data, tmp, k):
     if k == len(data):
-        fo = open(filepath+'output.txt', 'a')
+        fo = open(filepath + 'output.txt', 'a')
         for i in range(len(tmp)):
             fo.write(tmp[i])
             if i < len(tmp) - 1:
@@ -88,17 +89,6 @@ def dfs(data, tmp, k):
         dfs(data, tmp, k + 1)
         tmp.pop()
 
-def dfsF2(keys,data,tmp,k,ans,protocol1):
-    if k==len(keys):
-        protocol1.set(tmp)
-        ans.append(protocol1.read())
-        return None
-    for i in data[keys[k]]:
-        if i<0:
-            continue
-        tmp.append(i)
-        dfsF2(keys,data,tmp,k+1,ans,protocol1)
-        tmp.pop()
 
 def testProcee(SM, currPathT, flag, num=0, accuracy=1, TIME=0):
     coverage = 0
@@ -108,7 +98,8 @@ def testProcee(SM, currPathT, flag, num=0, accuracy=1, TIME=0):
     data = []
 
     if len(SM.originalDef) == 0:
-        print"The path has no variables"
+        print
+        "The path has no variables"
         SM.executePath(currPathT, 0)
     elif flag == 1:  ##There exist input variables on the path
         if num > 0:
@@ -141,7 +132,7 @@ def testProcee(SM, currPathT, flag, num=0, accuracy=1, TIME=0):
             for i in range(len(ans)):
                 data[j].append(ans[i][j])
             data[j].sort(reverse=True)
-    elif flag == 5:  # CDMD
+    elif flag == 5 or flag == 6:  # CDMD
         data = SM.CDMD(currPathT, pathVarType, 1)
     return data
 
@@ -170,6 +161,19 @@ def ALLT(data):
     return flag, tmp
 
 
+def dfsF2(keys, data, tmp, k, ans, protocol1):
+    if k == len(keys):
+        protocol1.set(tmp)
+        ans.append(protocol1.read())
+        return None
+    for i in data[keys[k]]:
+        if i < 0:
+            continue
+        tmp.append(i)
+        dfsF2(keys, data, tmp, k + 1, ans, protocol1)
+        tmp.pop()
+
+
 def dfsF3(keys, data, tmp, k, ans, protocol1):
     if k == len(keys):
         protocol1.set(tmp)
@@ -193,11 +197,28 @@ def i_is_F(data, flag_S, k, tmp, test):
             test[flag] = tmp
 
 
+def dfs_ALL(ALLANS, K, flag, tmp, test):
+    if (K >= len(ALLANS)):
+        test[flag] = tmp[:]
+    else:
+        flagg = flag
+        for k, v in ALLANS[K].items():
+            tmp.append(v)
+            flag = flagg
+            if ('_T' in k):
+                flag += "T"
+                dfs_ALL(ALLANS, K + 1, flag, tmp[:], test)
+            else:
+                flag += "F"
+                dfs_ALL(ALLANS, K + 1, flag, tmp[:], test)
+            tmp.pop()
+
+
 def cover_data(path, data, flag):
     protocol1 = protocol.protocol()
     tran_var = tran_var_macth(path)
     test = OrderedDict()
-    with open(filepath+'parameter.txt', 'w') as f:
+    with open(filepath + 'parameter.txt', 'w') as f:
         json.dump(tran_var, f, indent=4, ensure_ascii=False)
         print("数据写入json文件完成...")
     if flag == 1:
@@ -235,17 +256,21 @@ def cover_data(path, data, flag):
             dfsF3(tran_var[tran], data[l:r], tmp, 0, ans, protocol1)
             l = r
             test[tran] = ans
-    elif flag == 5:
+    elif flag == 5 or flag == 6:
         test['name'] = "MC/DC测试"
         ALLANS = []
+        pathh = []
         for i in range(len(path)):
+            if (tran_var[path[i]]):
+                pathh.append(path[i])
+        for i in range(len(pathh)):
             ans = {}
             flag_index = {}
-            for j in tran_var[path[i]]:
+            for j in tran_var[pathh[i]]:
                 flag_index[j] = 'T'
-            flag_S = path[i] + "_T"
+            flag_S = pathh[i] + "_T"
             tmp = []
-            for j in tran_var[path[i]]:  # get match vars of tran
+            for j in tran_var[pathh[i]]:  # get match vars of tran
                 if len(data[i][j]) <= 1:
                     tmp.append(data[i][j][0])
                 elif flag_index[j] == 'T':
@@ -258,9 +283,9 @@ def cover_data(path, data, flag):
                 if len(data[i][k]) <= 1:
                     continue
                 flag_index[k] = 'F'
-                flag_S = path[i] + "_"
+                flag_S = pathh[i] + "_"
                 tmp = []
-                for j in tran_var[path[i]]:  # get match vars of tran
+                for j in tran_var[pathh[i]]:  # get match vars of tran
                     if len(data[i][j]) <= 1:
                         tmp.append(data[i][j][0])
                     elif flag_index[j] == 'T':
@@ -272,20 +297,37 @@ def cover_data(path, data, flag):
                 ans[flag_S] = protocol1.read()
                 flag_index[k] = 'T'
             ALLANS.append(ans)
-        flag_S, allTR = ALLT(ALLANS)
-        test[flag_S] = allTR
-        for i in range(len(flag_S)):
-            i_is_F(ALLANS, flag_S, i, allTR[:], test)
-    with open(filepath+'output.txt', 'w') as f:
+        if flag == 5:
+            flag_S, allTR = ALLT(ALLANS)
+            test[flag_S] = allTR
+            for i in range(len(flag_S)):
+                i_is_F(ALLANS, flag_S, i, allTR[:], test)
+        elif flag == 6:
+            test['name'] = "全条件测试"
+            dfs_ALL(ALLANS, 0, "", [], test)
+        for i in range(len(path)):
+            if (tran_var[path[i]]):
+                pathh.append(path[i])
+        for i in range(len(path)):
+            if (tran_var[path[i]]):
+                continue
+            else:
+                for k, v in test.items():
+                    if (k == 'name'):
+                        continue
+                    test[k].insert(i, "")
+
+    with open(filepath + 'output.txt', 'w') as f:
         json.dump(test, f, indent=4, ensure_ascii=False)
         print("数据写入json文件完成...")
 
 
 if __name__ == '__main__':
-    fo = open(filepath+'input.txt', 'r')
+    fo = open(filepath + 'input.txt', 'r')
     setting = json.load(fo)
     fo.close()
-    print setting
+    print
+    setting
     flag = int(setting['type'])
     traninfolist = obtain_efsm_info.obtain_tran_info()  # 迁移信息全部在这
     path = setting['path']

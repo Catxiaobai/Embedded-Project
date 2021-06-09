@@ -375,7 +375,7 @@ def add_protocol(request):
         new_frame_tail = request_json['frame_tail']
         new_check_method = request_json['check_method']
         new_item_id = request_json['item_id']
-        if Protocol.objects.filter(bus_type=new_bus_type):
+        if Protocol.objects.filter(item_id=new_item_id, bus_type=new_bus_type):
             return JsonResponse({**error_code.CLACK_NAME_EXISTS})
         new_protocol = Protocol(
             subject_name=new_subject_name,
