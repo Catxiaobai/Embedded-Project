@@ -628,7 +628,7 @@ export default {
     modeling() {
       console.log('test')
       this.$http
-        .post(this.Global_Api + '/api/scenes_modeling', { item: this.itemInfo, type: 'complex', element: '状态迁移' })
+        .post(this.Global_Api + '/api/generation/scenes_modeling', { item: this.itemInfo, type: 'complex', element: '状态迁移' })
         .then((response) => {
           console.log(response)
           this.getData()

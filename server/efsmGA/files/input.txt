@@ -1,1 +1,1 @@
-{"type": 1, "path": ["T1", "T2", "T21", "T24"], "amount": 1, "precision": 1, "time": 0}
+{"type": 1, "path": ["T1", "T2", "T23", "T24"], "amount": 1, "precision": "2", "time": 0}
