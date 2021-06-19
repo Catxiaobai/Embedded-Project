@@ -4,7 +4,7 @@ import re
 
 from django.http import JsonResponse
 
-from entity.models import Paths, Protocol
+from entity.models import *
 from generation.models import PathsData
 from lwn_Graphic import script
 from server import error_code
@@ -368,25 +368,19 @@ def add_protocol(request):
         new_subject_name = request_json['subject_name']
         new_date = request_json['date']
         new_version = request_json['version']
-        new_bus_type = request_json['bus_type']
+        new_type = request_json['type']
         new_communication_method = request_json['communication_method']
         new_refresh_cycle = request_json['refresh_cycle']
-        new_frame_header = request_json['frame_header']
-        new_frame_tail = request_json['frame_tail']
-        new_check_method = request_json['check_method']
         new_item_id = request_json['item_id']
-        if Protocol.objects.filter(item_id=new_item_id, bus_type=new_bus_type):
+        if Protocol.objects.filter(item_id=new_item_id, type=new_type):
             return JsonResponse({**error_code.CLACK_NAME_EXISTS})
         new_protocol = Protocol(
             subject_name=new_subject_name,
             date=new_date,
             version=new_version,
-            bus_type=new_bus_type,
+            type=new_type,
             communication_method=new_communication_method,
             refresh_cycle=new_refresh_cycle,
-            frame_header=new_frame_header,
-            frame_tail=new_frame_tail,
-            check_method=new_check_method,
             item_id=new_item_id)
         new_protocol.save()
     except Exception as e:
@@ -413,23 +407,17 @@ def edit_protocol(request):
         new_subject_name = request_json['subject_name']
         new_date = request_json['date']
         new_version = request_json['version']
-        new_bus_type = request_json['bus_type']
+        new_type = request_json['type']
         new_communication_method = request_json['communication_method']
         new_refresh_cycle = request_json['refresh_cycle']
-        new_frame_header = request_json['frame_header']
-        new_frame_tail = request_json['frame_tail']
-        new_check_method = request_json['check_method']
         if not Protocol.objects.filter(id=aim_id).exists():
             return Protocol({**error_code.CLACK_NOT_EXISTS})
         Protocol.objects.filter(id=aim_id).update(subject_name=new_subject_name)
         Protocol.objects.filter(id=aim_id).update(date=new_date)
         Protocol.objects.filter(id=aim_id).update(version=new_version)
-        Protocol.objects.filter(id=aim_id).update(bus_type=new_bus_type)
+        Protocol.objects.filter(id=aim_id).update(type=new_type)
         Protocol.objects.filter(id=aim_id).update(communication_method=new_communication_method)
         Protocol.objects.filter(id=aim_id).update(refresh_cycle=new_refresh_cycle)
-        Protocol.objects.filter(id=aim_id).update(frame_header=new_frame_header)
-        Protocol.objects.filter(id=aim_id).update(frame_tail=new_frame_tail)
-        Protocol.objects.filter(id=aim_id).update(check_method=new_check_method)
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS})
@@ -446,7 +434,7 @@ def delete_protocol(request):
     return JsonResponse({**error_code.CLACK_SUCCESS})
 
 
-# 删除协议
+# 获取参数
 def get_parameter(request):
     try:
         path = "./efsmGA/files/"
@@ -457,12 +445,128 @@ def get_parameter(request):
     return JsonResponse({**error_code.CLACK_SUCCESS, "parameter": parameter})
 
 
-def test(request):
-    request_jsons = json.loads(request.body)
-    print(request_jsons)
+# 变量列表
+def variable_list(request):
+    request_json = json.loads(request.body)
     try:
-        result = script.main(request_jsons['pass'])
+        variables = Variable.objects.filter(item_id=request_json['id'])
+        result = [v.to_dict() for v in variables]
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "variable_list": result})
+
+
+# 添加变量
+def add_variable(request):
+    request_json = json.loads(request.body)
+    try:
+        new_name = request_json['name']
+        new_describe = request_json['describe']
+        new_type = request_json['type']
+        new_upper_bound = request_json['upper_bound']
+        new_lower_bound = request_json['lower_bound']
+        new_value = request_json['value']
+        new_item_id = request_json['item_id']
+        if Protocol.objects.filter(item_id=new_item_id, type=new_type):
+            return JsonResponse({**error_code.CLACK_NAME_EXISTS})
+        new_variable = Variable(
+            name=new_name,
+            describe=new_describe,
+            type=new_type,
+            value=new_value,
+            upper_bound=new_upper_bound,
+            lower_bound=new_lower_bound,
+            item_id=new_item_id)
+        new_variable.save()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+# 删除变量
+def delete_variable(request):
+    request_json = json.loads(request.body)
+    try:
+        aim_id = request_json['id']
+        Variable.objects.get(id=aim_id).delete()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+# 确定协议
+def commit_protocol(request):
+    request_jsons = json.loads(request.body)
+    try:
+        path = './efsmGA/files/'
+        filename = 'format.txt'
+        # print(request_jsons[0].keys())
+        for i in request_jsons:
+            i.pop('id')
+            i.pop('item')
+            i.pop('describe')
+            new_value = eval(i['value'])
+            i['value'] = new_value
+        write_txt(path, filename, request_jsons)
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+def save_data(request):
+    request_jsons = json.loads(request.body)
+    try:
+        aim_path_id = request_jsons[0]['path_id']
+        new_function = request_jsons[0]['name']
+        new_type = request_jsons[0]['type2']
+        # 先判断是否有数据生成，有就删了
+        TestData.objects.filter(paths_id=aim_path_id, function=new_function).delete()
+        for request_json in request_jsons:
+            # print(request_json)
+            new_data = []
+            new_TF = request_json['TF']
+            for key in request_json:
+                regular = re.compile(r"T[0-9]+")
+                if regular.match(key):
+                    # print(key, request_json[key])
+                    new_data.append(request_json[key])
+            # print(str(new_data))
+            new_test_data = TestData(paths_id=aim_path_id,
+                                     function=new_function,
+                                     type=new_type,
+                                     data=new_data,
+                                     TF=new_TF)
+            new_test_data.save()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+def test_data_list(request):
+    request_json = json.loads(request.body)
+    print(request_json)
+    try:
+        test_data = TestData.objects.filter(paths__item_id=request_json['id'])
+        result = [p.to_dict() for p in test_data]
         print(result)
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
-    return JsonResponse({**error_code.CLACK_SUCCESS, "result": result})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "test_data_list": result})
+
+
+def test(request):
+    request_jsons = json.loads(request.body)
+    try:
+        path = './efsmGA/files/'
+        filename = 'format.txt'
+        # print(request_jsons[0].keys())
+        for i in request_jsons:
+            i.pop('id')
+            i.pop('item')
+            i.pop('describe')
+            new_value = eval(i['value'])
+            i['value'] = new_value
+        write_txt(path, filename, request_jsons)
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})

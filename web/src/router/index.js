@@ -171,6 +171,16 @@ const routes = [
         name: 'showEdit',
         component: () => import('@/views/CommunicationProtocol/ShowEdit'),
       },
+      {
+        path: '/deploy',
+        name: 'deploy',
+        component: () => import('@/views/CommunicationProtocol/Deploy'),
+      },
+      {
+        path: '/dataList',
+        name: 'dataList',
+        component: () => import('@/views/TestDataGeneration/DataList'),
+      },
     ],
   },
 ]

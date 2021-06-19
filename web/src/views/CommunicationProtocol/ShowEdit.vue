@@ -1,6 +1,8 @@
 <template>
   <div>
     <el-card>
+      <el-button type="primary" @click="addDialog = true"> 添加通信协议 </el-button>
+      <el-divider></el-divider>
       <el-table :data="tableData" style="width: 100%; margin-top: 40px" stripe border :header-cell-style="{ background: '#eef1f6', color: '#606266' }">
         <el-table-column prop="page_id" label="序号" width="60" align="center"> </el-table-column>
         <el-table-column label="主题名称" width="120px" align="center">
@@ -8,9 +10,9 @@
             <span style="margin-left: 10px">{{ scope.row.subject_name }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="总线类型" align="center" width="120px">
+        <el-table-column label="类型" align="center" width="120px">
           <template slot-scope="scope">
-            <span style="margin-left: 10px">{{ scope.row.bus_type }}</span>
+            <span style="margin-left: 10px">{{ scope.row.type }}</span>
           </template>
         </el-table-column>
 
@@ -34,21 +36,6 @@
             <span style="margin-left: 10px">{{ scope.row.version }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="帧头" align="center" width="80px">
-          <template slot-scope="scope">
-            <span style="margin-left: 10px">{{ scope.row.frame_header }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="帧尾" align="center" width="80px">
-          <template slot-scope="scope">
-            <span style="margin-left: 10px">{{ scope.row.frame_tail }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="校验方式" align="center" width="120px">
-          <template slot-scope="scope">
-            <span style="margin-left: 10px">{{ scope.row.check_method }}</span>
-          </template>
-        </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -67,7 +54,7 @@
         style="margin-left: 30%; margin-top: 30px"
       >
       </el-pagination>
-      <div id="edit">
+      <div id="editDialog">
         <el-dialog :close-on-click-modal="false" title="修改协议" :visible.sync="editDialog" center width="800px">
           <el-form :model="editForm" :rules="rules" ref="editForm" label-width="100px">
             <el-row>
@@ -77,8 +64,8 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="总线类型" prop="bus_type">
-                  <el-input v-model="editForm.bus_type" placeholder="请填写总线类型"></el-input>
+                <el-form-item label="类型" prop="type">
+                  <el-input v-model="editForm.type" placeholder="请填写类型"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -104,26 +91,52 @@
                 </el-form-item>
               </el-col>
             </el-row>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="handleEditCommit('editForm')">确 定</el-button>
+          </div>
+        </el-dialog>
+      </div>
+      <div id="addDialog">
+        <el-dialog :close-on-click-modal="false" title="添加协议" :visible.sync="addDialog" center width="800px">
+          <el-form :model="addForm" :rules="rules" ref="addForm" label-width="100px">
             <el-row>
               <el-col :span="8">
-                <el-form-item label="帧头" prop="frame_header">
-                  <el-input v-model="editForm.frame_header" placeholder="请填写帧头"></el-input>
+                <el-form-item label="主题名称" prop="subject_name">
+                  <el-input v-model="addForm.subject_name" placeholder="请填写主题名称"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="帧尾" prop="frame_tail">
-                  <el-input v-model="editForm.frame_tail" placeholder="请填写帧尾"></el-input>
+                <el-form-item label="类型" prop="type">
+                  <el-input v-model="addForm.type" placeholder="请填写类型"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="校验方式" prop="check_method">
-                  <el-input v-model="editForm.check_method" placeholder="请填写校验方式"></el-input>
+                <el-form-item label="日期" prop="date">
+                  <el-input v-model="addForm.date" placeholder="请填写日期"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="通讯方式" prop="communication_method">
+                  <el-input v-model="addForm.communication_method" placeholder="请填写通讯方式"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="刷新周期" prop="refresh_cycle">
+                  <el-input v-model="addForm.refresh_cycle" placeholder="请填写刷新周期"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="版本" prop="version">
+                  <el-input v-model="addForm.version" placeholder="请填写版本"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="handleEditCommit('editForm')">确 定</el-button>
+            <el-button type="primary" @click="handleAddCommit('addForm')">确 定</el-button>
           </div>
         </el-dialog>
       </div>
@@ -142,28 +155,32 @@ export default {
       tableData: '', //项目表
       itemInfo: '',
       editDialog: false,
+      addDialog: false,
       editForm: {
         subject_name: '',
         date: '',
         version: '',
-        bus_type: '',
+        type: '',
         communication_method: '',
         refresh_cycle: '',
-        frame_header: '',
-        frame_tail: '',
-        check_method: '',
+        item_id: '',
+      },
+      addForm: {
+        subject_name: '',
+        date: '',
+        version: '',
+        type: '',
+        communication_method: '',
+        refresh_cycle: '',
         item_id: '',
       },
       rules: {
         subject_name: [{ required: true, message: '请填写主题名称', trigger: 'blur' }],
         date: [{ required: true, message: '请填写日期', trigger: 'blur' }],
         version: [{ required: true, message: '请填写版本', trigger: 'blur' }],
-        bus_type: [{ required: true, message: '请填写总线类型', trigger: 'blur' }],
+        type: [{ required: true, message: '请填写类型', trigger: 'blur' }],
         communication_method: [{ required: true, message: '请填写通讯方式', trigger: 'blur' }],
         refresh_cycle: [{ required: true, message: '请填写刷新周期', trigger: 'blur' }],
-        frame_header: [{ required: true, message: '请填写帧头', trigger: 'blur' }],
-        frame_tail: [{ required: true, message: '请填写帧尾', trigger: 'blur' }],
-        check_method: [{ required: true, message: '请填写校验方式', trigger: 'blur' }],
       },
     }
   },
@@ -206,6 +223,7 @@ export default {
     },
     getItemInfo() {
       this.itemInfo = this.$store.state.item
+      this.addForm.item_id = this.itemInfo.id
     },
     handleDelete(index, row) {
       console.log(index, row)
@@ -266,6 +284,32 @@ export default {
               console.log(error)
             })
           this.editDialog = false
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    handleAddCommit(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$http
+            .post(this.Global_Api + '/api/generation/add_protocol', this.addForm)
+            .then((response) => {
+              if (response.data.error_code === 0) {
+                this.$message.success('添加成功')
+                this.pageList()
+                this.$refs[formName].resetFields()
+              } else {
+                this.$message.error(response.data.error_message)
+                console.log(response.data)
+                this.pageList()
+              }
+            })
+            .catch(function (error) {
+              console.log(error)
+            })
+          this.addDialog = false
         } else {
           console.log('error submit!!')
           return false

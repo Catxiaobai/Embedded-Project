@@ -36,6 +36,12 @@ urlpatterns = [
     path('protocol_list', views.protocol_list, name='protocol_list'),  # 通信协议列表
     path('edit_protocol', views.edit_protocol, name='edit_protocol'),  # 编辑通信协议
     path('delete_protocol', views.delete_protocol, name='delete_protocol'),  # 删除通信协议
-    path('get_parameter', views.get_parameter, name='get_parameter'),  # 删除通信协议
+    path('commit_protocol', views.commit_protocol, name='commit_protocol'),  # 确定协议
+    path('get_parameter', views.get_parameter, name='get_parameter'),  # 获取参数
+    path('add_variable', views.add_variable, name='add_variable'),  # 添加变量
+    path('variable_list', views.variable_list, name='variable_list'),  # 变量列表
+    path('delete_variable', views.delete_variable, name='delete_variable'),  # 删除变量
+    path('test_data_list', views.test_data_list, name='test_data_list'),  # 全部测试数据
+    path('save_data', views.save_data, name='save_data'),  # 保存测试数据
     path('test', views.test, name='test'),  # 测试
 ]

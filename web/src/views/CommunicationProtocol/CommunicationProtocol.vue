@@ -10,8 +10,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="总线类型" prop="bus_type">
-                <el-input v-model="form.bus_type" placeholder="请填写总线类型"></el-input>
+              <el-form-item label="类型" prop="type">
+                <el-input v-model="form.type" placeholder="请填写类型"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -37,23 +37,6 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item label="帧头" prop="frame_header">
-                <el-input v-model="form.frame_header" placeholder="请填写帧头"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="帧尾" prop="frame_tail">
-                <el-input v-model="form.frame_tail" placeholder="请填写帧尾"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="校验方式" prop="check_method">
-                <el-input v-model="form.check_method" placeholder="请填写校验方式"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
         </el-form>
       </div>
       <div id="handleDiv" style="margin-left: 35%; margin-top: 20px">
@@ -73,24 +56,18 @@ export default {
         subject_name: '',
         date: '',
         version: '',
-        bus_type: '',
+        type: '',
         communication_method: '',
         refresh_cycle: '',
-        frame_header: '',
-        frame_tail: '',
-        check_method: '',
         item_id: '',
       },
       rules: {
         subject_name: [{ required: true, message: '请填写主题名称', trigger: 'blur' }],
         date: [{ required: true, message: '请填写日期', trigger: 'blur' }],
         version: [{ required: true, message: '请填写版本', trigger: 'blur' }],
-        bus_type: [{ required: true, message: '请填写总线类型', trigger: 'blur' }],
+        type: [{ required: true, message: '请填写类型', trigger: 'blur' }],
         communication_method: [{ required: true, message: '请填写通讯方式', trigger: 'blur' }],
         refresh_cycle: [{ required: true, message: '请填写刷新周期', trigger: 'blur' }],
-        frame_header: [{ required: true, message: '请填写帧头', trigger: 'blur' }],
-        frame_tail: [{ required: true, message: '请填写帧尾', trigger: 'blur' }],
-        check_method: [{ required: true, message: '请填写校验方式', trigger: 'blur' }],
       },
       itemInfo: '',
     }

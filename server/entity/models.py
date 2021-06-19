@@ -116,13 +116,10 @@ class Protocol(models.Model):
     subject_name = models.TextField(default='')
     date = models.TextField(default='')
     version = models.TextField(default='')
-    bus_type = models.TextField(default='')
+    type = models.TextField(default='')
     communication_method = models.TextField(default='')
     refresh_cycle = models.TextField(default='')
-    frame_header = models.TextField(default='')
-    frame_tail = models.TextField(default='')
-    message_length = models.TextField(default='')
-    check_method = models.TextField(default='')
+    configuration = models.TextField(default='')
 
     def to_dict(self):
         return {
@@ -131,11 +128,51 @@ class Protocol(models.Model):
             'subject_name': self.subject_name,
             'date': self.date,
             'version': self.version,
-            'bus_type': self.bus_type,
+            'type': self.type,
             'communication_method': self.communication_method,
             'refresh_cycle': self.refresh_cycle,
-            'frame_header': self.frame_header,
-            'frame_tail': self.frame_tail,
-            'message_length': self.message_length,
-            'check_method': self.check_method
+            'configuration': self.configuration,
+        }
+
+
+# 变量
+class Variable(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    name = models.TextField(default='')
+    describe = models.TextField(default='')
+    type = models.TextField(default='')
+    upper_bound = models.TextField(default='')
+    lower_bound = models.TextField(default='')
+    value = models.TextField(default='')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'item': self.item.id,
+            'name': self.name,
+            'describe': self.describe,
+            'type': self.type,
+            'upper_bound': self.upper_bound,
+            'lower_bound': self.lower_bound,
+            'value': self.value,
+        }
+
+
+# 测试数据
+class TestData(models.Model):
+    paths = models.ForeignKey(Paths, on_delete=models.CASCADE)
+    type = models.TextField(default='')
+    function = models.TextField(default='')
+    data = models.TextField(default='')
+    TF = models.TextField(default='')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'path_id': self.paths.id,
+            'path': self.paths.path,
+            'type': self.type,
+            'function': self.function,
+            'data': self.data,
+            'TF': self.TF
         }

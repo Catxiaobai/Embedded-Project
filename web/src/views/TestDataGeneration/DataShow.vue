@@ -95,8 +95,8 @@ export default {
           } else {
             this.dataList2(this.rawData[0].data)
           }
-
           this.getList()
+          this.saveData()
         })
         .catch(function (error) {
           console.log(error)
@@ -104,8 +104,6 @@ export default {
     },
     // 处理数据
     getList() {
-      // let list = this.data.filter((item, index) => item.name.includes(this.search))
-      // this.adjustId(list)
       let list = this.data
       this.adjustId(list)
       this.tableData = list.filter((item, index) => index < this.page * this.limit && index >= this.limit * (this.page - 1))
@@ -155,6 +153,7 @@ export default {
             item_id: this.rawData[0].item_id,
             name: this.rawData[0].name,
             type2: this.rawData[0].type2,
+            TF: '',
           }
 
           for (let i = 0; i < this.aimPath.length; i++) {
@@ -180,6 +179,7 @@ export default {
           item_id: this.rawData[0].item_id,
           name: this.rawData[0].name,
           type2: this.rawData[0].type2,
+          TF: '',
         }
         for (let j = 0; j < this.aimPath.length; j++) {
           temp[this.aimPath[j]] = data[this.aimPath[j]][i]
@@ -227,12 +227,23 @@ export default {
           console.log(error)
         })
     },
+    saveData() {
+      console.log(this.data)
+      console.log(this.desCol)
+      this.$http
+        .post(this.Global_Api + '/api/generation/save_data', this.data)
+        .then((response) => {
+          console.log(response.data)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
   },
   created() {
     this.getItemInfo()
     this.getParameter()
     this.getPathInfo()
-    // this.columnList()
     this.pageList()
   },
 }

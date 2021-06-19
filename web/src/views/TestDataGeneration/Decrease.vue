@@ -106,6 +106,7 @@ export default {
         .post(this.Global_Api + '/api/generation/generate_decrease', row)
         .then((response) => {
           this.loading = false
+          this.gotoShow(row)
           console.log(response.data)
         })
         .catch(function (error) {
