@@ -118,7 +118,6 @@ class Protocol(models.Model):
     version = models.TextField(default='')
     type = models.TextField(default='')
     communication_method = models.TextField(default='')
-    refresh_cycle = models.TextField(default='')
     configuration = models.TextField(default='')
 
     def to_dict(self):
@@ -130,7 +129,6 @@ class Protocol(models.Model):
             'version': self.version,
             'type': self.type,
             'communication_method': self.communication_method,
-            'refresh_cycle': self.refresh_cycle,
             'configuration': self.configuration,
         }
 
@@ -144,6 +142,7 @@ class Variable(models.Model):
     upper_bound = models.TextField(default='')
     lower_bound = models.TextField(default='')
     value = models.TextField(default='')
+    length = models.TextField(default='')
 
     def to_dict(self):
         return {
@@ -155,6 +154,7 @@ class Variable(models.Model):
             'upper_bound': self.upper_bound,
             'lower_bound': self.lower_bound,
             'value': self.value,
+            'length': self.length,
         }
 
 

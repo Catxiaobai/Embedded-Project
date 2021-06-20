@@ -1,3 +1,8 @@
+import json
+import INTBYTE
+import random
+
+filepath = './efsmGA/files/'
 class CRC():
     def __init__(self, info, crc_n=32):
         self.info = info
@@ -37,24 +42,29 @@ class CRC():
         self.check_code = check_code
         self.code = code
 class protocol:
-    def __init__(self):
-        self.fhead="00055"
+    def __init__(self,filePath=filepath+'format.txt'):
         self.message = []
-        self.crc16=""
-        self.fend="00066"
+        self.crc16=0
+        fo = open(filePath, 'r')
+        self.format = json.load(fo)
+        fo.close()
+        self.fhead=int(self.format[0]['upper_bound'])
+        self.fend=int(self.format[len(self.format)-1]['upper_bound'])
+        self.IntDateGeneration=INTBYTE.INTBYTE()
     def set(self,message):
-        self.message = []
-        for i in message:
-            j=str(i)
-            num=5-len(j)
-            for k in range(num):
-                j='0'+j
-            self.message.append(j)
+        self.message=[]
+        for i in self.format[1:len(self.format)-1]:
+            name=i['name']
+            data=None
+            if message.has_key(name):
+                data=message[name]
+            self.message.append(data)
         self.crc16 = self.getCrc()
     def getCrc(self,crcnum=16):
         binstr=str(bin(int(self.fhead)))[2:]
         for i in self.message:
-            binstr=binstr+str(bin(int(i)))[2:]
+            if i!=None:
+                binstr=binstr+str(bin(i))[2:]
         m = []
         for i in range(len(binstr)):
             m.append(int(binstr[i]))
@@ -63,51 +73,40 @@ class protocol:
         jyh1 = ''
         for i in jyh:
             jyh1 += str(i)
-        jyh1 = str(int(jyh1, 2))
-        if len(jyh1) < 5:
-            for i in range(5 - len(jyh1)):
-                jyh1 = '0' + jyh1
+        jyh1 = int(jyh1, 2)
         return jyh1
     def read(self):
-        ans=self.fhead
-        for i in self.message:
-            ans+=i
-        ans+=self.crc16+self.fend
+        ans=[]
+        ans.append(self.fhead)
+        ans.extend(self.message)
+        ans.append(self.crc16)
+        ans.append(self.fend)
         return ans
-    def readBadHead(self,badhead=0):
-        badheadstr=str(badhead)
-        num = 5 - len(badheadstr)
-        for k in range(num):
-            badheadstr = '0' + badheadstr
-        ans = badheadstr
-        for i in self.message:
-            ans += i
-        ans += self.crc16 + self.fend
-        return ans
-    def readBadEnd(self,badend=0):
-        badendstr=str(badend)
-        num = 5 - len(badendstr)
-        for k in range(num):
-            badendstr = '0' + badendstr
-        ans = self.fhead
-        for i in self.message:
-            ans += i
-        ans += self.crc16 + badendstr
-        return ans
-    def readBadCrc(self,badcrc=0):
-        badendcrc=str(badcrc)
-        num = 5 - len(badendcrc)
-        for k in range(num):
-            badendcrc = '0' + badendcrc
-        ans = self.fhead
-        for i in self.message:
-            ans += i
-        ans += badendcrc+self.fend
-        return ans
+    def dateGeneration(self,name):#dataGeneration
+        tmp=None
+        for i in self.format:
+            if i['name']==name:
+                tmp=i
+                break
+        type=tmp["type"]
+        if "INT" in type:
+            l=int(tmp['lower_bound'])
+            r=int(tmp['upper_bound'])
+            self.IntDateGeneration.NAME(type)
+            return self.IntDateGeneration.IntByte_Random(l,r)
+        elif "enum" in type:
+            value=tmp['value']
+            return int(random.choice(value))
+    def getDataType(self,name):
+        for i in self.format:
+            if i['name'] == name:
+                return i['type']
 if __name__ == '__main__':
     protocol1=protocol()
-    protocol1.set([11123,123])
-    protocol1.read()
-    protocol1.readBadEnd(77)
-    protocol1.readBadHead(88)
-    protocol1.readBadCrc(90)
+    protocol1.set([23,123])
+    print protocol1.getCrc()
+    print protocol1.read()
+    print protocol1.getDataType("data")
+    #protocol1.readBadEnd(77)
+    #protocol1.readBadHead(88)
+    #protocol1.readBadCrc(90)

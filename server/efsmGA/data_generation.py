@@ -8,6 +8,8 @@ import EFSM
 import obtain_efsm_info
 import protocol
 
+protocolInf = protocol.protocol()
+
 modelfiledir = './efsmGA/files/'
 filepath = './efsmGA/files/'
 # 模型
@@ -18,6 +20,20 @@ SM.allPathNum()
 
 
 # 获得路径上的变量名
+def dfsF2(keys, data, tmp, k, ans, protocol1):
+    if k == len(keys):
+        protocol1.set(tmp)
+        ans.append(protocol1.read())
+        return None
+    name = keys[k]
+    for i in data[keys[k]]:
+        if i < 0:
+            continue
+        tmp[name] = i
+        dfsF2(keys, data, tmp, k + 1, ans, protocol1)
+        tmp.pop(name)
+
+
 def obtain_var_from_path(SM, currPathT):
     SM.repeatTranVarDict = {}
     SM.repeatTranFuncDict = {}  ####store repeat transition
@@ -35,10 +51,10 @@ def obtain_var_from_path(SM, currPathT):
 
 
 # 根据变量名获得变量的类型
-def obtain_vartype_from_varname(SM, varnme):
+def obtain_vartype_from_varname(SM, varname):
     pathVarType = {}
-    for i in range(len(varnme)):
-        pathVarType[i] = ('INT16')
+    for i in range(len(varname)):
+        pathVarType[i] = protocolInf.getDataType(varname[i])
     return pathVarType
 
 
@@ -49,16 +65,17 @@ def random_int(l, r):
 def Initial_data(SM, currPath, varname, pathVarType, populationSize):  # 根据GA进行测试数据生成
     noInputVar = 0
     gaSample = EFSM.GA(populationSize, len(SM.pathDefVar))
-    population = gaSample.creatStartPopulation(pathVarType)  ###initiate Population according to input variable number
+    population = gaSample.creatStartPopulation(varname)  ###initiate Population according to input variable number
     j = 1
     data = []
+    # print population
     while 1:
         oldInvidualFit = SM.obtainIndividualFitness(currPath, population, populationSize, noInputVar, varname)
         if oldInvidualFit[0] == 0:
             data.extend(SM.pathVarValue)
             break  # break for j loop
         j += 1
-        population = gaSample.GeneticAlgorithm(oldInvidualFit, population, pathVarType)
+        population = gaSample.GeneticAlgorithm(oldInvidualFit, population, varname)
         invidualFitness = SM.obtainIndividualFitness(currPath, population, populationSize, noInputVar, varname)
         if invidualFitness[0] == 0:
             data.extend(SM.pathVarValue)
@@ -111,7 +128,7 @@ def testProcee(SM, currPathT, flag, num=0, accuracy=1, TIME=0):
             while (time.time() - startTime < TIME):
                 data.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize))  # 测试数据生成
     elif flag == 2:
-        data = SM.bianJie(currPathT, pathVarType, accuracy, 1)
+        data = SM.bianJie(currPathT, varname, accuracy, 1)
     elif flag == 3:  # 逐渐增加
         ans = []
         while (num > 0):
@@ -161,30 +178,18 @@ def ALLT(data):
     return flag, tmp
 
 
-def dfsF2(keys, data, tmp, k, ans, protocol1):
-    if k == len(keys):
-        protocol1.set(tmp)
-        ans.append(protocol1.read())
-        return None
-    for i in data[keys[k]]:
-        if i < 0:
-            continue
-        tmp.append(i)
-        dfsF2(keys, data, tmp, k + 1, ans, protocol1)
-        tmp.pop()
-
-
 def dfsF3(keys, data, tmp, k, ans, protocol1):
     if k == len(keys):
         protocol1.set(tmp)
         ans.append(protocol1.read())
         return None
+    name = keys[k]
     for i in data[k]:
         if i < 0:
             continue
-        tmp.append(i)
+        tmp[name] = i
         dfsF3(keys, data, tmp, k + 1, ans, protocol1)
-        tmp.pop()
+        tmp.pop(name)
 
 
 def i_is_F(data, flag_S, k, tmp, test):
@@ -228,9 +233,9 @@ def cover_data(path, data, flag):
             case = OrderedDict()
             name = "case" + str(i + 1)
             for tran in path:
-                tmp = []
+                tmp = {}
                 for j in tran_var[tran]:
-                    tmp.append(data[i][k])
+                    tmp[j] = data[i][k]
                     k += 1
                 protocol1.set(tmp)
                 case[tran] = protocol1.read()
@@ -238,7 +243,7 @@ def cover_data(path, data, flag):
     elif flag == 2:
         test['name'] = "边界值测试"
         for i in range(len(path)):
-            tmp = []
+            tmp = {}
             ans = []
             dfsF2(tran_var[path[i]], data[i], tmp, 0, ans, protocol1)
             test[path[i]] = ans
@@ -250,7 +255,7 @@ def cover_data(path, data, flag):
         l = 0
         r = 0
         for tran in path:
-            tmp = []
+            tmp = {}
             ans = []
             r += len(tran_var[tran])
             dfsF3(tran_var[tran], data[l:r], tmp, 0, ans, protocol1)
@@ -269,14 +274,14 @@ def cover_data(path, data, flag):
             for j in tran_var[pathh[i]]:
                 flag_index[j] = 'T'
             flag_S = pathh[i] + "_T"
-            tmp = []
+            tmp = {}
             for j in tran_var[pathh[i]]:  # get match vars of tran
                 if len(data[i][j]) <= 1:
-                    tmp.append(data[i][j][0])
+                    tmp[j] = data[i][j][0]
                 elif flag_index[j] == 'T':
-                    tmp.append(data[i][j][0])
+                    tmp[j] = data[i][j][0]
                 else:
-                    tmp.append(data[i][j][1])
+                    tmp[j] = data[i][j][1]
             protocol1.set(tmp)
             ans[flag_S] = protocol1.read()
             for k in flag_index:
@@ -284,15 +289,15 @@ def cover_data(path, data, flag):
                     continue
                 flag_index[k] = 'F'
                 flag_S = pathh[i] + "_"
-                tmp = []
+                tmp = {}
                 for j in tran_var[pathh[i]]:  # get match vars of tran
                     if len(data[i][j]) <= 1:
-                        tmp.append(data[i][j][0])
+                        tmp[j] = data[i][j][0]
                     elif flag_index[j] == 'T':
-                        tmp.append(data[i][j][0])
+                        tmp[j] = data[i][j][0]
                     else:
                         flag_S += 'F_' + j
-                        tmp.append(data[i][j][1])
+                        tmp[j] = data[i][j][1]
                 protocol1.set(tmp)
                 ans[flag_S] = protocol1.read()
                 flag_index[k] = 'T'
@@ -326,8 +331,7 @@ if __name__ == '__main__':
     fo = open(filepath + 'input.txt', 'r')
     setting = json.load(fo)
     fo.close()
-    print
-    setting
+    # print setting
     flag = int(setting['type'])
     traninfolist = obtain_efsm_info.obtain_tran_info()  # 迁移信息全部在这
     path = setting['path']
@@ -336,5 +340,5 @@ if __name__ == '__main__':
     TIME = int(setting['time'])
     precision = int(setting['precision'])
     data = testProcee(SM, path, flag, num, precision, TIME)
-    # print data
+    # print "data",data
     cover_data(path, data, flag)

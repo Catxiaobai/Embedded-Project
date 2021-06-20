@@ -25,22 +25,22 @@ class INTBYTE(object):
             if r!=0:
                 return self.INT8(l,r)
             else:
-                return self.INT8()
+                return self.INT8(l)
         elif self.name=="INT16":
             if r!=0:
                 return self.INT16(l,r)
             else:
-                return self.INT16()
+                return self.INT16(l)
         elif self.name=="INT32":
             if r!=0:
                 return self.INT32(l,r)
             else:
-                return self.INT32()
+                return self.INT32(l)
         elif self.name=="INT64":
             if r!=0:
                 return self.INT64(l,r)
             else:
-                return self.INT64()
+                return self.INT64(l)
 
 if __name__ == '__main__':
     protocol1=INTBYTE()

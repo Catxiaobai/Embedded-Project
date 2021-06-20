@@ -2,17 +2,24 @@
   <div>
     <div class="main">
       <el-card class="table" style="height: 653px">
-        <el-button type="primary" @click="addDialog = true"> 添加变量 </el-button>
+        当前协议：
+        <el-select v-model="frame" placeholder="请选择协议">
+          <el-option v-for="item in optionsProtocol" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+        </el-select>
+
         <el-divider></el-divider>
         <el-row :gutter="5">
           <el-col :span="12" class="tableVariable">
-            <el-row type="flex" align="middle"> 可选变量列表： </el-row>
-            <el-row type="flex" align="middle" style="margin-top: 20px">
+            <el-row type="flex" align="middle">
+              可选变量列表：
+              <el-button type="primary" @click="addDialog = true" style="margin-left: 60%" size="mini"> 添加新变量 </el-button>
+            </el-row>
+            <el-row type="flex" align="middle" style="margin-top: 10px">
               <el-card style="width: 100%; height: 410px">
                 <el-table :data="tableVariable" border height="366" width="100%" @selection-change="toRightChange">
                   <el-table-column type="selection" width="40"> </el-table-column>
                   <!--                  <el-table-column prop="name" label="名称"> </el-table-column>-->
-                  <el-table-column prop="describe" label="描述" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="describe" label="名称" show-overflow-tooltip> </el-table-column>
                   <el-table-column prop="type" label="类型" show-overflow-tooltip> </el-table-column>
                   <el-table-column prop="lower_bound" label="下限" show-overflow-tooltip> </el-table-column>
                   <el-table-column prop="upper_bound" label="上限" show-overflow-tooltip> </el-table-column>
@@ -43,8 +50,7 @@
               <el-card style="width: 100%; height: 410px">
                 <el-table :data="tableSelect" border width="100%" height="366" @selection-change="toLeftChange">
                   <el-table-column type="selection" width="40"> </el-table-column>
-                  <!--                  <el-table-column prop="name" label="名称"> </el-table-column>-->
-                  <el-table-column prop="describe" label="描述" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="describe" label="名称" show-overflow-tooltip> </el-table-column>
                   <el-table-column prop="type" label="类型" show-overflow-tooltip> </el-table-column>
                   <el-table-column prop="lower_bound" label="下限" show-overflow-tooltip> </el-table-column>
                   <el-table-column prop="upper_bound" label="上限" show-overflow-tooltip> </el-table-column>
@@ -66,20 +72,25 @@
           <el-form-item label="标识" prop="name">
             <el-input v-model="addForm.name" placeholder="请填写英文标识"></el-input>
           </el-form-item>
-          <el-form-item label="描述" prop="describe">
-            <el-input v-model="addForm.describe" placeholder="请填写描述"></el-input>
+          <el-form-item label="名称" prop="describe">
+            <el-input v-model="addForm.describe" placeholder="请填写名称"></el-input>
           </el-form-item>
           <el-form-item label="类型" prop="type">
-            <el-input v-model="addForm.type" placeholder="请填写类型"></el-input>
+            <el-select v-model="addForm.type" placeholder="请选择" @change="selectType">
+              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+            </el-select>
           </el-form-item>
-          <el-form-item label="下限" prop="lower_bound">
+          <el-form-item label="下限" prop="lower_bound" :hidden="hidden.lower_bound">
             <el-input v-model="addForm.lower_bound" placeholder="请填写下限"></el-input>
           </el-form-item>
-          <el-form-item label="上限" prop="upper_bound">
+          <el-form-item label="上限" prop="upper_bound" :hidden="hidden.upper_bound">
             <el-input v-model="addForm.upper_bound" placeholder="请填写上限"></el-input>
           </el-form-item>
-          <el-form-item label="值" prop="value">
+          <el-form-item label="值" prop="value" :hidden="hidden.value">
             <el-input v-model="addForm.value" placeholder="格式['value1','value2','value3']"></el-input>
+          </el-form-item>
+          <el-form-item label="长度" prop="length" :hidden="hidden.length">
+            <el-input v-model="addForm.length" placeholder="长度以字节为单位"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -98,18 +109,59 @@ export default {
     return {
       tableVariable: [],
       tableSelect: [],
-      addForm: {},
+      addForm: {
+        name: '',
+        describe: '',
+        type: '',
+        lower_bound: 'None',
+        upper_bound: 'None',
+        value: 'None',
+        length: 'None',
+      },
       addDialog: false,
+      options: [
+        {
+          value: 'CONSTANT',
+          label: 'CONSTANT',
+        },
+        {
+          value: 'ENUM',
+          label: 'ENUM',
+        },
+        {
+          value: 'INT8',
+          label: 'INT8',
+        },
+        {
+          value: 'INT16',
+          label: 'INT16',
+        },
+        {
+          value: 'INT32',
+          label: 'INT32',
+        },
+        {
+          value: 'FLOAT',
+          label: 'FLOAT',
+        },
+        // {
+        //   value: 'DOUBLE',
+        //   label: 'DOUBLE',
+        // },
+      ],
+      frame: '',
+      optionsProtocol: [],
       rules: {
-        name: [{ required: true, message: '请填写名称', trigger: 'blur' }],
-        describe: [{ required: true, message: '请填写描述', trigger: 'blur' }],
-        upper_bound: [{ required: true, message: '请填写上限', trigger: 'blur' }],
-        lower_bound: [{ required: true, message: '请填写下限', trigger: 'blur' }],
-        type: [{ required: true, message: '请填写类型', trigger: 'blur' }],
+        name: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        describe: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        type: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        // upper_bound: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        // lower_bound: [{ required: true, message: '不能为空', trigger: 'blur' }],
         value: [
-          { required: true, message: '不能为空', trigger: 'blur' },
-          { pattern: /[[](.+?)[\]]/g, message: '格式：["value1","value2","value3"]' },
+          // { required: true, message: '不能为空', trigger: 'blur' },
+          { pattern: /[[](.+?)[\]]/g, message: '格式：["value1","value2","value3"]', trigger: 'blur' },
         ],
+        // length: [{ required: true, message: '不能为空', trigger: 'blur' }],
       },
       disabled: {
         to_left: true,
@@ -119,6 +171,12 @@ export default {
       select: {
         to_right: [],
         to_left: [],
+      },
+      hidden: {
+        lower_bound: true,
+        upper_bound: true,
+        value: true,
+        length: true,
       },
     }
   },
@@ -193,7 +251,7 @@ export default {
     handleSave() {
       console.log(this.tableSelect)
       this.$http
-        .post(this.Global_Api + '/api/generation/commit_protocol', this.tableSelect)
+        .post(this.Global_Api + '/api/generation/protocol_save', { protocol: this.frame, variable: this.tableSelect })
         .then((response) => {
           console.log(response.data)
           this.$message.success('配置成功')
@@ -208,6 +266,7 @@ export default {
         .then((response) => {
           this.rawData = response.data.variable_list
           this.tableVariable = this.rawData
+          console.log(response.data)
         })
         .catch(function (error) {
           console.log(error)
@@ -249,10 +308,77 @@ export default {
         return a.id - b.id
       })
     },
+    selectType() {
+      console.log(this.addForm.type)
+      if (this.addForm.type === 'CONSTANT') {
+        this.hidden.lower_bound = true
+        this.hidden.upper_bound = true
+        this.hidden.length = false
+        this.hidden.value = false
+      } else if (this.addForm.type === 'ENUM') {
+        this.hidden.lower_bound = true
+        this.hidden.upper_bound = true
+        this.hidden.length = false
+        this.hidden.value = false
+      } else if (this.addForm.type === 'INT8') {
+        this.hidden.lower_bound = false
+        this.hidden.upper_bound = false
+        this.hidden.length = true
+        this.hidden.value = true
+      } else if (this.addForm.type === 'INT16') {
+        this.hidden.lower_bound = false
+        this.hidden.upper_bound = false
+        this.hidden.length = true
+        this.hidden.value = true
+      } else if (this.addForm.type === 'INT32') {
+        this.hidden.lower_bound = false
+        this.hidden.upper_bound = false
+        this.hidden.length = true
+        this.hidden.value = true
+      } else if (this.addForm.type === 'FLOAT') {
+        this.hidden.lower_bound = false
+        this.hidden.upper_bound = false
+        this.hidden.length = false
+        this.hidden.value = true
+      } else {
+        this.hidden.lower_bound = true
+        this.hidden.upper_bound = true
+        this.hidden.length = true
+        this.hidden.value = true
+      }
+    },
+    getProtocol() {
+      this.$http
+        .post(this.Global_Api + '/api/generation/protocol_list', this.itemInfo)
+        .then((response) => {
+          console.log(response.data.protocol_list)
+          let temp_data = response.data.protocol_list
+          for (let i = 0; i < temp_data.length; i++) {
+            let temp_dict = { value: temp_data[i]['subject_name'], label: temp_data[i]['subject_name'] }
+            this.optionsProtocol.push(temp_dict)
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
+    getCurrentProtocol() {
+      this.frame = this.$store.state.protocol.subject_name
+      this.$http
+        .post(this.Global_Api + '/api/generation/current_protocol', { protocol: this.frame })
+        .then((response) => {
+          console.log(response.data)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
   },
   created() {
     this.getItemInfo()
     this.pageList()
+    this.getProtocol()
+    this.getCurrentProtocol()
   },
   watch: {
     tableSelect(val) {

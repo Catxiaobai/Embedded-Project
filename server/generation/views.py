@@ -25,6 +25,23 @@ def write_txt(path, filename, content):
         json.dump(content, f)
 
 
+# 将output.txt内容修改成符合格式的数据
+def edit_txt(path, filename):
+    content = read_txt(path, filename)
+    print(content)
+    if content['name'] == '随机测试':
+        for key in content:
+            if key != 'name':
+                for k in content[key]:
+                    content[key][k] = str(content[key][k])
+    else:
+        for key in content:
+            if key != 'name':
+                for i in range(len(content[key])):
+                    content[key][i] = str(content[key][i])
+    write_txt(path, filename, content)
+
+
 # 全状态
 def full_state(request):
     request_json = json.loads(request.body)
@@ -126,6 +143,7 @@ def generate_increase(request):
         os.system('py -2 ' + './efsmGA/data_generation.py')
         # 读取output.txt信息
         filename = 'output.txt'
+        edit_txt(path, filename)
         result = read_txt(path, filename)
         print('request_json', request_json)
         print('result', str(result))
@@ -158,6 +176,7 @@ def generate_decrease(request):
         os.system('py -2 ' + './efsmGA/data_generation.py')
         # 读取output.txt信息
         filename = 'output.txt'
+        edit_txt(path, filename)
         result = read_txt(path, filename)
         print('request_json', request_json)
         print('result', str(result))
@@ -191,6 +210,7 @@ def generate_random(request):
         os.system('py -2 ' + './efsmGA/data_generation.py')
         # 读取output.txt信息
         filename = 'output.txt'
+        edit_txt(path, filename)
         result = read_txt(path, filename)
         print('request_json', request_json)
         print('result', str(result))
@@ -223,6 +243,7 @@ def generate_boundary(request):
         os.system('py -2 ' + './efsmGA/data_generation.py')
         # 读取output.txt信息
         filename = 'output.txt'
+        edit_txt(path, filename)
         result = read_txt(path, filename)
         print('request_json', request_json)
         print('result', str(result))
@@ -254,6 +275,7 @@ def generate_mcdc(request):
         os.system('py -2 ' + './efsmGA/data_generation.py')
         # 读取output.txt信息
         filename = 'output.txt'
+        edit_txt(path, filename)
         result = read_txt(path, filename)
         print('request_json', request_json)
         print('result', str(result))
@@ -285,6 +307,7 @@ def generate_condition(request):
         os.system('py -2 ' + './efsmGA/data_generation.py')
         # 读取output.txt信息
         filename = 'output.txt'
+        edit_txt(path, filename)
         result = read_txt(path, filename)
         print('request_json', request_json)
         print('result', str(result))
@@ -370,9 +393,8 @@ def add_protocol(request):
         new_version = request_json['version']
         new_type = request_json['type']
         new_communication_method = request_json['communication_method']
-        new_refresh_cycle = request_json['refresh_cycle']
         new_item_id = request_json['item_id']
-        if Protocol.objects.filter(item_id=new_item_id, type=new_type):
+        if Protocol.objects.filter(item_id=new_item_id, subject_name=new_subject_name):
             return JsonResponse({**error_code.CLACK_NAME_EXISTS})
         new_protocol = Protocol(
             subject_name=new_subject_name,
@@ -380,7 +402,7 @@ def add_protocol(request):
             version=new_version,
             type=new_type,
             communication_method=new_communication_method,
-            refresh_cycle=new_refresh_cycle,
+
             item_id=new_item_id)
         new_protocol.save()
     except Exception as e:
@@ -409,7 +431,7 @@ def edit_protocol(request):
         new_version = request_json['version']
         new_type = request_json['type']
         new_communication_method = request_json['communication_method']
-        new_refresh_cycle = request_json['refresh_cycle']
+
         if not Protocol.objects.filter(id=aim_id).exists():
             return Protocol({**error_code.CLACK_NOT_EXISTS})
         Protocol.objects.filter(id=aim_id).update(subject_name=new_subject_name)
@@ -417,7 +439,7 @@ def edit_protocol(request):
         Protocol.objects.filter(id=aim_id).update(version=new_version)
         Protocol.objects.filter(id=aim_id).update(type=new_type)
         Protocol.objects.filter(id=aim_id).update(communication_method=new_communication_method)
-        Protocol.objects.filter(id=aim_id).update(refresh_cycle=new_refresh_cycle)
+
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS})
@@ -460,6 +482,7 @@ def variable_list(request):
 def add_variable(request):
     request_json = json.loads(request.body)
     try:
+        print(request_json)
         new_name = request_json['name']
         new_describe = request_json['describe']
         new_type = request_json['type']
@@ -567,6 +590,33 @@ def test(request):
             new_value = eval(i['value'])
             i['value'] = new_value
         write_txt(path, filename, request_jsons)
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+def current_protocol(request):
+    request_jsons = json.loads(request.body)
+    try:
+        print(request_jsons)
+        protocol = Protocol.objects.get(subject_name=request_jsons['protocol'])
+        print(protocol.to_dict())
+        result = protocol.to_dict()['configuration']
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "result": result})
+
+
+def protocol_save(request):
+    request_jsons = json.loads(request.body)
+    try:
+        print(request_jsons)
+        var = request_jsons['variable']
+        config = []
+        for i in var:
+            config.append(i['id'])
+        print(config)
+        Protocol.objects.filter(subject_name=request_jsons['protocol']).update(configuration=str(config))
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS})

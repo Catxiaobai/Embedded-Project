@@ -12,6 +12,7 @@ const store = new Vuex.Store({
     user: '',
     path: '',
     scriptData: '',
+    protocol: '',
   },
   getters: {
     getItem(state) {
@@ -22,6 +23,9 @@ const store = new Vuex.Store({
     },
     getScriptData(state) {
       return state.scriptData
+    },
+    getProtocol(state) {
+      return state.protocol
     },
   },
   mutations: {
@@ -37,6 +41,9 @@ const store = new Vuex.Store({
     },
     setScriptData(state, newData) {
       state.scriptData = newData
+    },
+    setProtocol(state, newData) {
+      state.protocol = newData
     },
   },
 })

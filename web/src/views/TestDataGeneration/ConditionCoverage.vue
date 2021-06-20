@@ -15,6 +15,13 @@
         <el-table-column prop="page_id" label="ID" width="40"> </el-table-column>
         <el-table-column prop="type2" label="类别" width="80" :filters="filterItem"> </el-table-column>
         <el-table-column prop="path" label="测试路径"> </el-table-column>
+        <el-table-column prop="frame" label="帧格式" width="160">
+          <template slot-scope="scope">
+            <el-select v-model="scope.row.frame" placeholder="请选择">
+              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+            </el-select>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="141">
           <template slot-scope="scope">
             <el-button size="mini" @click="generateCondition(scope.$index, scope.row)" type="primary">多条件覆盖</el-button>
@@ -58,6 +65,7 @@ export default {
         { text: '全状态', value: '全状态' },
         { text: '全迁移', value: '全迁移' },
       ],
+      options: [],
     }
   },
   methods: {
@@ -178,10 +186,26 @@ export default {
       }
       this.getList()
     },
+    getProtocol() {
+      this.$http
+        .post(this.Global_Api + '/api/generation/protocol_list', this.itemInfo)
+        .then((response) => {
+          console.log(response.data.protocol_list)
+          let temp_data = response.data.protocol_list
+          for (let i = 0; i < temp_data.length; i++) {
+            let temp_dict = { value: temp_data[i]['subject_name'], label: temp_data[i]['subject_name'] }
+            this.options.push(temp_dict)
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
   },
   created() {
     this.getItemInfo()
     this.pageList()
+    this.getProtocol()
   },
 }
 </script>

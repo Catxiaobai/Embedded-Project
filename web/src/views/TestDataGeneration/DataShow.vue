@@ -155,7 +155,6 @@ export default {
             type2: this.rawData[0].type2,
             TF: '',
           }
-
           for (let i = 0; i < this.aimPath.length; i++) {
             temp[this.aimPath[i]] = data[key][this.aimPath[i]]
           }

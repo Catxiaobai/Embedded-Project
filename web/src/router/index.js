@@ -181,6 +181,11 @@ const routes = [
         name: 'dataList',
         component: () => import('@/views/TestDataGeneration/DataList'),
       },
+      {
+        path: '/time',
+        name: 'time',
+        component: () => import('@/views/TestDataGeneration/Time'),
+      },
     ],
   },
 ]

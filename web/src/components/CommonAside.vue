@@ -15,7 +15,7 @@
           <el-submenu index="1-2">
             <template slot="title"><i class="el-icon-folder"></i>通信协议设计</template>
             <!--            <el-menu-item index="/communicationProtocol"><i class="el-icon-folder"></i>新建通信协议</el-menu-item>-->
-            <el-menu-item index="/ShowEdit"><i class="el-icon-folder"></i>协议描述</el-menu-item>
+            <el-menu-item index="/showEdit"><i class="el-icon-folder"></i>协议描述</el-menu-item>
             <el-menu-item index="/deploy"><i class="el-icon-folder"></i>协议配置</el-menu-item>
           </el-submenu>
           <el-submenu index="1-3">
@@ -53,8 +53,9 @@
             <el-menu-item index="/decrease"><i class="el-icon-folder"></i>递减值</el-menu-item>
             <el-menu-item index="/conditionCoverage"><i class="el-icon-folder"></i>多条件覆盖</el-menu-item>
             <el-menu-item index="/mcDcCoverage"><i class="el-icon-folder"></i>MC/DC覆盖</el-menu-item>
+            <el-menu-item index="/time"><i class="el-icon-folder"></i>时序约束</el-menu-item>
             <!--            <el-menu-item index="/dataShow"><i class="el-icon-folder"></i>测试界面</el-menu-item>-->
-            <!--            <el-menu-item index="/interfaceProtocol"><i class="el-icon-folder"></i>接口协议</el-menu-item>-->
+            <el-menu-item index="/interfaceProtocol"><i class="el-icon-folder"></i>接口异常</el-menu-item>
           </el-submenu>
           <el-menu-item index="/dataList"><i class="el-icon-folder"></i>测试数据集</el-menu-item>
         </el-submenu>

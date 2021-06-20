@@ -12,9 +12,9 @@
         style="width: 100%; margin-top: 20px"
         @filter-change="filterType"
       >
-        <el-table-column prop="page_id" label="ID" width="40"> </el-table-column>
-        <el-table-column prop="type2" label="类别" width="80" :filters="filterItem"> </el-table-column>
-        <el-table-column prop="path" label="测试路径"> </el-table-column>
+        <el-table-column prop="page_id" label="ID" width="40"></el-table-column>
+        <el-table-column prop="type2" label="类别" width="80" :filters="filterItem"></el-table-column>
+        <el-table-column prop="path" label="测试路径"></el-table-column>
         <el-table-column prop="frame" label="帧格式" width="160">
           <template slot-scope="scope">
             <el-select v-model="scope.row.frame" placeholder="请选择">
@@ -22,9 +22,14 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="141">
+        <el-table-column prop="amount" label="规模" width="100">
           <template slot-scope="scope">
-            <el-button size="mini" @click="generateMCDC(scope.$index, scope.row)" type="primary">MC/DC数据生成</el-button>
+            <el-input v-model="scope.row.amount" class="tableCell"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="114">
+          <template slot-scope="scope">
+            <el-button size="mini" @click="generateRandom(scope.$index, scope.row)" type="primary">时序生成</el-button>
           </template>
         </el-table-column>
         <el-table-column prop="result" label="测试数据" width="100">
@@ -102,11 +107,11 @@ export default {
         }
       }
     },
-    generateMCDC(index, row) {
+    generateRandom(index, row) {
       console.log(index, row)
       this.loading = true
       this.$http
-        .post(this.Global_Api + '/api/generation/generate_mcdc', row)
+        .post(this.Global_Api + '/api/generation/generate_random', row)
         .then((response) => {
           this.loading = false
           this.gotoShow(row)
@@ -121,10 +126,9 @@ export default {
         .post(this.Global_Api + '/api/generation/path_list', this.itemInfo)
         .then((response) => {
           this.rawData = response.data.path_list
-
           for (let i = 0; i < this.rawData.length; i++) {
             this.rawData[i].time = 0
-            this.rawData[i].amount = 0
+            this.rawData[i].amount = 1
           }
           this.data = this.rawData
           this.getList()
@@ -164,7 +168,7 @@ export default {
       this.itemInfo = this.$store.state.item
     },
     gotoShow(row) {
-      row['name'] = 'MC/DC'
+      row['name'] = '随机值'
       console.log('test', row)
       this.$store.commit('setPath', row)
       this.$router.replace('/dataShow')
@@ -200,6 +204,9 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
+    },
+    filterPath() {
+      console.log(this.tableData)
     },
   },
   created() {

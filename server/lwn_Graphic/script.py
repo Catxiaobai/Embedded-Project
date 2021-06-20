@@ -39,6 +39,8 @@ def main(qianyi, data, file):
         if qianyi == Tran_name[i] and fangfa[i] in jbk:
             if fangfa[i] == 'Write' or fangfa[i] == 'Clear':
                 result = 'array=' + road[i] + '.' + fangfa[i] + '(' + data + ')'
+                print(result)
             else:
                 result = road[i] + '.' + fangfa[i] + '(' + canshu[i] + ')'
+                print(result)
     return result
