@@ -15,16 +15,16 @@
         <el-table-column prop="page_id" label="ID" width="40"> </el-table-column>
         <el-table-column prop="type2" label="类别" width="80" :filters="filterItem"> </el-table-column>
         <el-table-column prop="path" label="测试路径"> </el-table-column>
-        <el-table-column prop="frame" label="帧格式" width="160">
-          <template slot-scope="scope">
-            <el-select v-model="scope.row.frame" placeholder="请选择">
-              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
-            </el-select>
-          </template>
-        </el-table-column>
+        <!--        <el-table-column prop="frame" label="帧格式" width="160">-->
+        <!--          <template slot-scope="scope">-->
+        <!--            <el-select v-model="scope.row.frame" placeholder="请选择">-->
+        <!--              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>-->
+        <!--            </el-select>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
         <el-table-column label="操作" width="141">
           <template slot-scope="scope">
-            <el-button size="mini" @click="generateMCDC(scope.$index, scope.row)" type="primary">MC/DC数据生成</el-button>
+            <el-button size="mini" @click="generateWrong(scope.$index, scope.row)" type="primary">异常数据生成</el-button>
           </template>
         </el-table-column>
         <el-table-column prop="result" label="测试数据" width="100">
@@ -102,11 +102,11 @@ export default {
         }
       }
     },
-    generateMCDC(index, row) {
+    generateWrong(index, row) {
       console.log(index, row)
       this.loading = true
       this.$http
-        .post(this.Global_Api + '/api/generation/generate_mcdc', row)
+        .post(this.Global_Api + '/api/generation/generate_wrong', row)
         .then((response) => {
           this.loading = false
           this.gotoShow(row)
@@ -164,7 +164,7 @@ export default {
       this.itemInfo = this.$store.state.item
     },
     gotoShow(row) {
-      row['name'] = 'MC/DC'
+      row['name'] = '接口异常'
       console.log('test', row)
       this.$store.commit('setPath', row)
       this.$router.replace('/dataShow')

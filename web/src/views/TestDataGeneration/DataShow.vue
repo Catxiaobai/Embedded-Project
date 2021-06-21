@@ -92,6 +92,8 @@ export default {
             this.dataList(this.rawData[0].data)
           } else if (this.rawData[0].name === 'MC/DC' || this.rawData[0].name === '条件覆盖') {
             this.dataList3(this.rawData[0].data)
+          } else if (this.rawData[0].name === '接口异常') {
+            this.dataList4(this.rawData[0].data)
           } else {
             this.dataList2(this.rawData[0].data)
           }
@@ -208,6 +210,61 @@ export default {
           this.data.push(temp)
         }
       }
+    },
+    dataList4(data) {
+      data = eval('(' + data + ')') //神奇
+      this.data = []
+      console.log(data)
+      this.desCol_mcdc.push({ prop: 'TF', label: '状态' })
+      let state = ['正常', '帧头异常', '帧尾异常', '校验和异常']
+      for (let i = 0; i < state.length; i++) {
+        let temp = {
+          id: this.rawData[0].id,
+          path_id: this.rawData[0].path_id,
+          item_id: this.rawData[0].item_id,
+          name: this.rawData[0].name,
+          type2: this.rawData[0].type2,
+        }
+        temp['TF'] = state[i]
+        for (let key in data) {
+          console.log(key)
+          if (key !== 'name') {
+            temp[key] = data[key][state[i]]
+          }
+        }
+        this.data.push(temp)
+      }
+      // for (let i = 0; i < 4; i++) {
+      //   let temp = {
+      //     id: this.rawData[0].id,
+      //     path_id: this.rawData[0].path_id,
+      //     item_id: this.rawData[0].item_id,
+      //     name: this.rawData[0].name,
+      //     type2: this.rawData[0].type2,
+      //   }
+      //   for (let j = 0; j < this.aimPath.length; j++) {
+      //     temp[this.aimPath[j]] = data[]
+      //   }
+      // }
+      // for (let key in data) {
+      //   if (key !== 'name') {
+      //     let temp = {
+      //       id: this.rawData[0].id,
+      //       path_id: this.rawData[0].path_id,
+      //       item_id: this.rawData[0].item_id,
+      //       name: this.rawData[0].name,
+      //       type2: this.rawData[0].type2,
+      //     }
+      //     console.log(key)
+      //     for (let k in data[key]) {
+      //       temp[key] = data[key][k]
+      //     }
+      //
+      //     temp['TF'] = key
+      //
+      //     this.data.push(temp)
+      //   }
+      // }
     },
     gotoLink(row) {
       console.log('test', row)

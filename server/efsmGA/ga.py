@@ -99,7 +99,7 @@ if __name__=='__main__':
         path["path"+str(i+1)]=ind_history[i]
         print ind_history[i]
     with open(filepath + 'output.txt', 'w+') as f:
-        json.dump(path, f, indent=4, ensure_ascii=False)
+        json.dump(path, f,indent=4,ensure_ascii=False)
         print("路径写入json文件完成...")
 
 

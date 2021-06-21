@@ -55,7 +55,7 @@
             <el-menu-item index="/mcDcCoverage"><i class="el-icon-folder"></i>MC/DC覆盖</el-menu-item>
             <el-menu-item index="/time"><i class="el-icon-folder"></i>时序约束</el-menu-item>
             <!--            <el-menu-item index="/dataShow"><i class="el-icon-folder"></i>测试界面</el-menu-item>-->
-            <el-menu-item index="/interfaceProtocol"><i class="el-icon-folder"></i>接口异常</el-menu-item>
+            <el-menu-item index="/interfaceProtocol"><i class="el-icon-folder"></i>接口协议异常</el-menu-item>
           </el-submenu>
           <el-menu-item index="/dataList"><i class="el-icon-folder"></i>测试数据集</el-menu-item>
         </el-submenu>

@@ -15,13 +15,13 @@
         <el-table-column prop="page_id" label="ID" width="40"> </el-table-column>
         <el-table-column prop="type2" label="类别" width="80" :filters="filterItem"> </el-table-column>
         <el-table-column prop="path" label="测试路径"> </el-table-column>
-        <el-table-column prop="frame" label="帧格式" width="160">
-          <template slot-scope="scope">
-            <el-select v-model="scope.row.frame" placeholder="请选择">
-              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
-            </el-select>
-          </template>
-        </el-table-column>
+        <!--        <el-table-column prop="frame" label="帧格式" width="160">-->
+        <!--          <template slot-scope="scope">-->
+        <!--            <el-select v-model="scope.row.frame" placeholder="请选择">-->
+        <!--              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>-->
+        <!--            </el-select>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
         <el-table-column prop="amount" label="规模" width="100">
           <template slot-scope="scope">
             <el-input v-model="scope.row.amount" class="tableCell"></el-input>

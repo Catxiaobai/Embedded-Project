@@ -15,13 +15,13 @@
         <el-table-column prop="page_id" label="ID" width="40"></el-table-column>
         <el-table-column prop="type2" label="类别" width="80" :filters="filterItem"></el-table-column>
         <el-table-column prop="path" label="测试路径"></el-table-column>
-        <el-table-column prop="frame" label="帧格式" width="160">
-          <template slot-scope="scope">
-            <el-select v-model="scope.row.frame" placeholder="请选择">
-              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
-            </el-select>
-          </template>
-        </el-table-column>
+        <!--        <el-table-column prop="frame" label="帧格式" width="160">-->
+        <!--          <template slot-scope="scope">-->
+        <!--            <el-select v-model="scope.row.frame" placeholder="请选择">-->
+        <!--              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>-->
+        <!--            </el-select>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
         <el-table-column prop="amount" label="规模" width="100">
           <template slot-scope="scope">
             <el-input v-model="scope.row.amount" class="tableCell"></el-input>
@@ -50,6 +50,18 @@
       >
       </el-pagination>
     </el-card>
+    <div id="dialog">
+      <el-dialog :close-on-click-modal="false" title="输入具有时序约束迁移" :visible.sync="dialog" center width="350px">
+        <el-form :model="form" ref="form" label-width="50px">
+          <el-form-item label="路径" prop="path">
+            <el-input v-model="form.path" placeholder="请填写迁移"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="handleCommit('form')">确 定</el-button>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -71,6 +83,8 @@ export default {
         { text: '全迁移', value: '全迁移' },
       ],
       options: [],
+      dialog: true,
+      form: {},
     }
   },
   methods: {
@@ -207,6 +221,20 @@ export default {
     },
     filterPath() {
       console.log(this.tableData)
+    },
+    handleCommit() {
+      this.dialog = false
+      console.log(this.form.path)
+      console.log(this.data)
+      let temp = []
+      for (let i = 0; i < this.data.length; i++) {
+        console.log(this.data[i].path.indexOf(this.form.path))
+        if (this.data[i].path.indexOf(this.form.path) != -1) {
+          temp.push(this.data[i])
+        }
+      }
+      this.data = temp
+      this.getList()
     },
   },
   created() {

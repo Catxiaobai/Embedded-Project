@@ -19,6 +19,8 @@ class INTBYTE(object):
 
     def INT64(self,l=0,r=18446744073709551615):
         return random.randint(l, r)
+    def FLOAT(self,l=-3.4E+38,r=3.4E+38):
+        return random.uniform(l, r)
 
     def IntByte_Random(self,l=0,r=0):
         if self.name=="INT8":
@@ -41,9 +43,14 @@ class INTBYTE(object):
                 return self.INT64(l,r)
             else:
                 return self.INT64(l)
+        elif self.name=="FLOAT":
+            if r!=0:
+                return self.FLOAT(l,r)
+            else:
+                return self.FLOAT(l)
 
 if __name__ == '__main__':
     protocol1=INTBYTE()
-    protocol1.NAME("INT8")
+    protocol1.NAME("FLOAT")
     protocol1.read()
-    print protocol1.IntByte_Random()
+    print protocol1.IntByte_Random(1,10000)

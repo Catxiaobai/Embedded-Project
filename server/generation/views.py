@@ -29,11 +29,12 @@ def write_txt(path, filename, content):
 def edit_txt(path, filename):
     content = read_txt(path, filename)
     print(content)
-    if content['name'] == '随机测试':
+    if content['name'] == '随机测试' or content['name'] == '接口异常':
         for key in content:
             if key != 'name':
                 for k in content[key]:
                     content[key][k] = str(content[key][k])
+        print(content)
     else:
         for key in content:
             if key != 'name':
@@ -119,7 +120,8 @@ def data_list(request):
     request_json = json.loads(request.body)
     print(request_json)
     try:
-        path_data = PathsData.objects.filter(paths_id=request_json['id'], name=request_json['name'])
+        new_name = request_json['name']
+        path_data = PathsData.objects.filter(paths_id=request_json['id'], name=new_name)
         result = [p.to_dict() for p in path_data]
         print(result)
     except Exception as e:
@@ -324,6 +326,38 @@ def generate_condition(request):
     return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})
 
 
+# 生成接口异常数据
+def generate_wrong(request):
+    request_json = json.loads(request.body)
+    try:
+        # 修改输入信息
+        path = "./efsmGA/files/"
+        filename = 'input.txt'
+        old_input = read_txt(path, filename)
+        old_input['type'] = 7
+        old_input['path'] = eval(request_json['path'])
+        write_txt(path, filename, old_input)
+        # 运行data程序
+        os.system('py -2 ' + './efsmGA/data_generation.py')
+        # 读取output.txt信息
+        filename = 'output.txt'
+        edit_txt(path, filename)
+        result = read_txt(path, filename)
+        print('request_json', request_json)
+        print('result', str(result))
+        # 判断这条path这种方法name下有没有生成data，有就delete，无则save
+        aim_path_id = request_json['id']
+        new_type2 = request_json['type2']
+        new_name = '接口异常'
+        new_data = result
+        PathsData.objects.filter(paths_id=aim_path_id, name=new_name).delete()
+        new_paths_data = PathsData(paths_id=aim_path_id, type2=new_type2, name=new_name, data=new_data)
+        new_paths_data.save()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})
+
+
 def xmi_modeling(request):
     request_jsons = json.loads(request.body)
     print(request_jsons)
@@ -489,14 +523,16 @@ def add_variable(request):
         new_upper_bound = request_json['upper_bound']
         new_lower_bound = request_json['lower_bound']
         new_value = request_json['value']
+        new_length = request_json['length']
         new_item_id = request_json['item_id']
-        if Protocol.objects.filter(item_id=new_item_id, type=new_type):
+        if Variable.objects.filter(item_id=new_item_id, describe=new_describe):
             return JsonResponse({**error_code.CLACK_NAME_EXISTS})
         new_variable = Variable(
             name=new_name,
             describe=new_describe,
             type=new_type,
             value=new_value,
+            length=new_length,
             upper_bound=new_upper_bound,
             lower_bound=new_lower_bound,
             item_id=new_item_id)
@@ -523,14 +559,23 @@ def commit_protocol(request):
     try:
         path = './efsmGA/files/'
         filename = 'format.txt'
-        # print(request_jsons[0].keys())
-        for i in request_jsons:
+        print(request_jsons)
+        protocol = Protocol.objects.get(subject_name=request_jsons['protocol'], item_id=request_jsons['item_id'])
+        print(protocol.to_dict())
+        result = []
+        if protocol.to_dict()['configuration'] != '':
+            config = eval(protocol.to_dict()['configuration'])
+            result = [Variable.objects.get(id=i).to_dict() for i in config]
+            print(result)
+        for i in result:
             i.pop('id')
             i.pop('item')
             i.pop('describe')
-            new_value = eval(i['value'])
-            i['value'] = new_value
-        write_txt(path, filename, request_jsons)
+            if i['value'] != 'None':
+                new_value = eval(i['value'])
+                i['value'] = new_value
+        print(result)
+        write_txt(path, filename, result)
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS})
@@ -539,6 +584,7 @@ def commit_protocol(request):
 def save_data(request):
     request_jsons = json.loads(request.body)
     try:
+        print(request_jsons)
         aim_path_id = request_jsons[0]['path_id']
         new_function = request_jsons[0]['name']
         new_type = request_jsons[0]['type2']
@@ -599,9 +645,12 @@ def current_protocol(request):
     request_jsons = json.loads(request.body)
     try:
         print(request_jsons)
-        protocol = Protocol.objects.get(subject_name=request_jsons['protocol'])
-        print(protocol.to_dict())
-        result = protocol.to_dict()['configuration']
+        protocol = Protocol.objects.get(subject_name=request_jsons['protocol'], item_id=request_jsons['item_id'])
+        result = []
+        if protocol.to_dict()['configuration'] != '':
+            config = eval(protocol.to_dict()['configuration'])
+            result = [Variable.objects.get(id=i).to_dict() for i in config]
+            print(result)
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "result": result})
@@ -616,7 +665,9 @@ def protocol_save(request):
         for i in var:
             config.append(i['id'])
         print(config)
-        Protocol.objects.filter(subject_name=request_jsons['protocol']).update(configuration=str(config))
+        Protocol.objects.filter(
+            subject_name=request_jsons['protocol'],
+            item_id=request_jsons['item_id']).update(configuration=str(config))
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS})

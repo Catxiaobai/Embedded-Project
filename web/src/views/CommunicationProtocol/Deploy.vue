@@ -3,7 +3,7 @@
     <div class="main">
       <el-card class="table" style="height: 653px">
         当前协议：
-        <el-select v-model="frame" placeholder="请选择协议">
+        <el-select v-model="frame" placeholder="请选择协议" @change="getCurrentProtocol">
           <el-option v-for="item in optionsProtocol" :key="item.value" :label="item.label" :value="item.value"> </el-option>
         </el-select>
 
@@ -24,6 +24,7 @@
                   <el-table-column prop="lower_bound" label="下限" show-overflow-tooltip> </el-table-column>
                   <el-table-column prop="upper_bound" label="上限" show-overflow-tooltip> </el-table-column>
                   <el-table-column prop="value" label="值" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="length" label="长度" show-overflow-tooltip> </el-table-column>
                   <el-table-column label="操作">
                     <template slot-scope="scope">
                       <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
@@ -55,14 +56,14 @@
                   <el-table-column prop="lower_bound" label="下限" show-overflow-tooltip> </el-table-column>
                   <el-table-column prop="upper_bound" label="上限" show-overflow-tooltip> </el-table-column>
                   <el-table-column prop="value" label="值" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="length" label="长度" show-overflow-tooltip> </el-table-column>
                 </el-table>
               </el-card>
             </el-row>
           </el-col>
         </el-row>
-        <el-divider></el-divider>
-        <div style="margin-left: 90%">
-          <el-button type="primary" :disabled="disabled.commit" @click="handleSave">确定</el-button>
+        <div style="margin-left: 90%; margin-top: 10px">
+          <el-button type="primary" :disabled="disabled.commit" @click="handleSave">保存</el-button>
         </div>
       </el-card>
     </div>
@@ -159,7 +160,7 @@ export default {
         // lower_bound: [{ required: true, message: '不能为空', trigger: 'blur' }],
         value: [
           // { required: true, message: '不能为空', trigger: 'blur' },
-          { pattern: /[[](.+?)[\]]/g, message: '格式：["value1","value2","value3"]', trigger: 'blur' },
+          { pattern: /(^$)|([[](.+?)[\]])|(None)/g, message: '格式：["value1","value2","value3"]', trigger: 'blur' },
         ],
         // length: [{ required: true, message: '不能为空', trigger: 'blur' }],
       },
@@ -182,6 +183,7 @@ export default {
   },
   methods: {
     getItemInfo() {
+      this.frame = this.$store.state.protocol.subject_name
       this.itemInfo = this.$store.state.item
       this.addForm.item_id = this.itemInfo.id
     },
@@ -251,7 +253,7 @@ export default {
     handleSave() {
       console.log(this.tableSelect)
       this.$http
-        .post(this.Global_Api + '/api/generation/protocol_save', { protocol: this.frame, variable: this.tableSelect })
+        .post(this.Global_Api + '/api/generation/protocol_save', { protocol: this.frame, variable: this.tableSelect, item_id: this.itemInfo.id })
         .then((response) => {
           console.log(response.data)
           this.$message.success('配置成功')
@@ -267,6 +269,7 @@ export default {
           this.rawData = response.data.variable_list
           this.tableVariable = this.rawData
           console.log(response.data)
+          this.getCurrentProtocol()
         })
         .catch(function (error) {
           console.log(error)
@@ -287,17 +290,17 @@ export default {
     toRight() {
       this.tableSelect.push.apply(this.tableSelect, this.select.to_right)
       // console.log(this.rawData)
-      this.tableVariable = this.rawData.filter((el) => !this.tableSelect.includes(el))
-      // for (let i = 0; i < this.select.to_right.length; i++) {
-      //   this.tableVariable.splice(this.tableVariable.indexOf(this.select.to_right[i]), 1)
-      // }
+      // this.tableVariable = this.rawData.filter((el) => !this.tableSelect.includes(el))
+      for (let i = 0; i < this.select.to_right.length; i++) {
+        this.tableVariable.splice(this.tableVariable.indexOf(this.select.to_right[i]), 1)
+      }
     },
     toLeft() {
       this.tableVariable.push.apply(this.tableVariable, this.select.to_left)
-      this.tableSelect = this.rawData.filter((el) => !this.tableVariable.includes(el))
-      // for (let i = 0; i < this.select.to_left.length; i++) {
-      //   this.tableSelect.splice(this.tableSelect.indexOf(this.select.to_left[i]), 1)
-      // }
+      // this.tableSelect = this.rawData.filter((el) => !this.tableVariable.includes(el))
+      for (let i = 0; i < this.select.to_left.length; i++) {
+        this.tableSelect.splice(this.tableSelect.indexOf(this.select.to_left[i]), 1)
+      }
       this.tableSort()
     },
     tableSort() {
@@ -363,23 +366,42 @@ export default {
         })
     },
     getCurrentProtocol() {
-      this.frame = this.$store.state.protocol.subject_name
       this.$http
-        .post(this.Global_Api + '/api/generation/current_protocol', { protocol: this.frame })
+        .post(this.Global_Api + '/api/generation/current_protocol', { protocol: this.frame, item_id: this.itemInfo.id })
         .then((response) => {
           console.log(response.data)
+          this.rawVaruableData = response.data.result
+          this.tableVariable = this.rawData
+          this.tableSelect = this.rawVaruableData
+          this.deleteLeftFromRight()
         })
         .catch(function (error) {
           console.log(error)
         })
+    },
+    deleteLeftFromRight() {
+      console.log(this.tableVariable)
+      console.log(this.tableSelect)
+      let temp = []
+      for (let i = 0; i < this.tableVariable.length; i++) {
+        let j = 0
+        for (; j < this.tableSelect.length; j++) {
+          if (this.tableVariable[i]['id'] === this.tableSelect[j]['id']) break
+        }
+        if (j === this.tableSelect.length) {
+          temp.push(this.tableVariable[i])
+        }
+      }
+      this.tableVariable = temp
     },
   },
   created() {
     this.getItemInfo()
     this.pageList()
     this.getProtocol()
-    this.getCurrentProtocol()
+    // this.getCurrentProtocol()
   },
+  mounted() {},
   watch: {
     tableSelect(val) {
       // console.log(val)

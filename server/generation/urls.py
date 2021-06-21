@@ -28,6 +28,7 @@ urlpatterns = [
     path('generate_boundary', views.generate_boundary, name='generate_boundary'),  # 边界值
     path('generate_mcdc', views.generate_mcdc, name='generate_mcdc'),  # MC/DC覆盖
     path('generate_condition', views.generate_condition, name='generate_condition'),  # 条件覆盖
+    path('generate_wrong', views.generate_wrong, name='generate_wrong'),  # 异常数据
     path('xmi_modeling', views.xmi_modeling, name='xmi_modeling'),  # xmi建模
     path('scenes_modeling', views.scenes_modeling, name='scenes_modeling'),  # 建模
     path('generate_script', views.generate_script, name='generate_script'),  # 脚本生成
