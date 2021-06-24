@@ -664,10 +664,19 @@ def protocol_save(request):
         config = []
         for i in var:
             config.append(i['id'])
-        print(config)
         Protocol.objects.filter(
             subject_name=request_jsons['protocol'],
             item_id=request_jsons['item_id']).update(configuration=str(config))
+        protocols = Protocol.objects.filter(item_id=request_jsons['item_id'])
+        result = [p.to_dict() for p in protocols]
+        print(result)
+        results = []
+        for protocol in result:
+            print(protocol)
+            config = eval(protocol['configuration'])
+            result_conf = [Variable.objects.get(id=i).to_dict() for i in config]
+            results.append({protocol['subject_name']: result_conf})
+        print(results)
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS})
