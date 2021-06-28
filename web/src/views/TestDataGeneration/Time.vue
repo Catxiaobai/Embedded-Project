@@ -1,6 +1,14 @@
 <template>
   <div id="fullState">
     <el-card>
+      <el-row :gutter="20">
+        <el-col :span="3">
+          <el-button type="primary" style="margin-left: 20px" @click="GenerateAllData">一键生成</el-button>
+        </el-col>
+        <el-col :span="20">
+          <el-progress :percentage="percentage" :format="format(percent, percentTotal)" style="margin-top: 10px"></el-progress>
+        </el-col>
+      </el-row>
       <el-table
         v-loading="loading"
         element-loading-text="数据生成中..."
@@ -11,6 +19,7 @@
         border
         style="width: 100%; margin-top: 20px"
         @filter-change="filterType"
+        height="488px"
       >
         <el-table-column prop="page_id" label="ID" width="40"></el-table-column>
         <el-table-column prop="type2" label="类别" width="80" :filters="filterItem"></el-table-column>
@@ -85,6 +94,9 @@ export default {
       options: [],
       dialog: true,
       form: {},
+      percentTotal: 20,
+      percent: 0,
+      percentage: 0,
     }
   },
   methods: {
@@ -125,7 +137,7 @@ export default {
       console.log(index, row)
       this.loading = true
       this.$http
-        .post(this.Global_Api + '/api/generation/generate_random', row)
+        .post(this.Global_Api + '/api/generation/generate_time', row)
         .then((response) => {
           this.loading = false
           this.gotoShow(row)
@@ -182,7 +194,7 @@ export default {
       this.itemInfo = this.$store.state.item
     },
     gotoShow(row) {
-      row['name'] = '随机值'
+      row['name'] = '时序约束'
       console.log('test', row)
       this.$store.commit('setPath', row)
       this.$router.replace('/dataShow')
@@ -228,19 +240,48 @@ export default {
       console.log(this.data)
       let temp = []
       for (let i = 0; i < this.data.length; i++) {
-        console.log(this.data[i].path.indexOf(this.form.path))
+        // console.log(this.data[i].path.indexOf(this.form.path))
         if (this.data[i].path.indexOf(this.form.path) != -1) {
           temp.push(this.data[i])
         }
       }
       this.data = temp
+      console.log(this.data)
+      this.percentTotal = this.data.length
       this.getList()
+    },
+    GenerateAllData() {
+      this.percent = 0
+      this.loading = true
+      console.log(this.data)
+      for (let i = 0; i < this.percentTotal; i++) {
+        // clearTimeout(this.timer) //清除延迟执行
+        setTimeout(() => {
+          this.percent = i + 1
+          this.percentage = (this.percent / this.percentTotal) * 100
+          //设置延迟执行
+          this.$http.post(this.Global_Api + '/api/generation/generate_time', this.data[i]).then((response) => {
+            console.log(response.data)
+          })
+        }, 3000 * i)
+      }
+    },
+    format(percent, percentTotal) {
+      return () => {
+        return percent.toString() + ' / ' + percentTotal.toString()
+      }
     },
   },
   created() {
     this.getItemInfo()
     this.pageList()
     this.getProtocol()
+  },
+  watch: {
+    percent(val) {
+      console.log(val)
+      if (val === this.percentTotal) this.loading = false
+    },
   },
 }
 </script>

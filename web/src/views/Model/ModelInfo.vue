@@ -1,32 +1,32 @@
 <template>
   <div id="complexSceneInfo">
     <el-card>
-      <div id="search">
-        <el-input v-model="search" placeholder="按名称搜索" style="width: 300px" @input="pageList" />
-      </div>
-      <div id="downloadType" style="display: flex; margin-left: 60%; margin-top: -30px">
+      <!--      <div id="search">-->
+      <!--        <el-input v-model="search" placeholder="按名称搜索" style="width: 300px" @input="pageList" />-->
+      <!--      </div>-->
+      <div id="downloadType" style="display: flex; margin-left: 60%">
         <a href="/样例文本.txt" download="样例文本.txt" style="color: #38b2ff; margin-right: 5px">样例文本下载</a>
         |
-        <el-upload :action="doUpload" :on-success="handleImport" :show-file-list="false">
+        <el-upload :action="doUpload" :on-success="handleImport2" :show-file-list="false">
           <a style="color: #38b2ff; margin-left: 5px">导入</a>
         </el-upload>
       </div>
-      <div id="actionButton" style="margin-left: 75%; margin-bottom: 20px; margin-top: -30px">
-        <el-button type="primary" @click="handleAdd('addForm')">添加</el-button>
-        <el-button type="success" :disabled="disabled.edit" @click="visible.editDialog = true">编辑</el-button>
-        <el-button type="danger" :disabled="disabled.delete" @click="visible.deleteDialog = true">删除</el-button>
-      </div>
-      <div id="table">
+      <!--      <div id="actionButton" style="margin-left: 75%; margin-bottom: 20px; margin-top: -30px">-->
+      <!--        <el-button type="primary" @click="handleAdd('addForm')">添加</el-button>-->
+      <!--        <el-button type="success" :disabled="disabled.edit" @click="visible.editDialog = true">编辑</el-button>-->
+      <!--        <el-button type="danger" :disabled="disabled.delete" @click="visible.deleteDialog = true">删除</el-button>-->
+      <!--      </div>-->
+      <div id="table" style="margin-top: 20px">
         <el-table :data="tableData" border style="width: 100%" @selection-change="handleSelection" @filter-change="handleFilterChange">
           <el-table-column type="selection" width="40px"> </el-table-column>
           <el-table-column prop="page_id" label="序号" width="80"> </el-table-column>
-          <!--          <el-table-column prop="element" label="类别" width="120" :filters="filterData" column-key="element">-->
-          <!--          </el-table-column>-->
           <el-table-column prop="name" label="名称" width="180"> </el-table-column>
-          <el-table-column prop="describe" label="描述" :show-overflow-tooltip="true">
-            <!--todo: 过长不好看-->
-          </el-table-column>
-          <el-table-column prop="content" label="规格化表示" width="280" :show-overflow-tooltip="true"> </el-table-column>
+          <el-table-column prop="label" label="描述" :show-overflow-tooltip="true"> </el-table-column>
+          <el-table-column prop="src" label="src" :show-overflow-tooltip="true"> </el-table-column>
+          <el-table-column prop="tgt" label="tgt" :show-overflow-tooltip="true"> </el-table-column>
+          <el-table-column prop="event" label="event" :show-overflow-tooltip="true"> </el-table-column>
+          <el-table-column prop="condition" label="condition" :show-overflow-tooltip="true"> </el-table-column>
+          <el-table-column prop="action" label="action" :show-overflow-tooltip="true"> </el-table-column>
         </el-table>
       </div>
       <div id="page">
@@ -194,6 +194,14 @@ export default {
   methods: {
     pageList() {
       // 发请求拿到数据并暂存全部数据,方便之后操作
+      this.$http.post(this.Global_Api + '/api/node_edge_list', this.itemInfo).then((response) => {
+        console.log(response)
+        this.data = response.data.result
+        this.getList()
+      })
+    },
+    pageListold() {
+      // 发请求拿到数据并暂存全部数据,方便之后操作
       this.$http
         .post(this.Global_Api + '/api/scenes_list', this.itemInfo)
         .then((response) => {
@@ -360,6 +368,24 @@ export default {
     getItemInfo() {
       this.itemInfo = this.$store.state.item
       console.log('综合场景项目信息', this.itemInfo)
+    },
+    handleImport2(code, file) {
+      console.log('test')
+      this.$http
+        .post(this.Global_Api + '/api/import_model', { name: file.name, item: this.itemInfo })
+        .then((response) => {
+          if (response.data.error_code === 0) {
+            console.log(response)
+            this.$message.success('导入成功')
+            this.pageList()
+          } else {
+            this.$message.error(response.data.error_message)
+            this.pageList()
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     },
     handleImport(code, file) {
       console.log('test')

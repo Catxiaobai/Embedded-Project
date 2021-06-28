@@ -196,10 +196,3 @@ Transition:
 	event=Clear_com7(RS232_ctr)
 	condition=
 	action=led8()
-Transition:
-	name=T25
-	src=S6
-	tgt=S4
-	event=Write_com7(RS232_ctr,RS232_data)
-	condition=RS232_ctr==0x02
-	action=led1(RS232_data,flag)

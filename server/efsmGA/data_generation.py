@@ -173,6 +173,7 @@ def dfsF3(keys,data,tmp,k,ans,protocol1):
         tmp[name]=i
         dfsF3(keys,data,tmp,k+1,ans,protocol1)
         tmp.pop(name)
+
 def i_is_F(data,flag_S,k,tmp,test):
     for key,value in data[k].items():
         if 'F' not in key:
@@ -181,22 +182,24 @@ def i_is_F(data,flag_S,k,tmp,test):
             flag=flag_S[:k]+"("+key+")"+flag_S[k+1:]
             tmp[k]=value
             test[flag]=tmp
-def dfs_ALL(ALLANS,K,flag,tmp,test):
-    if(K>=len(ALLANS)):
-        test[flag]=tmp[:]
-    else:
-        flagg = flag
-        for k, v in ALLANS[K].items():
-            tmp.append(v)
-            flag = flagg
-            if('_T' in k):
-                flag+="T"
-                dfs_ALL(ALLANS,K+1,flag,tmp[:],test)
+def dfs_ALL(path,i,noCondition,ans_T_F,tmp,test,flag):
+    if i>len(path):
+        test[flag]=tmp.copy()
+        return None
+    f=flag
+    currTran = str(path[i - 1])
+    if currTran not in noCondition:
+        key = currTran + "_" + str(i)
+        for k, v in ans_T_F[key].items():
+            tmp[key] = v
+            if 'F' in k:
+                f=flag[:i-1]+k+flag[i:]
             else:
-                flag+="F"
-                dfs_ALL(ALLANS,K+1,flag,tmp[:],test)
-            tmp.pop()
-
+                f=flag[:i-1]+'T'+flag[i:]
+            dfs_ALL(path,i+1,noCondition,ans_T_F,tmp,test,f)
+            tmp[key] = v
+    else:
+        dfs_ALL(path, i+1, noCondition, ans_T_F, tmp, test, flag)
 def cover_data(path,data,flag):
     protocol1=protocol.protocol()
     tran_var=tran_var_macth(path)
@@ -241,64 +244,46 @@ def cover_data(path,data,flag):
             test[tran] = ans
     elif flag == 5 or flag == 6:
         test['name'] = "MC/DC测试"
-        ALLANS=[]
-        pathh=[]
-        for i in range(len(path)):
-            if(tran_var[path[i]]):
-                pathh.append(path[i])
-        for i in range(len(pathh)):
-            ans = {}
-            flag_index={}
-            for j in tran_var[pathh[i]]:
-                flag_index[j]='T'
-            flag_S = pathh[i]+"_T"
+        noCondition=data["noCondition"]
+        ans_T_F={}
+        for i in range(1,len(path)+1):
+            currTran=str(path[i-1])
+            currTran_data = data[currTran + "_" + str(i)]
             tmp = {}
-            for j in tran_var[pathh[i]]:  # get match vars of tran
-                if len(data[i][j]) <= 1:
-                    tmp[j]=data[i][j][0]
-                elif flag_index[j] == 'T':
-                    tmp[j]=data[i][j][0]
-                else:
-                    tmp[j]=data[i][j][1]
+            ans_Tran = {}
+            for j in tran_var[currTran]:
+                tmp[j] = currTran_data[j][0]
             protocol1.set(tmp)
-            ans[flag_S] = protocol1.read()
-            for k in flag_index:
-                if len(data[i][k]) <= 1:
-                    continue
-                flag_index[k]='F'
-                flag_S = pathh[i]+"_"
-                tmp = {}
-                for j in tran_var[pathh[i]]:  # get match vars of tran
-                    if len(data[i][j]) <= 1:
-                        tmp[j]=data[i][j][0]
-                    elif flag_index[j] == 'T':
-                        tmp[j]=data[i][j][0]
-                    else:
-                        flag_S += 'F_'+j
-                        tmp[j]=data[i][j][1]
-                protocol1.set(tmp)
-                ans[flag_S] = protocol1.read()
-                flag_index[k] = 'T'
-            ALLANS.append(ans)
+            ans_Tran["T"] = protocol1.read()
+            if currTran not in noCondition:
+                for j in tran_var[currTran]:
+                    if len(currTran_data[j])==2:
+                        tmp[j]=currTran_data[j][1]
+                        protocol1.set(tmp)
+                        ans_Tran["F_"+j] = protocol1.read()
+                        tmp[j] = currTran_data[j][0]
+            ans_T_F[currTran+"_"+str(i)]= ans_Tran
+        tmp=OrderedDict()
+        f=""
+        for i in range(1, len(path) + 1):
+            currTran = str(path[i - 1])
+            f+="T"
+            key = currTran + "_" + str(i)
+            tmp[key] = ans_T_F[key]['T']
         if flag==5:
-            flag_S, allTR = ALLT(ALLANS)
-            test[flag_S] = allTR
-            for i in range(len(flag_S)):
-                i_is_F(ALLANS, flag_S, i, allTR[:], test)
-        elif flag == 6:
+            test['T'] = tmp.copy()
+            for i in range(1, len(path) + 1):
+                currTran = str(path[i - 1])
+                if currTran not in noCondition:
+                    key=currTran+"_"+str(i)
+                    for k,v in ans_T_F[key].items():
+                        if k!='T':
+                            tmp[key]=v
+                            test[key+'_'+k] = tmp.copy()
+                            tmp[key]=ans_T_F[key]['T']
+        elif flag==6:
             test['name'] = "全条件测试"
-            dfs_ALL(ALLANS, 0, "", [], test)
-        for i in range(len(path)):
-            if(tran_var[path[i]]):
-                pathh.append(path[i])
-        for i in range(len(path)):
-            if(tran_var[path[i]]):
-                continue
-            else:
-                for k,v in test.items():
-                    if(k=='name'):
-                        continue
-                    test[k].insert(i,"")
+            dfs_ALL(path, 1, noCondition, ans_T_F, tmp, test,f)
     elif flag==7:
         test['name'] = "接口异常"
         for i in range(len(data)):
@@ -315,9 +300,6 @@ def cover_data(path,data,flag):
                 case['帧尾异常'] = protocol1.readBadEnd(77)
                 case['校验和异常'] = protocol1.readBadCrc(90)
                 test[tran] = case
-
-
-
     with open(filepath + 'output.txt', 'w') as f:
         json.dump(test, f,indent=4,ensure_ascii=False)
         print("数据写入json文件完成...")

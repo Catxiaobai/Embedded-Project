@@ -88,7 +88,7 @@ export default {
         .then((response) => {
           this.rawData = response.data.data_list
           console.log(this.rawData[0])
-          if (this.rawData[0].name === '随机值') {
+          if (this.rawData[0].name === '随机值' || this.rawData[0].name === '时序约束') {
             this.dataList(this.rawData[0].data)
           } else if (this.rawData[0].name === 'MC/DC' || this.rawData[0].name === '条件覆盖') {
             this.dataList3(this.rawData[0].data)
@@ -98,7 +98,7 @@ export default {
             this.dataList2(this.rawData[0].data)
           }
           this.getList()
-          this.saveData()
+          // this.saveData()
         })
         .catch(function (error) {
           console.log(error)
@@ -283,18 +283,18 @@ export default {
           console.log(error)
         })
     },
-    saveData() {
-      console.log(this.data)
-      console.log(this.desCol)
-      this.$http
-        .post(this.Global_Api + '/api/generation/save_data', this.data)
-        .then((response) => {
-          console.log(response.data)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-    },
+    // saveData() {
+    //   console.log(this.data)
+    //   console.log(this.desCol)
+    //   this.$http
+    //     .post(this.Global_Api + '/api/generation/save_data', this.data)
+    //     .then((response) => {
+    //       console.log(response.data)
+    //     })
+    //     .catch(function (error) {
+    //       console.log(error)
+    //     })
+    // },
   },
   created() {
     this.getItemInfo()

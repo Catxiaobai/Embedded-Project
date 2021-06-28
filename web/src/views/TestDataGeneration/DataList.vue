@@ -23,7 +23,7 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column prop="page_id" label="ID" width="40" align="center"></el-table-column>
+        <!--        <el-table-column prop="page_id" label="ID" width="60" align="center"></el-table-column>-->
         <el-table-column prop="type" label="类别" width="120" align="center" show-overflow-tooltip :filters="filters.type" :filter-method="filterType">
         </el-table-column>
         <el-table-column prop="path" label="测试路径" width="200" align="center" show-overflow-tooltip></el-table-column>
@@ -38,11 +38,6 @@
         >
         </el-table-column>
         <el-table-column prop="data" label="测试数据" show-overflow-tooltip></el-table-column>
-        <!--        <el-table-column prop="script" label="脚本生成" align="center" width="102">-->
-        <!--          <template slot-scope="scope">-->
-        <!--            <el-button type="primary" size="small" @click="gotoLink(scope.row)">脚本生成</el-button>-->
-        <!--          </template>-->
-        <!--        </el-table-column>-->
       </el-table>
     </el-card>
   </div>
@@ -53,15 +48,7 @@ export default {
   name: 'DataList',
   data() {
     return {
-      tableData: [
-        {
-          page_id: 1,
-          type: 'type',
-          path: 'path',
-          function: 'function',
-          data: 1,
-        },
-      ],
+      tableData: [],
       spanArr: [], //用于存放每一行记录的合并数
       total: 0,
       itemInfo: '',
@@ -77,6 +64,7 @@ export default {
           { text: '递减值', value: '递减值' },
           { text: '条件覆盖', value: '条件覆盖' },
           { text: 'MC/DC', value: 'MC/DC' },
+          { text: '时序约束', value: '时序约束' },
         ],
       },
     }
@@ -160,7 +148,7 @@ export default {
           sums[index] = '统计'
           return
         }
-        if (index === 5) {
+        if (index === 4) {
           sums[index] = '共 ' + data.length + ' 条数据'
           return
         }

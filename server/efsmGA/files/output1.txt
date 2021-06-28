@@ -1,14 +1,14 @@
 {
     "T1": [
-        "ctr", 
-        "data"
+        "RS232_ctr", 
+        "RS232_data"
     ], 
     "T2": [
-        "ctr", 
-        "data"
+        "RS232_ctr", 
+        "RS232_data"
     ], 
     "T23": [], 
     "T24": [
-        "ctr"
+        "RS232_ctr"
     ]
 }

@@ -67,9 +67,9 @@ def analysis(path, filename):
         b = item.get_attribute("target")
         ra.append((d[a], d[b]))
 
-    wf = codecs.open(path+"result2.txt", 'w', encoding="utf-8")
+    wf = codecs.open(path+"xmiModel.txt", 'w', encoding="utf-8")
     for key in range(len(res)):
-        wf.write("State:\n\tlabel=S" + str(key) + '\n\t' + "name=" + res[key] + '\n')
+        wf.write("State:\n\tname=S" + str(key) + '\n\t' + "label=" + res[key] + '\n')
     t = [('上电', 'off'), ('工作状态', 'off'), ('工作状态', 'Pseudostate1'), ('分离', '运行'), ('运行', '入轨'),
          ('Pseudostate1', 'FinalState'), ('Pseudostate', 'FinalState')]
     ra = ra + t

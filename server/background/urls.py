@@ -39,4 +39,12 @@ urlpatterns = [
     path('add_link', views.add_link, name='add_link'),  # 模型动态加边
     path('save_delete', views.save_delete, name='save_delete'),  # 保存删除前模型
     path('redo_delete', views.redo_delete, name='redo_delete'),  # 撤销删除边
+    path('modeling_from_db', views.modeling_from_db, name='modeling_from_db'),  # 从数据库建模
+    path('save_model_to_xmi_model', views.save_model_to_xmi_model, name='save_model_to_xmi_model'),
+    path('load_txt', views.load_txt, name='load_txt'),
+    path('save_model_to_txt', views.save_model_to_txt, name='save_model_to_txt'),
+    path('import_model', views.import_model, name='import_model'),
+    path('node_edge_list', views.node_edge_list, name='node_edge_list'),
+    path('model_variable_options', views.model_variable_options, name='model_variable_options'),
+    path('upload_static_model', views.upload_static_model, name='upload_static_model'),
 ]

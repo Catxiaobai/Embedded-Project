@@ -32,133 +32,133 @@ Transition:
 	name=T1
 	src=START
 	tgt=S1
-	event=Write_com7(RS232_ctr,RS232_data)
+	event=Write_com7(R232_ctr,CAN_data)
 	condition=
-	action=led7(RS232_data,flag)
+	action=led7(CAN_data,falg)
 Transition:
 	name=T2
 	src=S1
 	tgt=S2
-	event=Write_com7(RS232_ctr,RS232_data)
-	condition=RS232_ctr==0x02
-	action=led1(RS232_data,flag)
+	event=Write_com7(R232_ctr,CAN_data)
+	condition=R232_ctr==0x02
+	action=led1(CAN_data,falg)
 Transition:
 	name=T3
 	src=S2
 	tgt=S3
-	event=Write_com7(RS232_ctr,RS232_data)
-	condition=RS232_ctr==0x04
-	action=led2(RS232_data,flag)
+	event=Write_com7(R232_ctr,CAN_data)
+	condition=R232_ctr==0x04
+	action=led2(CAN_data,falg)
 Transition:
 	name=T4
 	src=S3
 	tgt=S2
-	event=Write_com7(RS232_ctr,RS232_data)
-	condition=RS232_ctr==0x02
-	action=led1(RS232_data,flag)
+	event=Write_com7(R232_ctr,CAN_data)
+	condition=R232_ctr==0x02
+	action=led1(CAN_data,falg)
 Transition:
 	name=T5
 	src=S3
 	tgt=S4
-	event=Write_com7(RS232_ctr,RS232_data)
-	condition=RS232_ctr==0x06
-	action=led3(RS232_data,flag)
+	event=Write_com7(R232_ctr,CAN_data)
+	condition=R232_ctr==0x06
+	action=led3(CAN_data,falg)
 Transition:
 	name=T6
 	src=S4
 	tgt=S3
-	event=Write_com7(RS232_ctr,RS232_data)
-	condition=RS232_ctr==0x02
-	action=led2(RS232_data,flag)
+	event=Write_com7(R232_ctr,CAN_data)
+	condition=R232_ctr==0x02
+	action=led2(CAN_data,falg)
 Transition:
 	name=T7
 	src=S2
 	tgt=S5
-	event=Write_com7(RS232_ctr,RS232_data)
-	condition=RS232_ctr==0x03
-	action=led4(RS232_data,flag)
+	event=Write_com7(R232_ctr,CAN_data)
+	condition=R232_ctr==0x03
+	action=led4(CAN_data,falg)
 Transition:
 	name=T8
 	src=S5
 	tgt=S2
-	event=Write_com7(RS232_ctr,RS232_data)
-	condition=RS232_ctr==0x02
-	action=led1(RS232_data,flag)
+	event=Write_com7(R232_ctr,CAN_data)
+	condition=R232_ctr==0x02
+	action=led1(CAN_data,falg)
 Transition:
 	name=T9
 	src=S5
 	tgt=S6
-	event=Write_com7(RS232_ctr,RS232_data)
-	condition=RS232_ctr==0x0A
-	action=led5(RS232_data,flag)
+	event=Write_com7(R232_ctr,CAN_CAN_data)
+	condition=R232_ctr==0x0A
+	action=led5(CAN_data,falg)
 Transition:
 	name=T10
 	src=S6
 	tgt=S5
-	event=Write_com7(RS232_ctr,RS232_data)
-	condition=RS232_ctr==0x03
-	action=led4(RS232_data,flag)
+	event=Write_com7(R232_ctr,CAN_data)
+	condition=R232_ctr==0x03
+	action=led4(CAN_data,falg)
 Transition:
 	name=T11
 	src=S5
 	tgt=S7
-	event=Write_com7(RS232_ctr,RS232_data)
-	condition=RS232_ctr==0x05
-	action=led6(RS232_data,flag)
+	event=Write_com7(R232_ctr,CAN_data)
+	condition=R232_ctr==0x05
+	action=led6(CAN_data,falg)
 Transition:
 	name=T12
 	src=S7
 	tgt=S5
-	event=Write_com7(RS232_ctr,RS232_data)
-	condition=RS232_ctr==0x03
-	action=led4(RS232_data,flag)
+	event=Write_com7(R232_ctr,CAN_data)
+	condition=R232_ctr==0x03
+	action=led4(CAN_data,falg)
 Transition:
 	name=T13
 	src=S1
 	tgt=EXIT
-	event=Clear_com7(RS232_ctr)
+	event=Clear_com7(R232_ctr)
 	condition=
 	action=led8()
 Transition:
 	name=T14
 	src=S2
 	tgt=EXIT
-	event=Clear_com7(RS232_ctr)
+	event=Clear_com7(R232_ctr)
 	condition=
 	action=led8()
 Transition:
 	name=T15
 	src=S3
 	tgt=EXIT
-	event=Clear_com7(RS232_ctr)
+	event=Clear_com7(R232_ctr)
 	condition=
 	action=led8()
 Transition:
 	name=T16
 	src=S4
 	tgt=EXIT
-	event=Clear_com7(RS232_ctr)
+	event=Clear_com7(R232_ctr)
 	condition=
 	action=led8()
 Transition:
 	name=T17
 	src=S5
 	tgt=EXIT
-	event=Clear_com7(RS232_ctr)
+	event=Clear_com7(R232_ctr)
 	condition=
 	action=led8()
 Transition:
 	name=T18
 	src=S6
 	tgt=EXIT
-	event=Clear_com7(RS232_ctr)
+	event=Clear_com7(R232_ctr)
 	condition=
 	action=led8()
 Transition:
 	name=T19
 	src=S7
 	tgt=EXIT
-	event=Clear_com7(RS232_ctr)
+	event=Clear_com7(R232_ctr)
 	condition=
 	action=led8()
 Transition:
@@ -193,13 +193,6 @@ Transition:
 	name=T24
 	src=S8
 	tgt=EXIT
-	event=Clear_com7(RS232_ctr)
+	event=Clear_com7(R232_ctr)
 	condition=
 	action=led8()
-Transition:
-	name=T25
-	src=S6
-	tgt=S4
-	event=Write_com7(RS232_ctr,RS232_data)
-	condition=RS232_ctr==0x02
-	action=led1(RS232_data,flag)

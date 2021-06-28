@@ -9,11 +9,13 @@ import lwn_Graphic.combination
 import lwn_Graphic.combination2
 import lwn_Graphic.constructModel
 import lwn_Graphic.constructModel2
-from background.models import ItemPerson
-from entity.models import Personnel, Item, Scenes
+from background.models import *
+from entity.models import *
 from lwn_Graphic import analysisXMI
 from server import error_code
-
+import base64
+from base64 import b64encode
+from json import dumps
 
 # 登录权限
 def login(request):
@@ -104,14 +106,185 @@ def upload_file(request):
 
 def import_xmi(request):
     request_json = json.loads(request.body)
-    filename = request_json['name']
     try:
+        filename = request_json['name']
+        item_id = request_json['item']['id']
         filepath = './file/'
-        # print(filename)
         analysisXMI.analysis(filepath, filename)
+        filename = 'xmiModel.txt'
+        save_model_to_db(filepath, filename, item_id)
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+def save_model_to_db(filepath, filename, item_id):
+    list_xmi = []
+    with open(filepath + filename, 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip('\n').strip()
+            list_xmi.append(line)
+    # 清空Node和edge表
+    Node.objects.all().delete()
+    Edge.objects.all().delete()
+    # 从txt中写入数据库里
+    i = 0
+    while i < len(list_xmi):
+        state = {}
+        transition = {}
+        if list_xmi[i] == 'State:':
+            for j in range(2):
+                i = i + 1
+                s = list_xmi[i].split('=', 1)
+                state[s[0]] = s[-1]
+            # print(state)
+            Node(item_id=item_id, label=state['label'], name=state['name']).save()
+        elif list_xmi[i] == 'Transition:':
+            for j in range(6):
+                i = i + 1
+                t = list_xmi[i].split('=', 1)
+                transition[t[0]] = t[-1]
+            # print(transition)
+            transition['src'] = Node.objects.filter(name=transition['src'])[0].to_dict()['id']
+            transition['tgt'] = Node.objects.filter(name=transition['tgt'])[0].to_dict()['id']
+            Edge(item_id=item_id, name=transition['name'],
+                 src_id=transition['src'], tgt_id=transition['tgt'],
+                 event=transition['event'], condition=transition['condition'],
+                 action=transition['action']).save()
+        i = i + 1
+
+
+def modeling_from_db(request):
+    request_jsons = json.loads(request.body)
+    try:
+        item_id = request_jsons['id']
+        nodes = Node.objects.filter(item_id=item_id)
+        edges = Edge.objects.filter(item_id=item_id)
+        nodeData = [node.to_show() for node in nodes]
+        edgeData = [edge.to_show() for edge in edges]
+        # print(nodeData)
+        # print(edgeData)
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "nodeDataArray": nodeData, "linkDataArray": edgeData})
+
+
+def save_model_to_xmi_model(request):
+    request_jsons = json.loads(request.body)
+    try:
+        # print(request_jsons)
+        filepath = './file/'
+        filename = 'xmiModel.txt'
+        nodeData = request_jsons['nodeDataArray']
+        edgeData = request_jsons['linkDataArray']
+        print(nodeData)
+        print(edgeData)
+        with open(filepath + filename, 'w', encoding='utf-8') as f:
+            for node in nodeData:
+                f.write("State:\n\tname=" + node['text'] + '\n\t' + "label=" + node['label'] + '\n')
+            for edge in edgeData:
+                f.write("Transition:\n\tname=" + edge['text'] + '\n\tsrc=' + edge['from']
+                        + '\n\ttgt=' + edge['to'] + '\n\t' + 'event=' + edge['event'] + '\n\t' +
+                        'condition=' + edge['condition'] + '\n\t' + 'action=' + edge['action'] + '\n')
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+def save_model_to_txt(request):
+    request_jsons = json.loads(request.body)
+    try:
+        # print(request_jsons)
+        filepath = './file/'
+        filename = 'newModel.txt'
+        nodeData = request_jsons['nodeDataArray']
+        edgeData = request_jsons['linkDataArray']
+        print(nodeData)
+        print(edgeData)
+        with open(filepath + filename, 'w', encoding='utf-8') as f:
+            for node in nodeData:
+                f.write("State:\n\tname=" + node['text'] + '\n\t' + "label=" + node['label'] + '\n')
+            for edge in edgeData:
+                f.write("Transition:\n\tname=" + edge['text'] + '\n\tsrc=' + edge['from']
+                        + '\n\ttgt=' + edge['to'] + '\n\t' + 'event=' + edge['event'] + '\n\t' +
+                        'condition=' + edge['condition'] + '\n\t' + 'action=' + edge['action'] + '\n')
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+def load_txt(request):
+    request_jsons = json.loads(request.body)
+    try:
+        filepath = './file/'
+        filename = 'newModel.txt'
+        item_id = request_jsons['id']
+        save_model_to_db(filepath, filename, item_id)
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+def import_model(request):
+    request_jsons = json.loads(request.body)
+    try:
+        filepath = './file/'
+        filename = request_jsons['name']
+        item_id = request_jsons['item']['id']
+        save_model_to_db(filepath, filename, item_id)
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+def node_edge_list(request):
+    request_jsons = json.loads(request.body)
+    try:
+        item_id = request_jsons['id']
+        nodes = Node.objects.filter(item_id=item_id)
+        node_list = [n.to_dict() for n in nodes]
+        edges = Edge.objects.filter(item_id=item_id)
+        edge_list = [e.to_dict() for e in edges]
+        print(node_list)
+        print(edge_list)
+        print(node_list + edge_list)
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "result": node_list + edge_list})
+
+
+def model_variable_options(request):
+    request_jsons = json.loads(request.body)
+    try:
+        protocols = Protocol.objects.filter(item_id=request_jsons['id'])
+        result = [p.to_dict() for p in protocols]
+        options = []
+        for protocol in result:
+            print(protocol)
+            option = {'value': protocol['subject_name'], 'label': protocol['subject_name'], 'children': []}
+            print('option', option)
+
+            config = eval(protocol['configuration'])
+            result_conf = [Variable.objects.get(id=i).to_dict() for i in config]
+            for i in result_conf:
+                op = {}
+                i.pop('id')
+                i.pop('item')
+                i.pop('describe')
+                if i['value'] != 'None':
+                    new_value = eval(i['value'])
+                    i['value'] = new_value
+                if i['type'] == 'CONSTANT':
+                    i['type'] = 'constant'
+                op['value'] = i['name']
+                op['label'] = i['name']
+                option['children'].append(op)
+            options.append(option)
+            print('options', options)
+        print(options)
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "options": options})
 
 
 # 场景列表
@@ -124,6 +297,25 @@ def scenes_list(request):
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "scenes_list": result})
 
+def upload_static_model(request):
+    myfile = request.FILES['file']
+    fs = FileSystemStorage(location='file')
+    if fs.exists(myfile.name):
+        fs.delete(myfile.name)
+    fs.save(myfile.name, myfile)
+    desstr = myfile.name.split('.')[0]
+    desstr += '.png'
+    print(desstr)
+    ''''''
+    ENCODING = 'utf-8'
+    file = open('file/' + desstr, 'rb')
+    base64_data = base64.b64encode(file.read())
+    base64_string = base64_data.decode(ENCODING)
+    raw_data = {}
+    raw_data["name"] = desstr
+    raw_data["image_base64_string"] = base64_string
+    json_data = dumps(raw_data)
+    return JsonResponse({**error_code.CLACK_SUCCESS, "url": json_data})
 
 # 删除场景
 def delete_scenes(request):
@@ -302,7 +494,6 @@ def deliver_model_data(request):
             # print(edge)
             test_id += 1
             data_edge.append(edge)
-
         index_line += 1
     # print(data_edge)
     return JsonResponse({**error_code.CLACK_SUCCESS, "data_node": data_node, "data_edge": data_edge})

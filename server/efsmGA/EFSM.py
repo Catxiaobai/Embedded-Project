@@ -12,20 +12,25 @@ import time
 import copy
 import protocol
 import collections
-protocolInf=protocol.protocol()
-class SLIMException (Exception):
+
+protocolInf = protocol.protocol()
+
+
+class SLIMException(Exception):
     """
     """
-    def __init__ (self, currState):
+
+    def __init__(self, currState):
         """The string argument is the name of the current state."""
         self.state = currState
+
 
 ###############################
 class State:
     """ The state of EFSM """
-    def __init__ (self, name):
+
+    def __init__(self, name):
         self.name = name
-        
 
     def __repr__(self):
         return "<State %s>" % self.name
@@ -34,54 +39,57 @@ class State:
 ###########################
 class Transition:
     """ The transition of EFSM """
-    def __init__ (self, name, src=None, tgt=None, event=None, cond=None, action=None):
+
+    def __init__(self, name, src=None, tgt=None, event=None, cond=None, action=None):
         self.name = name
         if src is not None:
-           if isinstance(src, State):
-               self.src = src
-           else:
-               print 'source must be a State type'
+            if isinstance(src, State):
+                self.src = src
+            else:
+                print
+                'source must be a State type'
         if tgt is not None:
-           if isinstance(tgt, State):
-               self.tgt = tgt
-           else:
-               print 'target must be a State type'         
+            if isinstance(tgt, State):
+                self.tgt = tgt
+            else:
+                print
+                'target must be a State type'
         self.event = event
         self.cond = cond
         self.action = action
 
-
     def __repr__(self):
-        return "<Transition %s %s %s %s %s %s>" % (self.name, self.src,self.tgt,self.event,self.cond,self.action)
-  #       return "<Transition %s>" % self.name
+        return "<Transition %s %s %s %s %s %s>" % (self.name, self.src, self.tgt, self.event, self.cond, self.action)
 
+
+#       return "<Transition %s>" % self.name
 
 
 ###########################
-class Path (list):
+class Path(list):
     """Path is a sequence of transitions, and T.tgt==successor(T).src"""
 
     '''def __repr__(self):
         return self[:]
         #return "<**Path %s**>" % self[:]  #for allpath representation style----syq'''
 
-    
     def is_feasiable_ATM(self):
-       """ filter infeasiable path in ATM model
-       """
-       conflictTran={}
-       conflictTran["T5"]=["T11","T16","T20","T22" ]
-       conflictTran["T6"]=["T12","T15","T19","T21" ]
-       tempPath=self[:]
-       while tempPath:
-           firstTran=tempPath[0]
-           restTranList=tempPath[1:]
-           if firstTran in conflictTran.keys():
-               for tran in restTranList:
-                   if tran in conflictTran[firstTran]:
-                       return False
-           tempPath=restTranList
-       return True
+        """ filter infeasiable path in ATM model
+        """
+        conflictTran = {}
+        conflictTran["T5"] = ["T11", "T16", "T20", "T22"]
+        conflictTran["T6"] = ["T12", "T15", "T19", "T21"]
+        tempPath = self[:]
+        while tempPath:
+            firstTran = tempPath[0]
+            restTranList = tempPath[1:]
+            if firstTran in conflictTran.keys():
+                for tran in restTranList:
+                    if tran in conflictTran[firstTran]:
+                        return False
+            tempPath = restTranList
+        return True
+
 
 ######################Simple Genetic Algorithm ##########################
 
@@ -107,11 +115,12 @@ class GA:
         self.max = 8191  ### Cashier, ATM: max=10000,
         #    self.max=500   ### fulePump
         self.min = 0
+
     def genome(self, varname, genomeLen=0):
         gens = []
 
         for i in range(genomeLen):
-            value=varname[i]
+            value = varname[i]
             gens.append(protocolInf.dateGeneration(value))
         return gens
 
@@ -232,7 +241,7 @@ class GA:
             rank = random.uniform(0, 1)
             if rank <= self.mutationRate:
                 mutationPoint = random.randint(0, self.genomeLen - 1)
-                mutation[mutationPoint] =protocolInf.dateGeneration(varname[mutationPoint])
+                mutation[mutationPoint] = protocolInf.dateGeneration(varname[mutationPoint])
 
             mutatedGene.append(mutation)
         return mutatedGene
@@ -322,12 +331,6 @@ class GA:
         return self.genomes
 
 
-
-
-
-
-
-
 #############################################################
 
 
@@ -368,8 +371,7 @@ class EFSM(object):
         self.min = 0
         self.max = 8191
         self.condlist = {}
-        self.TEvent = {}   ##store all transition's event for create test script
-
+        self.TEvent = {}  ##store all transition's event for create test script
 
     def __repr__(self):
         return "<EFSM %s>" % self.name
@@ -381,28 +383,28 @@ class EFSM(object):
             for state in self.stateList:
                 if state.name == name:
                     return state
-        print 'can not find %s in the state machine' % name
-
+        print
+        'can not find %s in the state machine' % name
 
     def addState(self, newstate):
         """Add a state to the stateList.
                    """
         if isinstance(newstate, State):
             if newstate in self.stateList:
-                print 'State %s is in the machine' % newstate.name
+                print
+                'State %s is in the machine' % newstate.name
             else:
                 self.stateList.append(newstate)
-
 
     def addTransition(self, newtransition):
         """Adds a transition to the transition list.
                     """
         if isinstance(newtransition, Transition):
             if newtransition in self.transitionList:
-                print 'Transition %s is in the machine' % newtransition.name
+                print
+                'Transition %s is in the machine' % newtransition.name
             else:
                 self.transitionList.append(newtransition)
-
 
     def initTransitionSuccessor(self):
         """ return a list of transitions that are
@@ -413,14 +415,12 @@ class EFSM(object):
             self.succDict[currTransition.name] = \
                 self.transitionSuccessor(currTransition)
 
-
     def transitionSuccessor(self, currTransition):
         """ return a list of transitions that are
                     the surccessors of the given transition
                     """
         return [item for item in self.transitionList \
                 if item.src == currTransition.tgt]
-
 
     def findStartTransition(self):
         """ computer start transitions which source is START state
@@ -433,7 +433,6 @@ class EFSM(object):
         else:
             self.startTransitionList = []
             # print '\tstartTransitionList ',self.startTransitionList
-
 
     def findEndTransition(self):
         """ reuten a list of end transition which target is Exit
@@ -456,42 +455,43 @@ class EFSM(object):
         [a,b,c,b,c] and [b,d] will return [[a,b,c,b,c,d]]
         If there is a self loop, the self loop is considered once
         """
-        newList=[] 
-        for item in succList:       
-           if (currPath.count(item.name) <1 ):
-               newList.append(Path(currPath+[item.name]))
-               #print 'yes'  #for test
+        newList = []
+        for item in succList:
+            if (currPath.count(item.name) < 1):
+                newList.append(Path(currPath + [item.name]))
+                # print 'yes'  #for test
         return newList
 
     # caculate transition ID similarity of two path-------------------syq
-    def sim_leven(self,first,second):
-        match=0
-        mismatch=0
-        gap=abs(len(first) - len(second))
+    def sim_leven(self, first, second):
+        match = 0
+        mismatch = 0
+        gap = abs(len(first) - len(second))
         for i in range(min(len(first), len(second))):
             if first[i] == second[i]:
                 match = match + 1
             else:
                 mismatch = mismatch + 1
-        sim_tran =match*1+mismatch*0+gap*0
-        #print match,mismatch,gap
-        print sim_tran
+        sim_tran = match * 1 + mismatch * 0 + gap * 0
+        # print match,mismatch,gap
+        print
+        sim_tran
 
-    #caculate transition ID + state similarity of two path----------------------syq
-    def sim_tran_state(self,first,second):
-        match=0
-        mismatch=0
-        gap=abs(len(first) - len(second))
+    # caculate transition ID + state similarity of two path----------------------syq
+    def sim_tran_state(self, first, second):
+        match = 0
+        mismatch = 0
+        gap = abs(len(first) - len(second))
 
-        count_BothIden=0
-        count_SourceIden=0
-        count_SourceDiff=0
+        count_BothIden = 0
+        count_SourceIden = 0
+        count_SourceDiff = 0
         for i in range(min(len(first), len(second))):
             if first[i] == second[i]:
                 match = match + 1
             else:
                 mismatch = mismatch + 1
-                for item in self.transitionList:      #dimatch tran's source,target state
+                for item in self.transitionList:  # dimatch tran's source,target state
                     if item.name == first[i]:
                         source1 = item.src.name
                         target1 = item.tgt.name
@@ -505,12 +505,15 @@ class EFSM(object):
                         count_SourceIden = count_SourceIden + 1
                 else:
                     count_SourceDiff = count_SourceDiff + 1
-        sim_tran =match*1+mismatch*0+gap*0
-        print count_BothIden,count_SourceIden,count_SourceDiff
-        sim_state=(count_BothIden*2.0 + count_SourceIden*1.0 + count_SourceDiff*0)/(2**abs(len(first)-len(second))+1)    #how to consider the difference between path lengths ?
-        print match,mismatch,gap
-        print sim_tran,sim_state
-
+        sim_tran = match * 1 + mismatch * 0 + gap * 0
+        print
+        count_BothIden, count_SourceIden, count_SourceDiff
+        sim_state = (count_BothIden * 2.0 + count_SourceIden * 1.0 + count_SourceDiff * 0) / (
+                    2 ** abs(len(first) - len(second)) + 1)  # how to consider the difference between path lengths ?
+        print
+        match, mismatch, gap
+        print
+        sim_tran, sim_state
 
     def findAllPath(self):
         """comput all paths of esfm
@@ -518,44 +521,43 @@ class EFSM(object):
         pathList: list of paths [[TS1, TS2],[TS1,TS2],...]
         """
         for startTran in self.startTransitionList:
-            tempPathList=[Path([startTran])]# path includes startTransition
-            #print tempPathList
-        allPathList=[]
-        count=0
-        feasiblePathList=[]
-        endStartNo=0
+            tempPathList = [Path([startTran])]  # path includes startTransition
+            # print tempPathList
+        allPathList = []
+        count = 0
+        feasiblePathList = []
+        endStartNo = 0
         while len(tempPathList) > 0:
-            currPath = tempPathList[0] 
+            currPath = tempPathList[0]
             restPathList = tempPathList[1:]
-            lastTransition = currPath[-1]  
-            successorList = self.succDict[lastTransition]     
-            if (successorList==[]):
+            lastTransition = currPath[-1]
+            successorList = self.succDict[lastTransition]
+            if (successorList == []):
                 allPathList.append(Path(currPath))
-               # print 'No%s:' % (count), currPath
-                #print currPath
+                # print 'No%s:' % (count), currPath
+                # print currPath
                 '''if currPath.is_feasiable_ATM():
                     print 'No%s:'%(count),currPath
                     feasiblePathList.append(currPath)
                     count=count+1'''
-                count=count+1
-                if len(allPathList)>500:
-                    break     
-            tempPathList=restPathList + self.pathAppend(currPath, successorList)
+                count = count + 1
+                if len(allPathList) > 500:
+                    break
+            tempPathList = restPathList + self.pathAppend(currPath, successorList)
 
-        #print '\t number of all path is ', len(allPathList)
-        #print 'all no_repeat_tran path:',allPathList
+        # print '\t number of all path is ', len(allPathList)
+        # print 'all no_repeat_tran path:',allPathList
         '''print 'number of no_repeat_tran feasible path:',count
         print 'all no_repeat_tran feasible path:',feasiblePathList'''
-        #self.VarNumDefOnPath(allPathList[2])
+        # self.VarNumDefOnPath(allPathList[2])
 
         return allPathList
 
+    # +++++++++++++++++++++++++++++++++syq++++++++++++++++++++++++++++++++++++#
 
-#+++++++++++++++++++++++++++++++++syq++++++++++++++++++++++++++++++++++++#
-
-    def findPath(self,start_tran):
+    def findPath(self, start_tran):
         tempPathList = [Path([start_tran])]
-        #print tempPathList
+        # print tempPathList
         allPathList = []
         count = 0
         feasiblePathList = []
@@ -568,19 +570,16 @@ class EFSM(object):
             if (successorList == []):
                 allPathList.append(Path(currPath))
                 # print 'No%s:' % (count), currPath
-                #print currPath
+                # print currPath
                 count = count + 1
                 if len(allPathList) > 10000:
                     break
             tempPathList = restPathList + self.pathAppend(currPath, successorList)
 
-        #print '\t number of all path is ', len(allPathList)
-        #print 'all no_repeat_tran path:',allPathList
+        # print '\t number of all path is ', len(allPathList)
+        # print 'all no_repeat_tran path:',allPathList
 
         return allPathList
-
-
-    
 
     def pathAppendWithRepeat(self, currPath, succList, countTran):
         """return path list [path1, path2,...]
@@ -591,14 +590,11 @@ class EFSM(object):
         [a,b,c,b,c] and [b,d] will return [[a,b,c,b,c,d]]
         If there is a self loop, the self loop is considered once
         """
-        newList=[] 
-        for item in succList:       
-           if (currPath.count(item.name) < 6 ):  #old code is 4
-               newList.append(Path(currPath+[item.name]))
+        newList = []
+        for item in succList:
+            if (currPath.count(item.name) < 6):  # old code is 4
+                newList.append(Path(currPath + [item.name]))
         return newList
-
-
-
 
     def findPathWithRepeat(self):
         """comput all paths of esfm
@@ -606,46 +602,45 @@ class EFSM(object):
         pathList: list of paths [[TS1, TS2],[TS1,TS2],...] with repeat time countTrans
         """
 
-        countTrans=1
-        allPathList=[]      
-        pathLengthDict={}  #### key: length of path, value: number of the path with 'key' length
-        maxPathLength=51   #old code is maxPatLength=31
+        countTrans = 1
+        allPathList = []
+        pathLengthDict = {}  #### key: length of path, value: number of the path with 'key' length
+        maxPathLength = 51  # old code is maxPatLength=31
         pathLength = 0
-        step=0     
-        
+        step = 0
+
         for startTran in self.startTransitionList:
-            tempPathList=[Path([startTran])]# path includes startTransition
+            tempPathList = [Path([startTran])]  # path includes startTransition
         for L in range(70):
-            pathLengthDict[L]=0           
-        while (len(tempPathList)>step) and (pathLength <= maxPathLength):
-            currPath = tempPathList[0]            
-            restPathList = tempPathList[step+1:]          
-            lastTransition = currPath[-1]               
+            pathLengthDict[L] = 0
+        while (len(tempPathList) > step) and (pathLength <= maxPathLength):
+            currPath = tempPathList[0]
+            restPathList = tempPathList[step + 1:]
+            lastTransition = currPath[-1]
             successorList = self.succDict[lastTransition]
             if currPath.is_feasiable_ATM():
-                tempPathList=restPathList + self.pathAppendWithRepeat(currPath, successorList,countTrans)        
+                tempPathList = restPathList + self.pathAppendWithRepeat(currPath, successorList, countTrans)
             else:
-                tempPathList=restPathList
-            if (successorList==[]):            
-                pathLength=len(currPath)           
-                if pathLengthDict[pathLength]<5:                   #old code is <20
+                tempPathList = restPathList
+            if (successorList == []):
+                pathLength = len(currPath)
+                if pathLengthDict[pathLength] < 5:  # old code is <20
                     allPathList.append(Path(currPath))
-                    pathLengthDict[pathLength]=pathLengthDict[pathLength]+1
-#                    print 'path',currPath,len(currPath)
-                    step=0                  
+                    pathLengthDict[pathLength] = pathLengthDict[pathLength] + 1
+                    #                    print 'path',currPath,len(currPath)
+                    step = 0
                 else:
-                    step=step+1
-                    if step>2:
-                       step=0
-#        print '\t number of path with repeat trans is ', len(allPathList)
+                    step = step + 1
+                    if step > 2:
+                        step = 0
+        #        print '\t number of path with repeat trans is ', len(allPathList)
         for ipath in allPathList:
-            self.pathTestGen[len(ipath)]=0 ### initiate self.pathTestGen, key: the length of ipath, value: test generation flag 
+            self.pathTestGen[
+                len(ipath)] = 0  ### initiate self.pathTestGen, key: the length of ipath, value: test generation flag
         return allPathList
-    
-    
 
-   #################for transition #####################
-    def givenTransPathAppend(self, givenTrans,currPath, succList):
+    #################for transition #####################
+    def givenTransPathAppend(self, givenTrans, currPath, succList):
         """return path list [path1, path2,...]
         for a given transition computer its path
         if given item in succList, other elements in succList are not considered
@@ -655,49 +650,42 @@ class EFSM(object):
         [a,b,c,b,c] and [b,d] will return [[a,b,c,b,c,d]]
         If there is a self loop, the self loop is considered once
         """
-        newList=[]
+        newList = []
 
         if givenTrans in succList:
-             if givenTrans in currPath:
-                 pass
-             else:
-                 newList.append(Path(currPath+[givenTrans]))
-             return newList
-        for item in succList:        
-             if (currPath.count(item.name) <1 ): ### loop is allowed ,at most 3
-                 newList.append(Path(currPath+[item.name]))
+            if givenTrans in currPath:
+                pass
+            else:
+                newList.append(Path(currPath + [givenTrans]))
+            return newList
+        for item in succList:
+            if (currPath.count(item.name) < 1):  ### loop is allowed ,at most 3
+                newList.append(Path(currPath + [item.name]))
         return newList
 
-
-
-
-
-    def findPathforGivenTrans(self,givenTrans):
+    def findPathforGivenTrans(self, givenTrans):
         """ Find not more than 10 path at rondom
             for a given transition
         """
 
         for startTran in self.startTransitionList:
-            tempPathList=[Path([startTran])]# path includes startTransition       
- 
-        transPathList=[]    
+            tempPathList = [Path([startTran])]  # path includes startTransition
+
+        transPathList = []
         while len(transPathList) < 10:  ## most generated path number  that covers the given transition is 10
-            currPath = tempPathList[0]   
-            restPathList = tempPathList[1:] 
+            currPath = tempPathList[0]
+            restPathList = tempPathList[1:]
             lastTransition = currPath[-1]
-            if givenTrans ==lastTransition:
-                transPathList.append(Path(currPath))               
-            successorList = self.succDict[lastTransition]        
-            tempPathList=restPathList + self.givenTransPathAppend(givenTrans, currPath, successorList)    
-            if len(tempPathList)==0 or len(tempPathList)>5000:
-               break  ## 5000 successive pathes without include given transition,
-                                    ### namely  10 possible path covering the given transition are not generated.
+            if givenTrans == lastTransition:
+                transPathList.append(Path(currPath))
+            successorList = self.succDict[lastTransition]
+            tempPathList = restPathList + self.givenTransPathAppend(givenTrans, currPath, successorList)
+            if len(tempPathList) == 0 or len(tempPathList) > 5000:
+                break  ## 5000 successive pathes without include given transition,
+                ### namely  10 possible path covering the given transition are not generated.
         return transPathList
- 
 
-
-
-# ################### find all path for a given transition###############
+    # ################### find all path for a given transition###############
     def vDefUseList(self, currTransition):
         """compute vDef and vUse list for currTransition
         """
@@ -778,8 +766,6 @@ class EFSM(object):
         cond = currTransion.cond
         self.condlist[currTransion.name] = cond
         # print "condlist: ", self.condlist
-
-
 
     def initTranVarFuncList(self):
         for transition in self.transitionList:
@@ -897,94 +883,87 @@ class EFSM(object):
             while tempvdict != []:
                 self.originalDef.append(tempvdict.pop(0))
 
-
     def copyPathInfo(self):
         """
         copy path information into current Path Dictionary
         """
-        #{'T8': {'eventVdef': ['newTitle', 'newContext', 'newParent', 'newOrder'], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T9': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T6': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T7': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T4': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T5': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T2': {'eventVdef': ['formuser', 'formpassword'], 'actionVdef': [], 'condVuse': ['formuser', 'ADMINUSER', 'formpassword', 'ADMINPASSWORD'], 'actionVuse': []}, 'T3': {'eventVdef': ['formuser', 'formpassword'], 'actionVdef': [], 'condVuse': ['formuser', 'ADMINUSER', 'formpassword', 'ADMINPASSWORD'], 'actionVuse': []}, 'T1': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T14': {'eventVdef': ['faqText'], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T15': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T16': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T17': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T10': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T11': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T12': {'eventVdef': ['topicTitle', 'topicContext', 'topicParent', 'topicOrder', 'topicPublish'], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T13': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T21': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T20': {'eventVdef': ['topicTitle', 'topicContext', 'topicParent', 'topicOrder', 'topicPublish'], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T18': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T19': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}}
+        # {'T8': {'eventVdef': ['newTitle', 'newContext', 'newParent', 'newOrder'], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T9': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T6': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T7': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T4': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T5': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T2': {'eventVdef': ['formuser', 'formpassword'], 'actionVdef': [], 'condVuse': ['formuser', 'ADMINUSER', 'formpassword', 'ADMINPASSWORD'], 'actionVuse': []}, 'T3': {'eventVdef': ['formuser', 'formpassword'], 'actionVdef': [], 'condVuse': ['formuser', 'ADMINUSER', 'formpassword', 'ADMINPASSWORD'], 'actionVuse': []}, 'T1': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T14': {'eventVdef': ['faqText'], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T15': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T16': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T17': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T10': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T11': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T12': {'eventVdef': ['topicTitle', 'topicContext', 'topicParent', 'topicOrder', 'topicPublish'], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T13': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T21': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T20': {'eventVdef': ['topicTitle', 'topicContext', 'topicParent', 'topicOrder', 'topicPublish'], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T18': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}, 'T19': {'eventVdef': [], 'actionVdef': [], 'condVuse': ['null'], 'actionVuse': []}}
         self.currPathTranVarDict = copy.deepcopy(self.tranVarDict)
         # {'T8': {'condFunc': ['null'], 'eventFunc': ['input(newTitle,newContext,newParent,newOrder);xpath=//td/input;click'], 'actionFunc': []}, 'T9': {'condFunc': ['null'], 'eventFunc': [';xpath=/html/body/center/center/table/tbody/tr/td/table/tbody/tr[2]/td[6]/small/a/img;click'], 'actionFunc': []}, 'T6': {'condFunc': ['null'], 'eventFunc': [';link=View Your Document;click'], 'actionFunc': []}, 'T7': {'condFunc': ['null'], 'eventFunc': [';link=Back to Topics List;click'], 'actionFunc': []}, 'T4': {'condFunc': ['null'], 'eventFunc': [';xpath=/html/body/table/tbody/tr[2]/td[1]/a;click'], 'actionFunc': []}, 'T5': {'condFunc': ['null'], 'eventFunc': [';link=Admin;click'], 'actionFunc': []}, 'T2': {'condFunc': ['(formuser != ADMINUSER ) || (formpassword != ADMINPASSWORD )'], 'eventFunc': ['input(formuser,formpassword);name=submit;click'], 'actionFunc': []}, 'T3': {'condFunc': ['(formuser == ADMINUSER ) && (formpassword == ADMINPASSWORD )'], 'eventFunc': ['input(formuser,formpassword);name=submit;click'], 'actionFunc': []}, 'T1': {'condFunc': ['null'], 'eventFunc': [';link=Administration;click'], 'actionFunc': []}, 'T14': {'condFunc': ['null'], 'eventFunc': ['input(faqText);xpath=/html/body/center/center/center/table[2]/tbody/tr/td/table/tbody/tr[3]/td/input;click'], 'actionFunc': []}, 'T15': {'condFunc': ['null'], 'eventFunc': [';link=Modify Changes;click'], 'actionFunc': []}, 'T16': {'condFunc': ['null'], 'eventFunc': [';link=Commit Changes;click'], 'actionFunc': []}, 'T17': {'condFunc': ['null'], 'eventFunc': [';xpath=/html/body/center/center/center/table[2]/tbody/tr/td/table/tbody/tr[1]/td[2]/a/img;click'], 'actionFunc': []}, 'T10': {'condFunc': ['null'], 'eventFunc': [";xpath=//a[contains(text(),'HERE')];click"], 'actionFunc': []}, 'T11': {'condFunc': ['null'], 'eventFunc': [';xpath=/html/body/center/center/table/tbody/tr/td/table/tbody/tr[2]/td[1]/small/a;click'], 'actionFunc': []}, 'T12': {'condFunc': ['null'], 'eventFunc': ['input(topicTitle,topicContext,topicParent,topicOrder,topicPublish);xpath=/html/body/center/center/center/table[1]/tbody/tr/td/table/tbody/tr[7]/td/input;click'], 'actionFunc': []}, 'T13': {'condFunc': ['null'], 'eventFunc': [';xpath=//a/big;click'], 'actionFunc': []}, 'T21': {'condFunc': ['null'], 'eventFunc': [';link=View Your Document;click'], 'actionFunc': []}, 'T20': {'condFunc': ['null'], 'eventFunc': ['input(topicTitle,topicContext,topicParent,topicOrder,topicPublish);xpath=/html/body/center/center/center/table[1]/tbody/tr/td/table/tbody/tr[7]/td/input;click'], 'actionFunc': []}, 'T18': {'condFunc': ['null'], 'eventFunc': [';link=HERE;click'], 'actionFunc': []}, 'T19': {'condFunc': ['null'], 'eventFunc': [';link=View Your Document;click'], 'actionFunc': []}}
         self.currPathTranFuncDict = copy.deepcopy(self.tranFuncDict)
 
     def identifyLeftRight(self, string):
-         """ identify left and right substing for a sting
-         """
+        """ identify left and right substing for a sting
+        """
 
-         operList=["==", "!=","<=", ">=","<", ">" ]
-         subList=[]
-         flag=0
-         for oper in operList:
-             if oper in string:
-             #    print 'oper',oper
-                 for right in string.split(oper):
-                     for left in string.split(oper):
-                         if left!=right:
-                             flag=1
-                             break
-             if flag==1: break
-         subList.append(left)
-         subList.append(right)
-         return subList
-
-        
-
+        operList = ["==", "!=", "<=", ">=", "<", ">"]
+        subList = []
+        flag = 0
+        for oper in operList:
+            if oper in string:
+                #    print 'oper',oper
+                for right in string.split(oper):
+                    for left in string.split(oper):
+                        if left != right:
+                            flag = 1
+                            break
+            if flag == 1: break
+        subList.append(left)
+        subList.append(right)
+        return subList
 
     def branchDistanceCompute(self, predicate, predVarValue):
         """ computer simple predicate's fitness
         """
-        K=1
-        subList=[]
-       
-        predicate=predicate.strip()
-        predicate=predicate.strip("(")       
-        predicate=predicate.strip(")")
-        subList=self.identifyLeftRight(predicate)
-        rightstr=subList.pop(0)
-        leftstr=subList.pop(0)
-        leftValue=eval(leftstr, {},predVarValue)
-        if type(leftValue)==type(leftstr):      
-            leftValue=ord(leftValue)
-        rightValue=eval(rightstr,{}, predVarValue)       
-        if type(rightValue)==type(rightstr):            
-            rightValue=ord(rightValue)
-        distance=abs(leftValue - rightValue)+ K           
+        K = 1
+        subList = []
+
+        predicate = predicate.strip()
+        predicate = predicate.strip("(")
+        predicate = predicate.strip(")")
+        subList = self.identifyLeftRight(predicate)
+        rightstr = subList.pop(0)
+        leftstr = subList.pop(0)
+        leftValue = eval(leftstr, {}, predVarValue)
+        if type(leftValue) == type(leftstr):
+            leftValue = ord(leftValue)
+        rightValue = eval(rightstr, {}, predVarValue)
+        if type(rightValue) == type(rightstr):
+            rightValue = ord(rightValue)
+        distance = abs(leftValue - rightValue) + K
         if "!=" in predicate:
-            distance=K    
-    #    distance=1-1.001**(-distance)     
+            distance = K
+            #    distance=1-1.001**(-distance)
         return distance
 
-
-
-
-    def  outputTestData(self,currPath, varType, noinput):
-        print self.pathVarValue
-        
-
+    def outputTestData(self, currPath, varType, noinput):
+        print
+        self.pathVarValue
 
     def findVarInEvent(self, var, eventFun):
         """
         find var variable in the event
         """
-        renameAndVarValue={} #### key: rename flag, value: condVuseValueDict[var]
+        renameAndVarValue = {}  #### key: rename flag, value: condVuseValueDict[var]
         for tempstr in eventFun:
-            if tempstr.rfind(var)>=1:
+            if tempstr.rfind(var) >= 1:
                 for tempsubstr in tempstr.rsplit("("):
                     for tempsubsub in tempsubstr.rsplit(","):
-                        tempsubsub=tempsubsub.strip()
-                        tempsubsub=tempsubsub.strip(")")
-                        lensub=len(tempsubsub)                                                        
-                        subsub=tempsubsub[0:lensub-1]  # recognize variable form multip input variables
-                                                       ## for example, price0,price1,price2
-                        if var==subsub:
-                            renameAndVarValue[1]=self.pathVarValue[tempsubsub]
-                            return renameAndVarValue                            
-        return renameAndVarValue                    
-    def bianJie(self, currPath,varname,accuracy,noInput):
-        condVuseValueDict =  collections.OrderedDict()  ## key: variables used in condition
+                        tempsubsub = tempsubsub.strip()
+                        tempsubsub = tempsubsub.strip(")")
+                        lensub = len(tempsubsub)
+                        subsub = tempsubsub[0:lensub - 1]  # recognize variable form multip input variables
+                        ## for example, price0,price1,price2
+                        if var == subsub:
+                            renameAndVarValue[1] = self.pathVarValue[tempsubsub]
+                            return renameAndVarValue
+        return renameAndVarValue
+
+    def bianJie(self, currPath, varname, accuracy, noInput):
+        condVuseValueDict = collections.OrderedDict()  ## key: variables used in condition
         i = 0
         k = 0
-        ans=[]
+        ans = []
         while (i < len(currPath)):
             currTrans = currPath[i]
             for vtran, vdict in self.currPathTranVarDict.iteritems():
@@ -1019,11 +998,11 @@ class EFSM(object):
                                         rightstr = subList.pop(0)
                                         leftstr = subList.pop(0)
                                         leftValue = int(leftstr)
-                                        if len(condVuseValueDict[rightstr])==1:
+                                        if len(condVuseValueDict[rightstr]) == 1:
                                             condVuseValueDict[rightstr].pop()
-                                        condVuseValueDict[rightstr].append(leftValue-accuracy)
+                                        condVuseValueDict[rightstr].append(leftValue - accuracy)
                                         condVuseValueDict[rightstr].append(leftValue)
-                                        condVuseValueDict[rightstr].append(leftValue+accuracy)
+                                        condVuseValueDict[rightstr].append(leftValue + accuracy)
                                 else:
                                     subList = []
                                     condStr = condStr.strip()
@@ -1032,7 +1011,10 @@ class EFSM(object):
                                     subList = self.identifyLeftRight(condStr)
                                     rightstr = subList.pop(0)
                                     leftstr = subList.pop(0)
-                                    leftValue = int(leftstr)
+                                    if '0x' in leftstr:
+                                        leftValue = int(leftstr, 16)
+                                    else:
+                                        leftValue = int(leftstr)
                                     if len(condVuseValueDict[rightstr]) == 1:
                                         condVuseValueDict[rightstr].pop()
                                     condVuseValueDict[rightstr].append(leftValue - accuracy)
@@ -1041,39 +1023,42 @@ class EFSM(object):
                             ans.append(condVuseValueDict.copy())
                             break
                     break
-            i+=1
+            i += 1
         return ans
-    def CDMD(self, currPath,pathVarType, noInput):
-        condVuseValueDict =  collections.OrderedDict()  ## key: variables used in condition
+
+    def CDMD(self, currPath, pathVarType, noInput):
+        condVuseValueDict = collections.OrderedDict()  ## key: variables used in condition
         actionVdefValueDict = {}  ## key: variables defined in action
         actionVuseValueDict = {}  ## key: variables used in action
         approachLevel = len(currPath) - 1
-        tranVarValue = collections.OrderedDict()
+
+        noCondition = []
         i = 0
         k = 0
-        ans=[]
+        ans = {}
         while (i < len(currPath)):
             currTrans = currPath[i]
+            tranVarValue = {}
             for vtran, vdict in self.currPathTranVarDict.iteritems():
                 if vtran == currTrans:  # find currTrans transition 's tran discrption
                     for ftran, fdict in self.currPathTranFuncDict.iteritems():
                         if ftran == currTrans:  ### find currTrans transition 's tranFuncDict()#
                             executActFlag = 0
-                            vis={}
+                            vis = {}
                             ###########deal with event variables#############################
                             if self.tranVarDict[currTrans]['eventVdef'] != []:
                                 for var in self.tranVarDict[currTrans]['eventVdef']:
                                     dt = protocolInf.dateGeneration(var)
                                     condVuseValueDict[var] = dt
-                                    tranVarValue[var]=[dt]
-                                    vis[var]=[False,False,False]
+                                    tranVarValue[var] = [dt]
+                                    vis[var] = [False, False, False]
                             ###### execute condition#########
                             if fdict['condFunc'] != ['null'] and fdict['condFunc'] != [''] and fdict['condFunc'] != []:
                                 CondStr1 = fdict['condFunc'][0]
-                                condStr=''
+                                condStr = ''
                                 for char in CondStr1:
-                                    if(char!=' '):
-                                        condStr=condStr+char
+                                    if (char != ' '):
+                                        condStr = condStr + char
                                 if '&' in condStr:
                                     for predStr in condStr.split("&"):
                                         predStr = predStr.strip()
@@ -1087,135 +1072,172 @@ class EFSM(object):
                                         rightstr = subList.pop(0)
                                         leftstr = subList.pop(0)
                                         leftValue = int(leftstr)
-                                        if vis[rightstr][0]==False:
-                                            tranVarValue[rightstr]=[0,0]
+                                        if vis[rightstr][0] == False:
+                                            tranVarValue[rightstr] = [0, 0]
                                             vis[rightstr][0] = True
-                                        if vis[rightstr][1]==False or vis[rightstr][2]==False:
-                                            for j in range(leftValue-20,leftValue+20):
-                                                condVuseValueDict[rightstr]=j
-                                                boolF=eval(condStr, {}, condVuseValueDict)
-                                                if boolF==True:
-                                                    if vis[rightstr][1]==False:
-                                                        tranVarValue[rightstr][0]=j
+                                        if vis[rightstr][1] == False or vis[rightstr][2] == False:
+                                            for j in range(leftValue - 20, leftValue + 20):
+                                                condVuseValueDict[rightstr] = j
+                                                boolF = eval(condStr, {}, condVuseValueDict)
+                                                if boolF == True:
+                                                    if vis[rightstr][1] == False:
+                                                        tranVarValue[rightstr][0] = j
                                                         vis[rightstr][1] == True
                                                 else:
-                                                    if vis[rightstr][2]==False:
-                                                        tranVarValue[rightstr][1]=j
+                                                    if vis[rightstr][2] == False:
+                                                        tranVarValue[rightstr][1] = j
                                                         vis[rightstr][2] == True
                                                 if vis[rightstr][1] == True and vis[rightstr][2] == True:
                                                     break
-                                ans.append(tranVarValue.copy())
+                                elif '|' in condStr:
+                                    None
+                                else:
+                                    predStr = condStr.strip()
+                                    predStr = predStr.strip("(")
+                                    predStr = predStr.strip(")")
+                                    subList = []
+                                    predStr = predStr.strip()
+                                    predStr = predStr.strip("(")
+                                    predStr = predStr.strip(")")
+                                    subList = self.identifyLeftRight(predStr)
+                                    rightstr = subList.pop(0)
+                                    leftstr = subList.pop(0)
+                                    if '0x' in leftstr:
+                                        leftValue = int(leftstr, 16)
+                                    else:
+                                        leftValue = int(leftstr)
+                                    if vis[rightstr][0] == False:
+                                        tranVarValue[rightstr] = [0, 0]
+                                        vis[rightstr][0] = True
+                                    if vis[rightstr][1] == False or vis[rightstr][2] == False:
+                                        for j in range(leftValue - 20, leftValue + 20):
+                                            condVuseValueDict[rightstr] = j
+                                            boolF = eval(condStr, {}, condVuseValueDict)
+                                            if boolF == True:
+                                                if vis[rightstr][1] == False:
+                                                    tranVarValue[rightstr][0] = j
+                                                    vis[rightstr][1] == True
+                                            else:
+                                                if vis[rightstr][2] == False:
+                                                    tranVarValue[rightstr][1] = j
+                                                    vis[rightstr][2] == True
+                                            if vis[rightstr][1] == True and vis[rightstr][2] == True:
+                                                break
+                            else:
+                                noCondition.append(str(currTrans))
                             break
+
                     break
-            i+=1
+            i += 1
+            ans[str(currTrans) + "_" + str(i)] = tranVarValue.copy()
+        ans["noCondition"] = noCondition
         return ans
-
-
-
 
     def executePath(self, currPath, noInput):
         """ execute a path
             noInput=1------ ther is no input variable on the path, used in outputTestData function
         """
 
-        condVuseValueDict={} ## key: variables used in condition
-#       condVuseTypeDict={}  ## key: variables used in condition, value: type of variable
-        actionVdefValueDict={} ## key: variables defined in action
-        actionVuseValueDict={}  ## key: variables used in action
-#        tranExec={} ## key: transition, value:executed time      
-        
-        approachLevel=len(currPath)-1
-#        for tran in currPath:
-#            tranExec[tran]=0
+        condVuseValueDict = {}  ## key: variables used in condition
+        #       condVuseTypeDict={}  ## key: variables used in condition, value: type of variable
+        actionVdefValueDict = {}  ## key: variables defined in action
+        actionVuseValueDict = {}  ## key: variables used in action
+        #        tranExec={} ## key: transition, value:executed time
 
-#        print 'self.pathVarValue'
-#        print self.pathVarValue,'\n\n'
+        approachLevel = len(currPath) - 1
+        #        for tran in currPath:
+        #            tranExec[tran]=0
 
-        i=0
-        k=0
-        while (i<len(currPath)):            
-            currTrans=currPath[i]
-            for vtran,vdict in self.currPathTranVarDict.iteritems():
-                if vtran==currTrans:#find currTrans transition 's tran discrption
-                    for ftran,fdict in self.currPathTranFuncDict.iteritems():
-                        if ftran==currTrans:  ### find currTrans transition 's tranFuncDict()#
-                            executActFlag=0
+        #        print 'self.pathVarValue'
+        #        print self.pathVarValue,'\n\n'
+
+        i = 0
+        k = 0
+        while (i < len(currPath)):
+            currTrans = currPath[i]
+            for vtran, vdict in self.currPathTranVarDict.iteritems():
+                if vtran == currTrans:  # find currTrans transition 's tran discrption
+                    for ftran, fdict in self.currPathTranFuncDict.iteritems():
+                        if ftran == currTrans:  ### find currTrans transition 's tranFuncDict()#
+                            executActFlag = 0
                             ###########deal with event variables#############################
                             if self.tranVarDict[currTrans]['eventVdef'] != []:
                                 for var in self.tranVarDict[currTrans]['eventVdef']:
                                     condVuseValueDict[var] = self.pathVarValue[k]
-                                    k+=1
+                                    k += 1
                             ###### execute condition#########
-                            if fdict['condFunc']!=['null'] and fdict['condFunc']!=[''] and fdict['condFunc']!=[]:
+                            if fdict['condFunc'] != ['null'] and fdict['condFunc'] != [''] and fdict['condFunc'] != []:
                                 condStr = fdict['condFunc'][0]
-                                if eval(condStr,{},condVuseValueDict) == False:
+                                if eval(condStr, {}, condVuseValueDict) == False:
                                     if '&' in condStr:
-                                        totalFitness=0.0
+                                        totalFitness = 0.0
                                         for predStr in condStr.split("&"):
-                                            predStr=predStr.strip()
-                                            predStr=predStr.strip("(")
-                                            predStr=predStr.strip(")")
-                                            branchDis=self.branchDistanceCompute(predStr,condVuseValueDict)
-                                            totalFitness=totalFitness+branchDis
-                                            #fitness=totalFitness+approachLevel
-                                        distance=1-1.001**(-totalFitness)
+                                            predStr = predStr.strip()
+                                            predStr = predStr.strip("(")
+                                            predStr = predStr.strip(")")
+                                            branchDis = self.branchDistanceCompute(predStr, condVuseValueDict)
+                                            totalFitness = totalFitness + branchDis
+                                            # fitness=totalFitness+approachLevel
+                                        distance = 1 - 1.001 ** (-totalFitness)
                                     else:
-                                        branchDis=self.branchDistanceCompute(condStr,condVuseValueDict)
-                                        distance=1-1.001**(-branchDis)
-                                    fitness=approachLevel + distance
+                                        branchDis = self.branchDistanceCompute(condStr, condVuseValueDict)
+                                        distance = 1 - 1.001 ** (-branchDis)
+                                    fitness = approachLevel + distance
                                     return fitness
-                    
-                         #   print ' ####execute action #######'
-                            approachLevel=approachLevel-1  ####approach level fitness
-                            tempActFun=[]
+
+                            #   print ' ####execute action #######'
+                            approachLevel = approachLevel - 1  ####approach level fitness
+                            tempActFun = []
                             tempActFun.extend(fdict['actionFunc'])
                             tempActFun.reverse()
-                            while tempActFun!=[]:
-                                actionStr=tempActFun.pop()  ## only process one assignement statement
-                                oneActFlag=0
+                            while tempActFun != []:
+                                actionStr = tempActFun.pop()  ## only process one assignement statement
+                                oneActFlag = 0
                                 for stri in actionStr.rsplit("="):
-                                    stri=stri.strip()
-                                    if stri in  vdict['actionVdef']:
+                                    stri = stri.strip()
+                                    if stri in vdict['actionVdef']:
                                         for strj in actionStr.split("="):
-                                            strj=strj.strip()
-                                            if strj!=stri:
-                                                rightStr=strj
-                                                rightStr=repr(rightStr)
+                                            strj = strj.strip()
+                                            if strj != stri:
+                                                rightStr = strj
+                                                rightStr = repr(rightStr)
                                                 for var in vdict['actionVuse']:
                                                     if var in condVuseValueDict.keys():
                                                         actionVuseValueDict[var] = condVuseValueDict[var]
                                                     elif var in actionVdefValueDict.keys():
                                                         actionVuseValueDict[var] = actionVdefValueDict[var]
-                                                actionVdefValueDict[stri] = eval(eval(rightStr),  {}, actionVuseValueDict)
+                                                actionVdefValueDict[stri] = eval(eval(rightStr), {},
+                                                                                 actionVuseValueDict)
                                                 condVuseValueDict[stri] = actionVdefValueDict[stri]
-                                                oneActFlag=1
-                                                break     ## break strj loop
-                                    if oneActFlag==1:
-                                        break         #### break stri loop
-                            executActFlag=1                         
-                            break   ###break for ftran,fdict loop
-                    if executActFlag==1:
-#                        tranExec[currTrans]=tranExec[currTrans]+1                       
-                        break      ### break vtran,vdict loop        
-            
-#            print 'condVuseValueDict={}   condVuseTypeDict={}  actionVdefValueDict={}   actionVuseValueDict={} '
-#            print 'the value of i is ',i
-#            print condVuseValueDict,'\n'
-#            print condVuseTypeDict,'\n'
-#            print actionVdefValueDict,'\n'
-#            print actionVuseValueDict,'\n'
-            i=i+1
-#            if i == 7:
-#                return 0
-     #   self.outputTestData(currPath , condVuseTypeDict, noInput)
-    #    for var, val in actionVdefValueDict.iteritems():
-    #        print '', var,val,
-    #        print ',',
-    #    print
+                                                oneActFlag = 1
+                                                break  ## break strj loop
+                                    if oneActFlag == 1:
+                                        break  #### break stri loop
+                            executActFlag = 1
+                            break  ###break for ftran,fdict loop
+                    if executActFlag == 1:
+                        #                        tranExec[currTrans]=tranExec[currTrans]+1
+                        break  ### break vtran,vdict loop
+
+            #            print 'condVuseValueDict={}   condVuseTypeDict={}  actionVdefValueDict={}   actionVuseValueDict={} '
+            #            print 'the value of i is ',i
+            #            print condVuseValueDict,'\n'
+            #            print condVuseTypeDict,'\n'
+            #            print actionVdefValueDict,'\n'
+            #            print actionVuseValueDict,'\n'
+            i = i + 1
+        #            if i == 7:
+        #                return 0
+        #   self.outputTestData(currPath , condVuseTypeDict, noInput)
+        #    for var, val in actionVdefValueDict.iteritems():
+        #        print '', var,val,
+        #        print ',',
+        #    print
         return 0
+
     """
     def obtainIndividualFitness(self,currPath,invidual, noInput):
-        
+
         invidualFit={}### key :genome, value: fitness   #
         self.pathVarValue={} ## key: variables on the path, value: corresponding valu
         for var, val in zip(self.pathDefVar, invidual):
@@ -1228,12 +1250,12 @@ class EFSM(object):
         return invidualFit
     """
 
-    def obtainIndividualFitness(self, currPath, invidual, populationSize, noInput,varname):
+    def obtainIndividualFitness(self, currPath, invidual, populationSize, noInput, varname):
 
         invidualFit = {}  ### key :genome, value: fitness   #
-        self.pathVarValue =[]  ## key: variables on the path, value: corresponding value
+        self.pathVarValue = []  ## key: variables on the path, value: corresponding value
         for i in range(populationSize):
-            #print self.pathDefVar, invidual[i]
+            # print self.pathDefVar, invidual[i]
             self.pathVarValue = invidual[i][:]
             fitness = self.executePath(currPath, noInput)
             if (fitness == 0) or (fitness == 0.0):  ##  the current path is executed
@@ -1243,301 +1265,296 @@ class EFSM(object):
                 invidualFit[i] = 1 / fitness
         return invidualFit
 
+    def testGenforPath(self, currPath):
 
-
-
-
-
-
-    def testGenforPath(self, currPath):        
-        
-        populationSize=20
-        self.repeatTranVarDict={}
-        self.repeatTranFuncDict={} ####store repeat transition
-        self.currPathTranVarDict={}
-        self.currPathTranFuncDict=={}
-        population=[]
-        invidualFitness={} ## key:genome, value:fitness
-        noInputVar=0
-        pathVarType={}  ## key: variable , value: type of the variable 
+        populationSize = 20
+        self.repeatTranVarDict = {}
+        self.repeatTranFuncDict = {}  ####store repeat transition
+        self.currPathTranVarDict = {}
+        self.currPathTranFuncDict == {}
+        population = []
+        invidualFitness = {}  ## key:genome, value:fitness
+        noInputVar = 0
+        pathVarType = {}  ## key: variable , value: type of the variable
         self.copyPathInfo()
         for tran in currPath:
-            if currPath.count(tran)>1:
+            if currPath.count(tran) > 1:
                 self.repeatTrans(currPath)
                 break
-        self.pathInputVar(currPath)   ### identify input variable in events relating to the current path stored in self.originalDef
-        self.pathProProcess(currPath) ### rewrite identical variables, ---stored in self.pathDefVar
-        print "the var of currPath:",self.pathDefVar
-           
-        for num in range(len(self.pathDefVar)):               
-            pathVarType[num]='int'
+        self.pathInputVar(
+            currPath)  ### identify input variable in events relating to the current path stored in self.originalDef
+        self.pathProProcess(currPath)  ### rewrite identical variables, ---stored in self.pathDefVar
+        print
+        "the var of currPath:", self.pathDefVar
+
+        for num in range(len(self.pathDefVar)):
+            pathVarType[num] = 'int'
             if 'garauntee' in self.pathDefVar[num] or 'accept' in self.pathDefVar[num]:
-                pathVarType[num]='Boolean'
+                pathVarType[num] = 'Boolean'
 
         if len(self.pathDefVar) > 0:  ##There exist input variables on the path
-            for repeat in range(1,2):
+            for repeat in range(1, 2):
                 gaSample = GA(populationSize, len(self.pathDefVar))
-                population = gaSample.creatStartPopulation(pathVarType)  ###initiate Population according to input variable number
+                population = gaSample.creatStartPopulation(
+                    pathVarType)  ###initiate Population according to input variable number
                 j = 1
                 while 1:
                     oldInvidualFit = self.obtainIndividualFitness(currPath, population, populationSize, noInputVar)
                     if oldInvidualFit[0] == 0:
-                        print 'No' + str(repeat) + '\tsuccessGeneration\t', j
+                        print
+                        'No' + str(repeat) + '\tsuccessGeneration\t', j
                         self.outputTestData(currPath, pathVarType, 0)
                         break  # break for j loop
                     j += 1
                     population = gaSample.GeneticAlgorithm(oldInvidualFit, population, pathVarType)
                     invidualFitness = self.obtainIndividualFitness(currPath, population, populationSize, noInputVar)
                     if invidualFitness[0] == 0:
-                        print invidualFitness
-                        print population
-                        print 'No' + str(repeat) + '\tsuccessGeneration\t', j
+                        print
+                        invidualFitness
+                        print
+                        population
+                        print
+                        'No' + str(repeat) + '\tsuccessGeneration\t', j
                         self.outputTestData(currPath, pathVarType, 0)
                         break  # break for j loop
                     population = gaSample.basicSurvive(oldInvidualFit, invidualFitness, population)
                     if repeat == 1 and j >= 20000:
-                        print 'this path is not feasible'
+                        print
+                        'this path is not feasible'
                         return 0
         else:
-            noInputVar=1
-            self.executePath( currPath, noInputVar)
+            noInputVar = 1
+            self.executePath(currPath, noInputVar)
 
-      
-
-
-
-
-
-
-
-
-
-
-###################defined and used variables anaysis for a path##################
-
+    ###################defined and used variables anaysis for a path##################
 
     def VarNumDefOnPath(self, currPath):
         """
-        analysis the defined variables on a path 
+        analysis the defined variables on a path
         """
 
-        actionDefVar=[] ### variables defined on action functions relating to a path
-        eventVar=0
-        
-        self.pathInputVar(currPath)### saved on self.originalDef list
-        temp=0
-        while (temp<len(currPath)):
-            currTrans=currPath[temp]
-            for vtran,vdict in self.tranVarDict.iteritems():
-                if vtran==currTrans:
-                    eventVar=eventVar+len(vdict['eventVdef'])
-                    if vtran !='T1':
-                        tempvdict=[]
-                      #####deal with action variables#######                    
+        actionDefVar = []  ### variables defined on action functions relating to a path
+        eventVar = 0
+
+        self.pathInputVar(currPath)  ### saved on self.originalDef list
+        temp = 0
+        while (temp < len(currPath)):
+            currTrans = currPath[temp]
+            for vtran, vdict in self.tranVarDict.iteritems():
+                if vtran == currTrans:
+                    eventVar = eventVar + len(vdict['eventVdef'])
+                    if vtran != 'T1':
+                        tempvdict = []
+                        #####deal with action variables#######
                         tempvdict.extend(vdict['actionVdef'])
-                        while tempvdict!=[]:
-                            tempVar=tempvdict.pop(0)
-                            if tempVar=='False' or tempVar=='True':
+                        while tempvdict != []:
+                            tempVar = tempvdict.pop(0)
+                            if tempVar == 'False' or tempVar == 'True':
                                 pass
                             else:
-                                actionDefVar.append(tempVar)                
+                                actionDefVar.append(tempVar)
                         break
-            temp=temp+1
-        actionVar=set(actionDefVar) 
-        print '   ', eventVar+len(actionVar),
-        print '   ', eventVar,
-        print '   ', len(actionVar),
-
-
+            temp = temp + 1
+        actionVar = set(actionDefVar)
+        print
+        '   ', eventVar + len(actionVar),
+        print
+        '   ', eventVar,
+        print
+        '   ', len(actionVar),
 
     def condNumOnPath(self, currPath):
         """
         compute the number of conditions and sub-conditions on the path
         """
 
-        condNum=0
-        subcondNum=0
-        equalOperator=0
-        logicalEqual=0
+        condNum = 0
+        subcondNum = 0
+        equalOperator = 0
+        logicalEqual = 0
 
-        temp=0
-        while (temp<len(currPath)):
-            currTrans=currPath[temp]
-            tempFlag=0
-            for vtran,vdict in self.tranVarDict.iteritems():                
-                if vtran==currTrans:
-                    for ftran,fdict in self.tranFuncDict.iteritems():
-                        if ftran==currTrans:
-                            tempFlag=1
-                            if (fdict['condFunc']!=[''] and fdict['condFunc']!=[]):
-                                condNum=condNum+1
-                                subcondNum=subcondNum+1
-                                tempcond=[]
+        temp = 0
+        while (temp < len(currPath)):
+            currTrans = currPath[temp]
+            tempFlag = 0
+            for vtran, vdict in self.tranVarDict.iteritems():
+                if vtran == currTrans:
+                    for ftran, fdict in self.tranFuncDict.iteritems():
+                        if ftran == currTrans:
+                            tempFlag = 1
+                            if (fdict['condFunc'] != [''] and fdict['condFunc'] != []):
+                                condNum = condNum + 1
+                                subcondNum = subcondNum + 1
+                                tempcond = []
                                 tempcond.extend(fdict['condFunc'])
-                                cond=tempcond.pop()                           
-                                if cond.count('||')>=1:
-                                    subcondNum=subcondNum+cond.count('||')
-                                if cond.count('&')>=1:
-                                    subcondNum=subcondNum+cond.count('&')
-                                if cond.count('==')>=1:
-                                    equalOperator=equalOperator+cond.count('==')
-                                    if cond.count('True')>=1:
-                                        logicalEqual=logicalEqual+cond.count('Ture')
-                                    if cond.count('False')>=1:
-                                        logicalEqual=logicalEqual+cond.count('False')                                   
-                                    
+                                cond = tempcond.pop()
+                                if cond.count('||') >= 1:
+                                    subcondNum = subcondNum + cond.count('||')
+                                if cond.count('&') >= 1:
+                                    subcondNum = subcondNum + cond.count('&')
+                                if cond.count('==') >= 1:
+                                    equalOperator = equalOperator + cond.count('==')
+                                    if cond.count('True') >= 1:
+                                        logicalEqual = logicalEqual + cond.count('Ture')
+                                    if cond.count('False') >= 1:
+                                        logicalEqual = logicalEqual + cond.count('False')
+
                             break
-                                   
-                    if (tempFlag==1): break    
-            temp=temp+1  
-        print '  ', condNum,
-        print '  ', subcondNum,
-        print '  ', equalOperator,
-        print '  ', subcondNum-equalOperator,
-        print '  ',logicalEqual,
-        print '  ', equalOperator-logicalEqual,
 
-
+                    if (tempFlag == 1): break
+            temp = temp + 1
+        print
+        '  ', condNum,
+        print
+        '  ', subcondNum,
+        print
+        '  ', equalOperator,
+        print
+        '  ', subcondNum - equalOperator,
+        print
+        '  ', logicalEqual,
+        print
+        '  ', equalOperator - logicalEqual,
 
     def VarNumUseOnPath(self, currPath):
-        """        
+        """
         compute the number of used variables on a path
         """
-        useInCond=[]
-        useInAction=[]
+        useInCond = []
+        useInAction = []
 
-        temp=0
-        while (temp<len(currPath)):
-            currTrans=currPath[temp]           
-            for vtran,vdict in self.tranVarDict.iteritems():                
-                if vtran==currTrans:
-                    if vdict['condVuse']!=[]:
-                        useEachCond=[]
-                        tempvdict=[]
-                      #####deal with condition #######                    
+        temp = 0
+        while (temp < len(currPath)):
+            currTrans = currPath[temp]
+            for vtran, vdict in self.tranVarDict.iteritems():
+                if vtran == currTrans:
+                    if vdict['condVuse'] != []:
+                        useEachCond = []
+                        tempvdict = []
+                        #####deal with condition #######
                         tempvdict.extend(vdict['condVuse'])
-                        while tempvdict!=[]:
-                            tempVar=tempvdict.pop(0)
-                            if tempVar=='False' or tempVar=='True':
+                        while tempvdict != []:
+                            tempVar = tempvdict.pop(0)
+                            if tempVar == 'False' or tempVar == 'True':
                                 pass
                             else:
                                 useEachCond.append(tempVar)
-                        removeRepeat=set(useEachCond)                 
+                        removeRepeat = set(useEachCond)
                         for tempVar in removeRepeat:
                             if tempVar in vdict['eventVdef']:
                                 useInCond.append(tempVar)
                             else:
                                 if tempVar not in useInCond:
                                     useInCond.append(tempVar)
-                    if vdict['actionVuse']!=[]:
+                    if vdict['actionVuse'] != []:
                         #####deal with action variables#######
-                        useEachAct=[]
-                        tempvdict=[]                                   
+                        useEachAct = []
+                        tempvdict = []
                         tempvdict.extend(vdict['actionVuse'])
-                        while tempvdict!=[]:
-                            tempVar=tempvdict.pop(0)
-                            if tempVar=='False' or tempVar=='True':
+                        while tempvdict != []:
+                            tempVar = tempvdict.pop(0)
+                            if tempVar == 'False' or tempVar == 'True':
                                 pass
                             else:
                                 useEachAct.append(tempVar)
-                        removeRepeat=set(useEachAct)
+                        removeRepeat = set(useEachAct)
                         for tempVar in removeRepeat:
                             if tempVar in vdict['eventVdef']:
                                 useInAction.append(tempVar)
                             else:
                                 if tempVar not in useInAction:
-                                    useInAction.append(tempVar)        
-                            
+                                    useInAction.append(tempVar)
+
                     break
-            temp=temp+1
-        print '  ',  len(useInCond),
-        print '  ',  len(useInAction),    
-
-
+            temp = temp + 1
+        print
+        '  ', len(useInCond),
+        print
+        '  ', len(useInAction),
 
     def VarNumDefUseOnPath(self, currPath):
         """
         compute the number of variables on a path including defined and used
         """
 
-        defEventUseCond=[]
-        defActUseCond=[]
+        defEventUseCond = []
+        defActUseCond = []
 
-        temp=0
-        while (temp<len(currPath)):
-            currTrans=currPath[temp]
-            for vtran,vdict in self.tranVarDict.iteritems():
-                if vtran==currTrans:
-                    tempvdict=[]
+        temp = 0
+        while (temp < len(currPath)):
+            currTrans = currPath[temp]
+            for vtran, vdict in self.tranVarDict.iteritems():
+                if vtran == currTrans:
+                    tempvdict = []
                     tempvdict.extend(vdict['eventVdef'])
-                    while tempvdict!=[]:
-                        tempVar=tempvdict.pop(0)
+                    while tempvdict != []:
+                        tempVar = tempvdict.pop(0)
                         if tempVar in vdict['condVuse']:
                             defEventUseCond.append(tempVar)
                         else:
-                            nexti=temp+1
-                            if (nexti<len(currPath)):
-                                nextTrans=currPath[nexti]                                
-                                for vvtran,vvdict in self.tranVarDict.iteritems():
-                                    if vvtran==nextTrans:
+                            nexti = temp + 1
+                            if (nexti < len(currPath)):
+                                nextTrans = currPath[nexti]
+                                for vvtran, vvdict in self.tranVarDict.iteritems():
+                                    if vvtran == nextTrans:
                                         if tempVar not in vvdict['eventVdef'] and tempVar in vvdict['condVuse']:
-                                            defEventUseCond.append(tempVar)                                            
-                                        break                               
-                    
-                      #####deal with action variables#######
-                    tempvdict=[]
-                    tempvdict.extend(vdict['actionVdef'])                   
-                    while tempvdict!=[]:
-                        tempVar=tempvdict.pop(0)
-                        if tempVar=='False' or tempVar=='True':
+                                            defEventUseCond.append(tempVar)
+                                        break
+
+                                        #####deal with action variables#######
+                    tempvdict = []
+                    tempvdict.extend(vdict['actionVdef'])
+                    while tempvdict != []:
+                        tempVar = tempvdict.pop(0)
+                        if tempVar == 'False' or tempVar == 'True':
                             pass
                         else:
-                            nexti=temp+1
-                            while (nexti<len(currPath)):
-                                nextTrans=currPath[nexti]
-                                useFlag=0
-                                for vvtran,vvdict in self.tranVarDict.iteritems():
-                                    if vvtran==nextTrans:
+                            nexti = temp + 1
+                            while (nexti < len(currPath)):
+                                nextTrans = currPath[nexti]
+                                useFlag = 0
+                                for vvtran, vvdict in self.tranVarDict.iteritems():
+                                    if vvtran == nextTrans:
                                         if tempVar in vvdict['condVuse']:
                                             defActUseCond.append(tempVar)
-                                            useFlag=1
+                                            useFlag = 1
                                         break
-                                if (useFlag==1): break
-                                nexti=nexti+1
+                                if (useFlag == 1): break
+                                nexti = nexti + 1
                     break
-            temp=temp+1
-        print '  ', len(defEventUseCond),
-        print '  ', len(set(defActUseCond)),
-
+            temp = temp + 1
+        print
+        '  ', len(defEventUseCond),
+        print
+        '  ', len(set(defActUseCond)),
 
     def eventNumOnPath(self, currPath):
         """ compute the number of event on the currPath path
         """
-        eventNum=0
-        eventWithVar=0
+        eventNum = 0
+        eventWithVar = 0
 
-        temp=0
-        while (temp<len(currPath)):
-            currTrans=currPath[temp]
-            tempFlag=0
-            for vtran,vdict in self.tranVarDict.iteritems():                
-                if vtran==currTrans:
-                    for ftran,fdict in self.tranFuncDict.iteritems():
-                        if ftran==currTrans:
-                            tempFlag=1
-                            if (fdict['eventFunc']!=[''] and fdict['eventFunc']!=[]):                                
-                         #       print 'event func', fdict['eventFunc']
-                                eventNum=eventNum+1
-                                if vdict['eventVdef']!=[]:
-                                    eventWithVar=eventWithVar+1                           
-                            break                                   
-                    if (tempFlag==1): break    
-            temp=temp+1  
-        print ' ', eventNum,
-        print '', eventWithVar
-       
-        
-
+        temp = 0
+        while (temp < len(currPath)):
+            currTrans = currPath[temp]
+            tempFlag = 0
+            for vtran, vdict in self.tranVarDict.iteritems():
+                if vtran == currTrans:
+                    for ftran, fdict in self.tranFuncDict.iteritems():
+                        if ftran == currTrans:
+                            tempFlag = 1
+                            if (fdict['eventFunc'] != [''] and fdict['eventFunc'] != []):
+                                #       print 'event func', fdict['eventFunc']
+                                eventNum = eventNum + 1
+                                if vdict['eventVdef'] != []:
+                                    eventWithVar = eventWithVar + 1
+                            break
+                    if (tempFlag == 1): break
+            temp = temp + 1
+        print
+        ' ', eventNum,
+        print
+        '', eventWithVar
 
     def duAnalysis(self):
         """
@@ -1546,129 +1563,123 @@ class EFSM(object):
         """
 
         for item in self.transitionList:
-            coveredTrans=item.name
-            print ' transition', coveredTrans
-            transPathList=self.findPathforGivenTrans(coveredTrans)
-            i=0
-            while (i<len(transPathList)):
-                print 'NO. path', i,
-                currPath=transPathList[i]
-                print '    currPath', currPath
-              #  print ' lengthOfPath', len(currPath),
-                print '  ', len(currPath),
+            coveredTrans = item.name
+            print
+            ' transition', coveredTrans
+            transPathList = self.findPathforGivenTrans(coveredTrans)
+            i = 0
+            while (i < len(transPathList)):
+                print
+                'NO. path', i,
+                currPath = transPathList[i]
+                print
+                '    currPath', currPath
+                #  print ' lengthOfPath', len(currPath),
+                print
+                '  ', len(currPath),
                 self.VarNumDefOnPath(currPath)
                 self.VarNumUseOnPath(currPath)
                 self.VarNumDefUseOnPath(currPath)
-                self.condNumOnPath(currPath)                
-                i=i+1
+                self.condNumOnPath(currPath)
+                i = i + 1
 
-                
     def DUAnalysisForPath(self, currPath):
-        
-        print 'currPath',currPath
-        print '  ', len(currPath),
+
+        print
+        'currPath', currPath
+        print
+        '  ', len(currPath),
         self.VarNumDefOnPath(currPath)
         self.VarNumUseOnPath(currPath)
         self.VarNumDefUseOnPath(currPath)
         self.condNumOnPath(currPath)
         self.eventNumOnPath(currPath)
-        
-
 
     def testGenForTrans(self, givenTrans):
         """ test data generation for a given path
         """
-        
-       
-        populationSize=20
-        maxGeneration=5000
 
-        
- #
-        transPathList=self.findPathforGivenTrans(givenTrans)
-   
-        i=0
-        while (i<len(transPathList)):
-            currPath=transPathList[i]
+        populationSize = 20
+        maxGeneration = 5000
+
+        #
+        transPathList = self.findPathforGivenTrans(givenTrans)
+
+        i = 0
+        while (i < len(transPathList)):
+            currPath = transPathList[i]
             self.DUAnalysisForPath(currPath)
-     #       self.testGenforPath(currPath,populationSize,maxGeneration)
-            i=i+1
- 
-                
+            #       self.testGenforPath(currPath,populationSize,maxGeneration)
+            i = i + 1
 
-################# test generation for each transition########
+    ################# test generation for each transition########
 
-#    def testGen(self):
-#        """ generate test data for each transition in a EFSM
-#        """ 
-#
-#        for i in range(1):
-#            
-#            for item in self.transitionList:
-#                if item.name in self.startTransitionList:
-#                    pass
-#                else:
-#                    coveredTrans=item.name
-#                    print ' Transition', coveredTrans
-#                    self.testGenForTrans(coveredTrans)
+    #    def testGen(self):
+    #        """ generate test data for each transition in a EFSM
+    #        """
+    #
+    #        for i in range(1):
+    #
+    #            for item in self.transitionList:
+    #                if item.name in self.startTransitionList:
+    #                    pass
+    #                else:
+    #                    coveredTrans=item.name
+    #                    print ' Transition', coveredTrans
+    #                    self.testGenForTrans(coveredTrans)
 
-
-
-
-
-
-################# test generation for path that length <= 100 ########
+    ################# test generation for path that length <= 100 ########
 
     def testGen(self):
 
-        #pathList=self.findPathWithRepeat()
-        pathList = [['T1', 'T3', 'T6', 'T7', 'T9', 'T10', 'T5', 'T11', 'T19', 'T7', 'T9', 'T10', 'T4'],\
-         ['T1', 'T3', 'T5', 'T11', 'T19', 'T7', 'T4']]
+        # pathList=self.findPathWithRepeat()
+        pathList = [['T1', 'T3', 'T6', 'T7', 'T9', 'T10', 'T5', 'T11', 'T19', 'T7', 'T9', 'T10', 'T4'], \
+                    ['T1', 'T3', 'T5', 'T11', 'T19', 'T7', 'T4']]
 
         for path in pathList:
             startTime = datetime.now()
             print
-            print "测试路径：",
-            print path, len(path)
+            print
+            "测试路径：",
+            print
+            path, len(path)
             self.testGenforPath(path)
             endTime = datetime.now()
-            print 'endTime - startTime:\t', endTime - startTime
-
-
-
-
-
+            print
+            'endTime - startTime:\t', endTime - startTime
 
 
 #######################################################
 def efsmFromFile(inputfile):
-        from kvparser import Parser, ListParser
-        SM = EFSM(inputfile)
-        f=open(inputfile)
-        s=f.read()
-        SMBlockList = ListParser().parse(s)
-        for block in SMBlockList:
-           if block[0] == 'State':
-               for (key, value) in block[1]:
-                   if key=='name':
-                       SM.addState(State(value))
-           elif block[0] == 'Transition':
-               (name, srcName, tgtName, event, cond, action) = [item[1] for item in block[1]]
-               if srcName != '':      #old code is !=''
-                   src=SM.state(srcName)
-               else:
-                   print 'transition src can not be null'
-               if tgtName != '':
-                   tgt=SM.state(tgtName)
-               else:
-                   print 'transition tgt can not be null'  #         
-               SM.addTransition(Transition(name, src, tgt, event, cond, action))
-           else:
-               pass
-  
-    ##   format of transitionList is <Transition T1 <state START> <state S1? Card(pin, sb, cb)  write("Enter PIN"); attempts = 0;>
-        f.close()
-     
-#
+    from kvparser import Parser, ListParser
+    SM = EFSM(inputfile)
+    f = open(inputfile)
+    s = f.read()
+    SMBlockList = ListParser().parse(s)
+    for block in SMBlockList:
+        if block[0] == 'State':
+            for (key, value) in block[1]:
+                if key == 'name':
+                    SM.addState(State(value))
+        elif block[0] == 'Transition':
+            (name, srcName, tgtName, event, cond, action) = [item[1] for item in block[1]]
+            if srcName != '':  # old code is !=''
+                src = SM.state(srcName)
+            else:
+                print
+                'transition src can not be null'
+            if tgtName != '':
+                tgt = SM.state(tgtName)
+            else:
+                print
+                'transition tgt can not be null'  #
+            SM.addTransition(Transition(name, src, tgt, event, cond, action))
+        else:
+            pass
 
-        return SM
+    ##   format of transitionList is <Transition T1 <state START> <state S1? Card(pin, sb, cb)  write("Enter PIN"); attempts = 0;>
+    f.close()
+
+    #
+
+    return SM

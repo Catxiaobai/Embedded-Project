@@ -1,105 +1,81 @@
 <template>
-  <div id="complexSceneModel">
+  <div id="XMI">
     <el-card>
       <div id="action" style="display: flex; margin-bottom: 20px">
         <el-upload :action="doUpload" :on-success="handleImport" :show-file-list="false">
           <a style="color: #38b2ff; margin-left: 500px"> XMI文件导入</a>
         </el-upload>
-        <!--        <div id="stateAction" style="margin-left: 50%">-->
-        <!--          <el-button type="primary" @click="modeling">模型构建</el-button>-->
-        <!--        </div>-->
+        <el-button type="primary" style="margin-left: 30%; margin-top: -10px" @click="save">save</el-button>
       </div>
-      <!--        <el-button type="primary" @click="reduction" v-show="buttonShow.reduction">模型还原</el-button>-->
-      <div v-show="diagram.uml" style="background-color: whitesmoke; border: solid 1px black; width: 100%; height: 520px">
-        <!--        <span class="demonstration">请选择需要导入的文件</span>-->
-        <el-image :src="umlSrc" style="width: 100%; height: 100%" fit="contain" :preview-src-list="umlSrcList">
-          <div slot="error" class="image-slot">
-            <i class="el-icon-picture-outline"></i>
-          </div>
-        </el-image>
-      </div>
-      <div
-        id="myDiagramDiv"
-        v-show="diagram.state"
-        style="background-color: whitesmoke; border: solid 1px black; width: 100%; height: 520px"
-        ref="generatePicture"
-      ></div>
+      <div id="myDiagramDiv" style="background-color: whitesmoke; border: solid 1px black; width: 100%; height: 560px" ref="generatePicture"></div>
     </el-card>
     <div id="addNode">
-      <el-dialog :close-on-click-modal="false" title="ADD" :visible.sync="visible.addNodeDialog" center @close="resetForm('addForm')" width="55%">
-        <el-form :model="addForm" :rules="rules" ref="addForm" style="display: flex">
+      <el-dialog :close-on-click-modal="false" title="ADD" :visible.sync="visible.addNodeDialog" center width="55%">
+        <el-form :model="addNodeForm" :rules="rules" ref="addNodeForm" style="display: flex">
           <el-card id="nodeCard">
-            State
+            newState
             <el-form-item label="State name" label-width="120px" prop="node_name">
-              <el-input v-model="addForm.node_name" clearable placeholder="please enter state name"></el-input>
+              <el-input v-model="addNodeForm.node_name" clearable placeholder="please enter state name"></el-input>
             </el-form-item>
-            <el-form-item label="State label" label-width="120px" prop="node_label_show">
-              <el-input v-model="addForm.node_label_show" clearable placeholder="please enter state label" disabled></el-input>
+            <el-form-item label="State label" label-width="120px" prop="node_label">
+              <el-input v-model="addNodeForm.node_label" clearable placeholder="please enter state label"></el-input>
             </el-form-item>
           </el-card>
           <el-card id="linkCard" style="margin-left: 10px">
             link
             <el-form-item label="link_name" label-width="120px" prop="link_name">
-              <el-input v-model="addForm.link_name_show" clearable placeholder="please enter link name" disabled></el-input>
+              <el-input v-model="addNodeForm.link_name" clearable placeholder="please enter link name"></el-input>
             </el-form-item>
             <el-form-item label="source" label-width="120px" prop="source">
-              <el-input v-model="addForm.source" clearable placeholder="please enter source" disabled></el-input>
+              <el-input v-model="addNodeForm.source" clearable placeholder="please enter source" disabled></el-input>
             </el-form-item>
             <el-form-item label="target" label-width="120px" prop="target">
-              <el-input v-model="addForm.target" clearable placeholder="please enter target" disabled></el-input>
+              <el-input v-model="addNodeForm.target" clearable placeholder="please enter target"></el-input>
             </el-form-item>
             <el-form-item label="action" label-width="120px" prop="action">
-              <el-input v-model="addForm.action" clearable placeholder="please enter action"></el-input>
+              <el-input v-model="addNodeForm.action" clearable placeholder="please enter action"></el-input>
             </el-form-item>
             <el-form-item label="event" label-width="120px" prop="event">
-              <el-input v-model="addForm.event" clearable placeholder="please enter event"></el-input>
+              <el-input v-model="addNodeForm.event" clearable placeholder="please enter event"></el-input>
             </el-form-item>
             <el-form-item label="condition" label-width="120px" prop="condition">
-              <el-input v-model="addForm.condition" clearable placeholder="please enter condition"></el-input>
+              <el-input v-model="addNodeForm.condition" clearable placeholder="please enter condition"></el-input>
             </el-form-item>
           </el-card>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="visible.addNodeDialog = false">No</el-button>
-          <el-button type="primary" @click="handleAddNodeCommit('addForm')">Yes</el-button>
+          <el-button type="primary" @click="handleAddNodeCommit('addNodeForm')">Yes</el-button>
         </div>
       </el-dialog>
     </div>
     <div id="addLink">
-      <el-dialog
-        :close-on-click-modal="false"
-        title="添加边"
-        :visible.sync="visible.addLinkDialog"
-        center
-        @close="resetForm('addForm2')"
-        width="30%"
-        :show-close="false"
-      >
-        <el-form :model="addForm2" :rules="rules" ref="addForm2" style="display: flex">
+      <el-dialog :close-on-click-modal="false" title="添加边" :visible.sync="visible.addLinkDialog" center width="30%" :show-close="false">
+        <el-form :model="addLinkForm" :rules="rules" ref="addLinkForm" style="display: flex">
           <el-card style="margin-left: 10px">
             <el-form-item label="link_name" label-width="120px" prop="link_name">
-              <el-input v-model="addForm2.link_name_show" clearable placeholder="请输入边的name" disabled></el-input>
+              <el-input v-model="addLinkForm.link_name" clearable placeholder="请输入边的name"></el-input>
             </el-form-item>
             <el-form-item label="source" label-width="120px" prop="source">
-              <el-input v-model="addForm2.source" clearable placeholder="请输入source" disabled></el-input>
+              <el-input v-model="addLinkForm.source" clearable placeholder="请输入source" disabled></el-input>
             </el-form-item>
             <el-form-item label="target" label-width="120px" prop="target">
-              <el-input v-model="addForm2.target" clearable placeholder="请输入target" disabled></el-input>
+              <el-input v-model="addLinkForm.target" clearable placeholder="请输入target" disabled></el-input>
             </el-form-item>
             <el-form-item label="action" label-width="120px" prop="action">
-              <el-input v-model="addForm2.action" clearable placeholder="请输入action"></el-input>
+              <el-input v-model="addLinkForm.action" clearable placeholder="请输入action"></el-input>
             </el-form-item>
             <el-form-item label="event" label-width="120px" prop="event">
-              <el-input v-model="addForm2.event" clearable placeholder="请输入event"></el-input>
+              <el-input v-model="addLinkForm.event" clearable placeholder="请输入event"></el-input>
             </el-form-item>
             <el-form-item label="condition" label-width="120px" prop="condition">
-              <el-input v-model="addForm2.condition" clearable placeholder="请输入condition"></el-input>
+              <el-input v-model="addLinkForm.condition" clearable placeholder="请输入condition"></el-input>
             </el-form-item>
           </el-card>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="handleAddLinkCancel">取 消</el-button>
-          <el-button type="primary" @click="handleAddLinkCommit('addForm2')">确 定</el-button>
+          <el-button type="primary" @click="handleAddLinkCommit('addLinkForm')">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -108,165 +84,42 @@
 
 <script>
 import go from 'gojs'
-import html2canvas from 'html2canvas'
-const MAKE = go.GraphObject.make
+
 export default {
-  name: 'ModelEdit.veu',
-  inject: ['reload'],
   data() {
     return {
       doUpload: this.Global_Api + '/api/upload_file',
-      nodeDataArray: [],
-      linkDataArray: [],
-      addForm: {
-        node_name: '',
-        node_label: '',
-        node_label_show: '',
-        link_name: '',
-        link_name_show: '',
-        source: '',
-        target: '',
-        event: '',
-        condition: '',
-        action: '',
-      },
-      addForm2: {
-        link_name: '',
-        link_name_show: '',
-        source: '',
-        target: '',
-        event: '',
-        condition: '',
-        action: '',
-      },
-      deleteTip: '',
-      rules: {
-        node_name: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        node_name_show: [{ required: true, message: '不能为空', trigger: 'blur' }],
-      },
-      buttonShow: {
-        modeling: false,
-        reduction: false,
-        import: false,
-        help: false,
-      },
-      uml: {
-        path: '',
-        name: '',
-      },
-      text_data: {
-        // class: 'go.GraphLinksModel',
-        nodeKeyProperty: 'id',
-        linkKeyProperty: 'id',
+      itemInfo: '',
+      modelData: {
+        nodeKeyProperty: 'text',
         nodeDataArray: [],
         linkDataArray: [],
       },
-      msg: 'result',
-      test: 'tets',
-      options: [
-        {
-          value: '外部交联环境',
-          label: '外部交联环境',
-          disabled: true,
-        },
-        {
-          value: '功能处理',
-          label: '功能处理',
-          disabled: true,
-        },
-        {
-          value: '功能层次',
-          label: '功能层次',
-          disabled: true,
-        },
-        {
-          value: '状态迁移',
-          label: '状态迁移',
-        },
-      ],
-      value: '',
-      itemInfo: '',
+      addNodeForm: {},
+      addLinkForm: {},
       visible: {
         addNodeDialog: false,
         addLinkDialog: false,
-        deleteTipDialog: false,
-        safeDeleteDialog: false,
       },
-      diagram: {
-        state: true,
-        activity: false,
-        timing: false,
-        useCase: false,
-        class: false,
-        uml: false,
+      rules: {
+        node_name: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        node_label: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        link_name: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        source: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        target: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        action: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        event: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        condition: [{ required: true, message: '不能为空', trigger: 'blur' }],
       },
-      extrafile: '',
-      umlSrc: '',
-      umlSrcList: [],
     }
   },
-  mounted() {
-    this.init()
-  },
   methods: {
-    save() {
-      // document.getElementById('mySavedModel').value = this.myDiagram.model.toJson()
-      console.log(this.myDiagram.model.toJson())
-      this.postData(this.myDiagram.model.toJson())
-      this.text_data = this.myDiagram.model.toJson()
-      this.myDiagram.isModified = false
-    },
-    load() {
-      var model = go.Model.fromJson(this.text_data)
-
-      model.makeUniqueKeyFunction = function (model, data) {
-        var i = model.nodeDataArray.length * 2 + 1
-        while (model.findNodeDataForKey(i) !== null) i += 2
-        data.id = i // assume Model.nodeKeyProperty === "id"
-        return i
-      }
-      // link data id's are even numbers
-      model.makeUniqueLinkKeyFunction = function (model, data) {
-        var i = model.linkDataArray.length * 2 + 2
-        while (model.findLinkDataForKey(i) !== null) i += 2
-        data.id = i // assume GraphLinksModel.linkKeyProperty === "id"
-        return i
-      }
-      this.myDiagram.model = model
-    },
-    getData() {
-      this.$http
-        .post(this.Global_Api + '/api/deliver_model_data', { type: 'complex' })
-        .then((response) => {
-          console.log(response.data)
-          this.linkDataArray = response.data.data_edge
-          this.nodeDataArray = response.data.data_node
-          this.text_data.nodeDataArray = this.nodeDataArray
-          this.text_data.linkDataArray = this.linkDataArray
-          // console.log(this.text_data)
-          this.load()
-          // let self = this
-          // setTimeout(function () {
-          //   self.clickGeneratePicture()
-          // }, 1000)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-    },
     init() {
-      var $ = go.GraphObject.make
-      var _this = this
-      this.myDiagram = $(go.Diagram, 'myDiagramDiv', {
-        // have mouse wheel events zoom in and out instead of scroll up and down
+      const $ = go.GraphObject.make
+      const _this = this
+      _this.myDiagram = $(go.Diagram, 'myDiagramDiv', {
         'toolManager.mouseWheelBehavior': go.ToolManager.WheelZoom,
-        // support double-click in background creating a new node
-        // 'clickCreatingTool.archetypeNodeData': { text: 'new node' },
-        // InitialLayoutCompleted: function(e) {
-
-        // enable undo & redo
         'undoManager.isEnabled': true,
-
         layout: $(go.ForceDirectedLayout, {
           defaultSpringLength: 40,
           defaultElectricalCharge: 180,
@@ -274,39 +127,11 @@ export default {
           infinityDistance: 210,
         }),
       })
-
-      this.myDiagram.nodeTemplate = $(
+      // _this.myDiagram.toolManager.mouseMoveTools.insertAt(0, new LinkLabelDraggingTool())
+      _this.myDiagram.nodeTemplate = $(
         go.Node,
         'Auto',
-        {
-          cursor: 'pointer',
-          // define a tooltip for each node that displays the color as text
-          toolTip: $('ToolTip', $(go.TextBlock, { margin: 4 }, new go.Binding('text', 'name'))), // end of Adornment
-        },
-        {
-          // click: function(e, obj) {
-          //   console.log('e:' + e + '---obj:' + JSON.stringify(obj.part.data))
-          //   console.log('Clicked on ' + obj.part.data.key)
-          // }
-          doubleClick: function (e, obj) {
-            console.log('obj:' + JSON.stringify(obj.part.data))
-            if (obj.part.data.color === 'red') {
-              var rr = confirm('是否补全所选点' + JSON.stringify(obj.part.data.text))
-              var aim_node = e.diagram.findNodeForKey(obj.part.data.id).data
-              if (rr === true) {
-                var data = { node: aim_node }
-                postData(data)
-                e.diagram.model.setDataProperty(aim_node, 'color', 'rgb(0,191,255)')
-              } else {
-                console.log(aim_node)
-                e.diagram.model.removeNodeData(aim_node)
-              }
-            }
-          },
-        },
         new go.Binding('location', 'loc', go.Point.parse).makeTwoWay(go.Point.stringify),
-        // define the node's outer shape, which will surround the TextBlock
-
         // 图标的style
         $(go.Shape, 'Circle', {
           desiredSize: new go.Size(67, 67),
@@ -329,9 +154,14 @@ export default {
             editable: true, // editing the text automatically updates the model data
           },
           new go.Binding('text', 'text').makeTwoWay()
-        )
+        ),
+        // 悬浮框
+        {
+          cursor: 'pointer',
+          toolTip: $('ToolTip', $(go.TextBlock, { margin: 4 }, new go.Binding('text', 'label'))), // end of Adornment
+        }
       )
-      this.myDiagram.linkTemplate = $(
+      _this.myDiagram.linkTemplate = $(
         go.Link, // the whole link panel
         {
           curve: go.Link.Bezier,
@@ -342,34 +172,11 @@ export default {
         },
         {
           cursor: 'pointer',
-          // define a tooltip for each node that displays the color as text
           toolTip: $(
             'ToolTip',
             { 'Border.fill': 'whitesmoke', 'Border.stroke': 'black' },
             $(go.TextBlock, { margin: 4 }, new go.Binding('text', '', tooltipTextConverter))
           ),
-        },
-        {
-          // click: function(e, obj) {
-          //   console.log('e:' + e + '---obj:' + JSON.stringify(obj.part.data))
-          //   console.log('Clicked on ' + obj.part.data.key)
-          // }
-          doubleClick: function (e, obj) {
-            console.log(obj.part.data.color)
-            console.log('obj:' + JSON.stringify(obj.part.data))
-            if (obj.part.data.color === 'red') {
-              var rr = confirm('是否补全所选边' + JSON.stringify(obj.part.data.text))
-              var aim_link = e.diagram.findLinkForKey(obj.part.data.id).data
-              console.log(aim_link)
-              if (rr === true) {
-                var data = { edge: aim_link }
-                postData(data)
-                e.diagram.model.setDataProperty(aim_link, 'color', 'black')
-              } else {
-                e.diagram.model.removeLinkData(aim_link)
-              }
-            }
-          },
         },
         new go.Binding('points').makeTwoWay(),
         new go.Binding('curviness', 'curviness'),
@@ -384,6 +191,7 @@ export default {
         $(
           go.Panel,
           'Auto',
+          { cursor: 'move' }, // visual hint that the user can do something with this link label
           $(
             go.Shape, // the label background, which becomes transparent around the edges
             {
@@ -399,14 +207,26 @@ export default {
               font: '10pt helvetica, arial, sans-serif',
               stroke: 'black',
               margin: 4,
-              editable: true, // editing the text automatically updates the model data
+              editable: false, // editing the text automatically updates the model data
             },
             new go.Binding('text', 'text').makeTwoWay()
-          )
+          ),
+          new go.Binding('segmentOffset', 'segmentOffset', go.Point.parse).makeTwoWay(go.Point.stringify)
         )
       )
-      // unlike the normal selection Adornment, this one includes a Button
-      this.myDiagram.nodeTemplate.selectionAdornmentTemplate = $(
+      // 鼠标悬停提示窗
+      function tooltipTextConverter(info) {
+        let str = ''
+        str += 'name: ' + info.text + '\n'
+        str += 'source: ' + info.from + '\n'
+        str += 'target: ' + info.to + '\n'
+        str += 'event: ' + info.event + '\n'
+        str += 'condition: ' + info.condition + '\n'
+        str += 'action: ' + info.action + '\n'
+        return str
+      }
+      _this.myDiagram.toolManager.hoverDelay = 10
+      _this.myDiagram.nodeTemplate.selectionAdornmentTemplate = $(
         go.Adornment,
         'Spot',
         $(
@@ -426,199 +246,39 @@ export default {
           $(go.Shape, 'PlusLine', { desiredSize: new go.Size(6, 6) })
         ) // end button
       ) // end Adornment
-      this.myDiagram.linkTemplate
-
-      // and adds a link to that new node
-      function addNodeAndLink(e, obj) {
-        var adorn = obj.part
-        e.handled = true
-        var diagram = adorn.diagram
-        diagram.startTransaction('Add State')
-        // get the node data for which the user clicked the button
-        var fromNode = adorn.adornedPart
-        var fromData = fromNode.data
-        // create a new "State" data object, positioned off to the right of the adorned Node
-        var toData = { text: 'new' }
-        var p = fromNode.location.copy()
-        p.x += 100
-        toData.loc = go.Point.stringify(p) // the "loc" property is a string, not a Point object
-        // add the new node data to the model
-        var model = diagram.model
-        model.addNodeData(toData)
-
-        // create a link data from the old node data to the new node data
-        var linkdata = {
-          from: model.getKeyForNodeData(fromData), // or just: fromData.id
-          to: model.getKeyForNodeData(toData),
-          text: 'transition',
-        }
-        // and add the link data to the model
-        model.addLinkData(linkdata)
-
-        // select the new Node
-        var newnode = diagram.findNodeForData(toData)
-        diagram.select(newnode)
-
-        diagram.commitTransaction('Add State')
-
-        // if the new node is off-screen, scroll the diagram to show the new node
-        diagram.scrollToRect(newnode.actualBounds)
-      }
-
-      // 鼠标悬停提示窗
-      function tooltipTextConverter(person) {
-        var str = ''
-        // console.log(person)
-        // str += 'id: ' + person.id + '\n'
-        str += 'name: ' + person.text + '\n'
-        str += 'source: ' + person.from + '\n'
-        str += 'target: ' + person.to + '\n'
-        str += 'event: ' + person.event + '\n'
-        str += 'condition: ' + person.cond + '\n'
-        str += 'action: ' + person.action + '\n'
-        return str
-      }
-      this.myDiagram.toolManager.hoverDelay = 10
-
-      //添加监听线重新连接事件
-      this.myDiagram.addDiagramListener('LinkRelinked', function (e) {
-        console.log('线重连')
-        // var data = { test: 'testjson' }
-        // postDelData(data)
-      })
-      //添加监听文本编辑事件
-      this.myDiagram.addDiagramListener('TextEdited', function (e) {
-        console.log('文本编辑' + e)
-      })
-      // 监听删除事件
-      this.myDiagram.addDiagramListener('SelectionDeleted', function (e) {
-        console.log('删除')
-        e.subject.each(function (n) {
-          console.log('delete:' + JSON.stringify(n.data))
-          //
-          console.log('total:' + e.diagram.model.toJson())
-          // 传递删除信息和剩下的信息
-          var data = { total: e.diagram.model.toJson(), delete: JSON.stringify(n.data) }
-          postDelData(data)
-        })
-      })
       // 监听添加线事件
-      this.myDiagram.addDiagramListener('LinkDrawn', function (e) {
-        // console.log('add:' + JSON.stringify(e.subject.data))
-        // console.log('total:' + e.diagram.model.toJson())
-        // // 传递添加的信息和剩下的信息
-        // var data = { total: e.diagram.model.toJson(), add: JSON.stringify(e.subject.data) }
-        // postAddData(data)
+      _this.myDiagram.addDiagramListener('LinkDrawn', function (e) {
         _this.addNewLink(e)
       })
-      // 向后端传递添加信息
-      function postAddData(data) {
-        var httpRequest = new XMLHttpRequest() //第一步：创建需要的对象
-        httpRequest.open('POST', _this.Global_Api + '/api/verify_add', true) //第二步：打开连接
-        httpRequest.setRequestHeader('Content-type', 'application/json') //设置请求头 注：post方式必须设置请求头（在建立连接后设置请求头）
-        httpRequest.send(JSON.stringify(data)) //发送请求 将情头体写在send中
-        /**
-         * 获取数据后的处理程序
-         */
-        httpRequest.onreadystatechange = function () {
-          //请求后的回调接口，可将请求成功后要执行的程序写在其中
-          if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-            //验证请求是否发送成功
-            var json = JSON.parse(httpRequest.responseText) //获取到服务端返回的数据
-            console.log(json)
-
-            verifyResult(json['result'])
-          }
-        }
-      }
-      // todo 删除一个节点会进行多次判断
-      // 向后端传递添删除信息
-      function postDelData(data) {
-        var httpRequest = new XMLHttpRequest() //第一步：创建需要的对象
-        httpRequest.open('POST', _this.Global_Api + '/api/verify_del', true) //第二步：打开连接
-        httpRequest.setRequestHeader('Content-type', 'application/json') //设置请求头 注：post方式必须设置请求头（在建立连接后设置请求头）
-        httpRequest.send(JSON.stringify(data)) //发送请求 将情头体写在send中
-        /**
-         * 获取数据后的处理程序
-         */
-        httpRequest.onreadystatechange = function () {
-          //请求后的回调接口，可将请求成功后要执行的程序写在其中
-          if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-            //验证请求是否发送成功
-            var json = JSON.parse(httpRequest.responseText) //获取到服务端返回的数据
-            console.log(json)
-            _this.verifyResult(json['result'])
-            // verifyResult(json['result'])
-          }
-        }
-      }
-      // 向后端传递变化信息
-      function postData(data) {
-        var httpRequest = new XMLHttpRequest() //第一步：创建需要的对象
-        httpRequest.open('POST', _this.Global_Api + '/api/save_node_and_link', true) //第二步：打开连接
-        httpRequest.setRequestHeader('Content-type', 'application/json') //设置请求头 注：post方式必须设置请求头（在建立连接后设置请求头）
-        httpRequest.send(JSON.stringify(data)) //发送请求 将情头体写在send中
-        /**
-         * 获取数据后的处理程序
-         */
-        httpRequest.onreadystatechange = function () {
-          //请求后的回调接口，可将请求成功后要执行的程序写在其中
-          if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-            //验证请求是否发送成功
-            var json = JSON.parse(httpRequest.responseText) //获取到服务端返回的数据
-            console.log(json)
-          }
-        }
-      }
-      function verifyResult(res) {
-        var x
-        var r = confirm(res)
-        if (r == true) {
-          x = '你按下了"确定"按钮!'
+    },
+    load() {
+      this.myDiagram.model = go.Model.fromJson(this.modelData)
+    },
+    save() {
+      console.log(this.myDiagram.model.toJson())
+      this.$http.post(this.Global_Api + '/api/save_model_to_xmi_model', this.myDiagram.model.toJson()).then((response) => {
+        if (response.data.error_code === 0) {
+          console.log(response)
+          this.$message.success('保存成功')
         } else {
-          x = '你按下了"取消"按钮!'
+          this.$message.error(response.data.error_message)
         }
-        // document.getElementById('demo').innerHTML = x
-      }
-    },
-    reduction() {
-      this.$http
-        .get(this.Global_Api + '/api/recovery_origin_model')
-        .then((response) => {
-          console.log(response.data)
-          this.reload()
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-    },
-    saveModel() {
-      this.$http
-        .get(this.Global_Api + '/api/save_model2')
-        .then((response) => {
-          console.log(response.data)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      })
     },
     addNewNode(e, obj) {
       console.log(e, obj)
-      var adorn = obj.part
-      var fromData = adorn.adornedPart.data
+      let adorn = obj.part
+      let fromData = adorn.adornedPart.data
       console.log(fromData)
+      console.log(this.modelData)
       this.visible.addNodeDialog = true
-      this.addForm.node_label_show = 'S' + this.addForm.node_label.toString()
-      this.addForm.link_name_show = 't' + this.addForm.link_name.toString()
-      this.addForm.target = this.addForm.node_label
-      this.addForm.source = fromData.id
+      this.addNodeForm.source = fromData.text
     },
     addNewLink(e) {
       console.log(e.subject.data)
       this.visible.addLinkDialog = true
-      this.addForm2.link_name_show = 't' + this.addForm2.link_name.toString()
-      this.addForm2.target = e.subject.data.to
-      this.addForm2.source = e.subject.data.from
+      this.addLinkForm.target = e.subject.data.to
+      this.addLinkForm.source = e.subject.data.from
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()
@@ -626,8 +286,21 @@ export default {
     handleAddNodeCommit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('添加成功')
+          this.$message.success('添加成功')
           this.visible.addNodeDialog = false
+          console.log(this.addNodeForm)
+          let new_node = { text: this.addNodeForm.node_name, label: this.addNodeForm.node_label }
+          let new_link = {
+            text: this.addNodeForm.link_name,
+            from: this.addNodeForm.source,
+            to: this.addNodeForm.target,
+            event: this.addNodeForm.event,
+            condition: this.addNodeForm.condition,
+            action: this.addNodeForm.action,
+          }
+          this.myDiagram.model.addNodeData(new_node)
+          this.myDiagram.model.addLinkData(new_link)
+          this.$refs[formName].resetFields()
         } else {
           console.log('error submit!!')
           return false
@@ -637,8 +310,20 @@ export default {
     handleAddLinkCommit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('添加成功')
+          this.$message.success('添加成功')
+          console.log(this.addLinkForm)
+          let new_link = {
+            text: this.addLinkForm.link_name,
+            from: this.addLinkForm.source,
+            to: this.addLinkForm.target,
+            event: this.addLinkForm.event,
+            condition: this.addLinkForm.condition,
+            action: this.addLinkForm.action,
+          }
+          this.myDiagram.undoManager.undo()
+          this.myDiagram.model.addLinkData(new_link)
           this.visible.addLinkDialog = false
+          this.$refs[formName].resetFields()
         } else {
           console.log('error submit!!')
           return false
@@ -649,112 +334,40 @@ export default {
       this.myDiagram.undoManager.undo()
       this.visible.addLinkDialog = false
     },
-    handleDeleteCancel() {
-      this.visible.deleteTipDialog = false
-      this.redoDelete()
-    },
-    handleDeleteCommit() {
-      this.visible.deleteTipDialog = false
-      this.saveDelete()
-    },
-
-    onChange(value) {
-      console.log(value)
-      this.umlSrc = ''
-      this.extrafile = ''
-      this.extrafile = JSON.parse(JSON.stringify(this.itemInfo))
-      if (value != '状态迁移') {
-        this.extrafile['type'] = value
-        this.uml.name = value
-        this.uml.path = value + '.txt'
-        this.diagram.uml = true
-        this.diagram.state = false
-        this.buttonShow.modeling = false
-        this.buttonShow.help = false
-        this.buttonShow.reduction = false
-        this.buttonShow.import = true
-      } else {
-        this.diagram.uml = false
-        this.diagram.state = true
-        this.buttonShow.modeling = true
-        this.buttonShow.help = true
-        this.buttonShow.reduction = true
-        this.buttonShow.import = false
-      }
-    },
     getItemInfo() {
       this.itemInfo = this.$store.state.item
     },
-    modeling() {
-      console.log('test')
-      this.$http
-        .post(this.Global_Api + '/api/generation/scenes_modeling', { item: this.itemInfo, type: 'complex', element: '状态迁移' })
-        .then((response) => {
-          console.log(response)
-          this.getData()
-          this.saveModel()
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-    },
-    // handleImport(res) {
-    //   if (res.error_code === -1) {
-    //     this.$message.error('上传的文件语法错误！')
-    //     return
-    //   }
-    //   var base64url = JSON.parse(res.url)
-    //   let src = 'data:image/png;base64,' + base64url['image_base64_string']
-    //   console.log(src)
-    //   this.umlSrc = src
-    //   this.umlSrcList.push(src)
-    //   // console.log(src)
-    //   // var link = document.createElement('a')
-    //   // link.href = src
-    //   // link.download = 'a.png'
-    //   // link.click()
-    // },
-    modeling2() {
-      this.$http
-        .post(this.Global_Api + '/api/generation/xmi_modeling', { item: this.itemInfo })
-        .then((response) => {
-          console.log(response)
-          this.getData()
-          this.saveModel()
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-    },
     handleImport(code, file) {
-      this.$http
-        .post(this.Global_Api + '/api/import_xmi', { name: file.name, item: this.itemInfo })
-        .then((response) => {
-          if (response.data.error_code === 0) {
-            console.log(response)
-            this.$message.success('导入成功')
-            this.modeling2()
-          } else {
-            this.$message.error(response.data.error_message)
-          }
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      this.$http.post(this.Global_Api + '/api/import_xmi', { name: file.name, item: this.itemInfo }).then((response) => {
+        if (response.data.error_code === 0) {
+          console.log(response)
+          this.$message.success('导入成功')
+          this.modelingFromDatabase()
+        } else {
+          this.$message.error(response.data.error_message)
+        }
+      })
+    },
+    modelingFromDatabase() {
+      this.$http.post(this.Global_Api + '/api/modeling_from_db', this.itemInfo).then((response) => {
+        if (response.data.error_code === 0) {
+          console.log(response)
+          this.modelData.nodeDataArray = response.data.nodeDataArray
+          this.modelData.linkDataArray = response.data.linkDataArray
+          this.load()
+        } else {
+          this.$message.error(response.data.error_message)
+        }
+      })
     },
   },
   created() {
     this.getItemInfo()
   },
+  mounted() {
+    this.init()
+  },
 }
 </script>
 
-<style lang="scss" scoped>
-.divHelp {
-  margin-left: 55%;
-  height: 40px;
-  margin-top: -40px;
-  z-index: 1;
-  position: absolute;
-}
-</style>
+<style lang="scss" scoped></style>

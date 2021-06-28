@@ -90,6 +90,7 @@ class CRC():
         self.code = code
 class protocol:
     def __init__(self,filePath=filepath+'format.txt'):
+        self.result = []
         self.message = []
         self.crc16=0
         fo = open(filePath, 'r')
@@ -98,19 +99,33 @@ class protocol:
         #self.fhead=int(self.format[0]['value'])
         #self.fend=int(self.format[len(self.format)-1]['value'])
         self.IntDateGeneration=INTBYTE.INTBYTE()
-    def set(self,message):
-        self.message=[]
-        for i in self.format:
-            name=i['name']
-            data=0
-            if name=="fhead" or name=="fend":
-                data=int(i['value'][0])
-            if message.has_key(name):
-                data=message[name]
-            if data==None:
-                data=0
-            self.message.append(data)
-        self.crc16 = self.getCrc()
+    def set(self,data):
+        self.result = []
+        ans={}
+        for key,value in data.items():
+            key=key.split('_')
+            data_protocol=key[0]
+            if ans.has_key(data_protocol):
+                ans[data_protocol][key[1]]=value
+            else:
+                ans[data_protocol]={}
+                ans[data_protocol][key[1]]=value
+        for key,message in ans.items():
+            protocol_object=self.format[key]
+            self.message = []
+            for i in protocol_object:
+                name=i['name']
+                dt=0
+                if name=="fhead" or name=="fend":
+                    dt=int(i['value'][0])
+                if message.has_key(name):
+                    dt=message[name]
+                if data==None:
+                    dt=0
+                self.message.append(dt)
+            self.crc16 = self.getCrc()
+            self.message.insert(-1, self.crc16)
+            self.result.append(self.message[:])
     def getCrc(self,crcnum=16):
         binstr=""
         for i in self.message:
@@ -135,15 +150,13 @@ class protocol:
         jyh1 = int(jyh1, 2)
         return jyh1
     def read(self):
-        ans=[]
-        ans.extend(self.message)
-        ans.insert(-1,self.crc16)
-        return ans
+        return self.result
     def dateGeneration(self,name):#dataGeneration
         tmp=None
-        for i in self.format:
-            if i['name']==name:
-                tmp=i
+        name = name.split('_')
+        for i in self.format[name[0]]:
+            if i['name'] == name[1]:
+                tmp = i
                 break
         type=tmp["type"]
         if "INT" in type:
@@ -158,37 +171,44 @@ class protocol:
             return self.IntDateGeneration.IntByte_Random(l,r)
         elif "ENUM" in type:
             value=tmp['value']
-            return int(random.choice(value))
+            data_str=str(random.choice(value))
+            if '0x' in data_str:
+                return int(data_str, 16)
+            else:
+                return int(data_str)
     def getDataType(self,name):
-        for i in self.format:
-            if i['name'] == name:
+        name=name.split('_')
+        for i in self.format[name[0]]:
+            if i['name'] == name[1]:
                 return i['type']
 
     def readBadHead(self, badhead=0):
         ans = []
-        ans.extend(self.message)
-        ans[0]=badhead
-        ans.insert(-1, self.crc16)
+        for i in self.result:
+            self.message=i[:]
+            self.message[0]=badhead
+            ans.append(self.message[:])
         return ans
 
     def readBadEnd(self, badend=0):
-        ans=[]
-        ans.extend(self.message)
-        ans[-1] = badend
-        ans.insert(-1, self.crc16)
+        ans = []
+        for i in self.result:
+            self.message = i[:]
+            self.message[-1] = badend
+            ans.append(self.message[:])
         return ans
 
     def readBadCrc(self, badcrc=0):
         ans = []
-        ans.extend(self.message)
-        ans.insert(-1, badcrc)
+        for i in self.result:
+            self.message = i[:]
+            self.message[-2] = badcrc
+            ans.append(self.message[:])
         return ans
 if __name__ == '__main__':
     protocol1=protocol()
-    protocol1.set({})
-    print protocol1.getCrc()
+    protocol1.set({"RS232_ctr":345})
     print protocol1.read()
-    print protocol1.getDataType("data")
     print protocol1.readBadEnd(77)
     print protocol1.readBadHead(88)
     print protocol1.readBadCrc(90)

@@ -1,6 +1,14 @@
 <template>
   <div id="fullState">
     <el-card>
+      <el-row :gutter="20">
+        <el-col :span="3">
+          <el-button type="primary" style="margin-left: 20px" @click="GenerateAllData">一键生成</el-button>
+        </el-col>
+        <el-col :span="20">
+          <el-progress :percentage="percentage" :format="format(percent, percentTotal)" style="margin-top: 10px"></el-progress>
+        </el-col>
+      </el-row>
       <el-table
         v-loading="loading"
         element-loading-text="数据生成中..."
@@ -11,6 +19,7 @@
         border
         style="width: 100%; margin-top: 20px"
         @filter-change="filterType"
+        height="488px"
       >
         <el-table-column prop="page_id" label="ID" width="40"> </el-table-column>
         <el-table-column prop="type2" label="类别" width="80" :filters="filterItem"> </el-table-column>
@@ -66,6 +75,9 @@ export default {
         { text: '全迁移', value: '全迁移' },
       ],
       options: [],
+      percentTotal: 20,
+      percent: 0,
+      percentage: 0,
     }
   },
   methods: {
@@ -121,7 +133,7 @@ export default {
         .post(this.Global_Api + '/api/generation/path_list', this.itemInfo)
         .then((response) => {
           this.rawData = response.data.path_list
-
+          this.percentTotal = this.rawData.length
           for (let i = 0; i < this.rawData.length; i++) {
             this.rawData[i].time = 0
             this.rawData[i].amount = 0
@@ -201,11 +213,37 @@ export default {
           console.log(error)
         })
     },
+    GenerateAllData() {
+      this.percent = 0
+      this.loading = true
+      for (let i = 0; i < this.percentTotal; i++) {
+        // clearTimeout(this.timer) //清除延迟执行
+        setTimeout(() => {
+          this.percent = i + 1
+          this.percentage = (this.percent / this.percentTotal) * 100
+          //设置延迟执行
+          this.$http.post(this.Global_Api + '/api/generation/generate_mcdc', this.rawData[i]).then((response) => {
+            console.log(response.data)
+          })
+        }, 3000 * i)
+      }
+    },
+    format(percent, percentTotal) {
+      return () => {
+        return percent.toString() + ' / ' + percentTotal.toString()
+      }
+    },
   },
   created() {
     this.getItemInfo()
     this.pageList()
     this.getProtocol()
+  },
+  watch: {
+    percent(val) {
+      console.log(val)
+      if (val === this.percentTotal) this.loading = false
+    },
   },
 }
 </script>

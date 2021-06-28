@@ -35,6 +35,15 @@ def edit_txt(path, filename):
                 for k in content[key]:
                     content[key][k] = str(content[key][k])
         print(content)
+    elif content['name'] == 'MC/DC测试' or content['name'] == '全条件测试':
+        for key in content:
+            if key != 'name':
+                temp = []
+                for k in content[key]:
+                    print(content[key][k])
+                    temp.append(str(content[key][k]))
+                content[key] = temp
+        print(content)
     else:
         for key in content:
             if key != 'name':
@@ -54,6 +63,9 @@ def full_state(request):
         old_input = read_txt(path, filename)
         old_input['type'] = 1
         write_txt(path, filename, old_input)
+        with open(path + 'efsm_atm.txt', 'wt+', encoding='utf-8') as f:
+            f.write(open('./file/' + 'newModel.txt',
+                         'r', encoding='utf-8').read())
         # 运行ga程序
         os.system('py -2 ' + './efsmGA/ga.py')
         # 读取生成的output.txt
@@ -85,6 +97,9 @@ def full_migration(request):
         old_input = read_txt(path, filename)
         old_input['type'] = 2
         write_txt(path, filename, old_input)
+        with open(path + 'efsm_atm.txt', 'w', encoding='utf-8') as f:
+            f.write(open('./file/' + 'newModel.txt',
+                         'r', encoding='utf-8').read())
         # 读取输入文件，运行ga程序
         os.system('py -2 ' + './efsmGA/ga.py')
         # 读取生成的output.txt
@@ -147,8 +162,8 @@ def generate_increase(request):
         filename = 'output.txt'
         edit_txt(path, filename)
         result = read_txt(path, filename)
-        print('request_json', request_json)
-        print('result', str(result))
+        # print('request_json', request_json)
+        # print('result', str(result))
         # 判断这条path这种方法name下有没有生成data，有就delete，无则save
         aim_path_id = request_json['id']
         new_type2 = request_json['type2']
@@ -157,6 +172,8 @@ def generate_increase(request):
         PathsData.objects.filter(paths_id=aim_path_id, name=new_name).delete()
         new_paths_data = PathsData(paths_id=aim_path_id, type2=new_type2, name=new_name, data=new_data)
         new_paths_data.save()
+        # 将PathsData数据表中的数据存储到TestData表中
+        save_test_data_to_db(new_paths_data.to_dict())
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})
@@ -190,6 +207,8 @@ def generate_decrease(request):
         PathsData.objects.filter(paths_id=aim_path_id, name=new_name).delete()
         new_paths_data = PathsData(paths_id=aim_path_id, type2=new_type2, name=new_name, data=new_data)
         new_paths_data.save()
+        # 将PathsData数据表中的数据存储到TestData表中
+        save_test_data_to_db(new_paths_data.to_dict())
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})
@@ -224,6 +243,44 @@ def generate_random(request):
         PathsData.objects.filter(paths_id=aim_path_id, name=new_name).delete()
         new_paths_data = PathsData(paths_id=aim_path_id, type2=new_type2, name=new_name, data=new_data)
         new_paths_data.save()
+        # 将PathsData数据表中的数据存储到TestData表中
+        save_test_data_to_db(new_paths_data.to_dict())
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})
+
+
+# 生成时序
+def generate_time(request):
+    request_json = json.loads(request.body)
+    try:
+        # 修改输入信息
+        path = "./efsmGA/files/"
+        filename = 'input.txt'
+        old_input = read_txt(path, filename)
+        old_input['type'] = 1
+        old_input['path'] = eval(request_json['path'])
+        old_input['time'] = request_json['time']
+        old_input['amount'] = request_json['amount']
+        write_txt(path, filename, old_input)
+        # 运行data程序
+        os.system('py -2 ' + './efsmGA/data_generation.py')
+        # 读取output.txt信息
+        filename = 'output.txt'
+        edit_txt(path, filename)
+        result = read_txt(path, filename)
+        print('request_json', request_json)
+        print('result', str(result))
+        # 判断这条path这种方法name下有没有生成data，有就delete，无则save
+        aim_path_id = request_json['id']
+        new_type2 = request_json['type2']
+        new_name = '时序约束'
+        new_data = result
+        PathsData.objects.filter(paths_id=aim_path_id, name=new_name).delete()
+        new_paths_data = PathsData(paths_id=aim_path_id, type2=new_type2, name=new_name, data=new_data)
+        new_paths_data.save()
+        # 将PathsData数据表中的数据存储到TestData表中
+        save_test_data_to_db(new_paths_data.to_dict())
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})
@@ -247,8 +304,6 @@ def generate_boundary(request):
         filename = 'output.txt'
         edit_txt(path, filename)
         result = read_txt(path, filename)
-        print('request_json', request_json)
-        print('result', str(result))
         # 判断这条path这种方法name下有没有生成data，有就delete，无则save
         aim_path_id = request_json['id']
         new_type2 = request_json['type2']
@@ -257,6 +312,8 @@ def generate_boundary(request):
         PathsData.objects.filter(paths_id=aim_path_id, name=new_name).delete()
         new_paths_data = PathsData(paths_id=aim_path_id, type2=new_type2, name=new_name, data=new_data)
         new_paths_data.save()
+        # 将PathsData数据表中的数据存储到TestData表中
+        save_test_data_to_db(new_paths_data.to_dict())
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})
@@ -279,8 +336,8 @@ def generate_mcdc(request):
         filename = 'output.txt'
         edit_txt(path, filename)
         result = read_txt(path, filename)
-        print('request_json', request_json)
-        print('result', str(result))
+        # print('request_json', request_json)
+        # print('result', str(result))
         # 判断这条path这种方法name下有没有生成data，有就delete，无则save
         aim_path_id = request_json['id']
         new_type2 = request_json['type2']
@@ -289,6 +346,8 @@ def generate_mcdc(request):
         PathsData.objects.filter(paths_id=aim_path_id, name=new_name).delete()
         new_paths_data = PathsData(paths_id=aim_path_id, type2=new_type2, name=new_name, data=new_data)
         new_paths_data.save()
+        # 将PathsData数据表中的数据存储到TestData表中
+        save_test_data_to_db(new_paths_data.to_dict())
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})
@@ -311,8 +370,8 @@ def generate_condition(request):
         filename = 'output.txt'
         edit_txt(path, filename)
         result = read_txt(path, filename)
-        print('request_json', request_json)
-        print('result', str(result))
+        # print('request_json', request_json)
+        # print('result', str(result))
         # 判断这条path这种方法name下有没有生成data，有就delete，无则save
         aim_path_id = request_json['id']
         new_type2 = request_json['type2']
@@ -321,6 +380,8 @@ def generate_condition(request):
         PathsData.objects.filter(paths_id=aim_path_id, name=new_name).delete()
         new_paths_data = PathsData(paths_id=aim_path_id, type2=new_type2, name=new_name, data=new_data)
         new_paths_data.save()
+        # 将PathsData数据表中的数据存储到TestData表中
+        save_test_data_to_db(new_paths_data.to_dict())
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})
@@ -343,8 +404,8 @@ def generate_wrong(request):
         filename = 'output.txt'
         edit_txt(path, filename)
         result = read_txt(path, filename)
-        print('request_json', request_json)
-        print('result', str(result))
+        # print('request_json', request_json)
+        # print('result', str(result))
         # 判断这条path这种方法name下有没有生成data，有就delete，无则save
         aim_path_id = request_json['id']
         new_type2 = request_json['type2']
@@ -353,9 +414,104 @@ def generate_wrong(request):
         PathsData.objects.filter(paths_id=aim_path_id, name=new_name).delete()
         new_paths_data = PathsData(paths_id=aim_path_id, type2=new_type2, name=new_name, data=new_data)
         new_paths_data.save()
+        # 将PathsData数据表中的数据存储到TestData表中
+        save_test_data_to_db(new_paths_data.to_dict())
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "path_list": request_json})
+
+
+def save_test_data_to_db(data):
+    print('data', data)
+    # 先判断是否有数据生成，有就删了
+    TestData.objects.filter(paths_id=data['path_id'], function=data['name'], type=data['type2']).delete()
+    # TF标签
+    tf = ''
+    # data
+    if data['name'] == '边界值' or data['name'] == '递增值' or data['name'] == '递减值':
+        T = {}
+        maxLen = 0
+        for key in data['data']:
+            regular = re.compile(r"T[0-9]+")
+            if regular.match(key):
+                T[key] = data['data'][key]
+                maxLen = max(len(data['data'][key]), maxLen)
+        for i in range(maxLen):
+            new_data = []
+            for key in T:
+                if i < len(T[key]):
+                    new_data.append(T[key][i])
+                else:
+                    new_data.append('')
+            TestData(paths_id=data['path_id'],
+                     type=data['type2'],
+                     function=data['name'],
+                     TF=tf,
+                     data=new_data).save()
+    elif data['name'] == '条件覆盖' or data['name'] == 'MC/DC':
+        for key in data['data']:
+            if key != 'name':
+                tf = key
+                new_data = data['data'][key]
+                TestData(paths_id=data['path_id'],
+                         type=data['type2'],
+                         function=data['name'],
+                         TF=tf,
+                         data=new_data).save()
+    elif data['name'] == '接口异常':
+        state = ['正常', '帧头异常', '帧尾异常', '校验和异常']
+        for i in range(len(state)):
+            tf = state[i]
+            new_data = []
+            for key in data['data']:
+                if key != 'name':
+                    new_data.append(data['data'][key][state[i]])
+            TestData(paths_id=data['path_id'],
+                     type=data['type2'],
+                     function=data['name'],
+                     TF=tf,
+                     data=new_data).save()
+    elif data['name'] == '随机值' or data['name'] == '时序约束':
+        for key in data['data']:
+            new_data = []
+            if key != 'name':
+                for i in data['data'][key]:
+                    new_data.append(data['data'][key][i])
+                TestData(paths_id=data['path_id'],
+                         type=data['type2'],
+                         function=data['name'],
+                         TF=tf,
+                         data=new_data).save()
+
+
+def save_data(request):
+    request_jsons = json.loads(request.body)
+    try:
+        print(request_jsons)
+        aim_path_id = request_jsons[0]['path_id']
+        new_function = request_jsons[0]['name']
+        new_type = request_jsons[0]['type2']
+        # 先判断是否有数据生成，有就删了
+        TestData.objects.filter(paths_id=aim_path_id, function=new_function).delete()
+        for request_json in request_jsons:
+            # print(request_json)
+            new_data = []
+            new_TF = request_json['TF']
+            for key in request_json:
+                regular = re.compile(r"T[0-9]+")
+                if regular.match(key):
+                    # print(key, request_json[key])
+                    new_data.append(request_json[key])
+            # print(str(new_data))
+            new_test_data = TestData(paths_id=aim_path_id,
+                                     function=new_function,
+                                     type=new_type,
+                                     data=new_data,
+                                     TF=new_TF)
+            new_test_data.save()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
 
 
 def xmi_modeling(request):
@@ -581,36 +737,6 @@ def commit_protocol(request):
     return JsonResponse({**error_code.CLACK_SUCCESS})
 
 
-def save_data(request):
-    request_jsons = json.loads(request.body)
-    try:
-        print(request_jsons)
-        aim_path_id = request_jsons[0]['path_id']
-        new_function = request_jsons[0]['name']
-        new_type = request_jsons[0]['type2']
-        # 先判断是否有数据生成，有就删了
-        TestData.objects.filter(paths_id=aim_path_id, function=new_function).delete()
-        for request_json in request_jsons:
-            # print(request_json)
-            new_data = []
-            new_TF = request_json['TF']
-            for key in request_json:
-                regular = re.compile(r"T[0-9]+")
-                if regular.match(key):
-                    # print(key, request_json[key])
-                    new_data.append(request_json[key])
-            # print(str(new_data))
-            new_test_data = TestData(paths_id=aim_path_id,
-                                     function=new_function,
-                                     type=new_type,
-                                     data=new_data,
-                                     TF=new_TF)
-            new_test_data.save()
-    except Exception as e:
-        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
-    return JsonResponse({**error_code.CLACK_SUCCESS})
-
-
 def test_data_list(request):
     request_json = json.loads(request.body)
     print(request_json)
@@ -670,13 +796,25 @@ def protocol_save(request):
         protocols = Protocol.objects.filter(item_id=request_jsons['item_id'])
         result = [p.to_dict() for p in protocols]
         print(result)
-        results = []
+        results = {}
         for protocol in result:
             print(protocol)
             config = eval(protocol['configuration'])
             result_conf = [Variable.objects.get(id=i).to_dict() for i in config]
-            results.append({protocol['subject_name']: result_conf})
+            for i in result_conf:
+                i.pop('id')
+                i.pop('item')
+                i.pop('describe')
+                if i['value'] != 'None':
+                    new_value = eval(i['value'])
+                    i['value'] = new_value
+                if i['type'] == 'CONSTANT':
+                    i['type'] = 'constant'
+            results[protocol['subject_name']] = result_conf
         print(results)
+        path = './efsmGA/files/'
+        filename = 'format.txt'
+        write_txt(path, filename, results)
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS})

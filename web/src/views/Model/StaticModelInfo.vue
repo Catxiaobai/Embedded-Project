@@ -1,17 +1,16 @@
 <template>
   <div>
     <el-card style="height: 634px">
-      <el-table :data="tableData" style="width: 100%" border>
-        <el-table-column prop="id" label="ID" width="80"> </el-table-column>
-        <el-table-column prop="part" label="交联环境组件" width="180"> </el-table-column>
-        <el-table-column prop="details" label="详情"> </el-table-column>
-        <el-table-column label="接口">
-          <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="gotoTest">CAN接口</el-button>
-            <el-button size="mini" type="primary" @click="gotoTest(scope.$index, scope.row)">RS232接口</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-upload :action="doUpload" :on-success="handleImport" class="inline-block" :show-file-list="false">
+        <el-button type="primary">导入</el-button>
+      </el-upload>
+      <div class="block">
+        <el-image :src="src">
+          <div slot="error" class="image-slot">
+            <i class="el-icon-picture-outline"></i>
+          </div>
+        </el-image>
+      </div>
     </el-card>
   </div>
 </template>
@@ -21,99 +20,16 @@ export default {
   name: 'StaticModelInfo.vue',
   data() {
     return {
-      tableData: [
-        {
-          id: '1',
-          part: '相机部分',
-          details: '28335芯片',
-        },
-        {
-          id: '2',
-          part: '光学组件部分',
-          details: '温控组件',
-        },
-        {
-          id: '3',
-          part: '光学组件部分',
-          details: '位/俯角控制组件',
-        },
-        {
-          id: '4',
-          part: '光学组件部分',
-          details: '补偿镜控制组件',
-        },
-        {
-          id: '5',
-          part: '光学组件部分',
-          details: '检调光控制组件',
-        },
-        {
-          id: '6',
-          part: '光学组件部分',
-          details: '检调焦控制组件',
-        },
-        {
-          id: '6',
-          part: '光学组件部分',
-          details: '可见光/红外成像组件',
-        },
-        {
-          id: '7',
-          part: '综合显控部分',
-          details: '上位机',
-        },
-      ],
-      spanArr: [],
+      doUpload: this.Global_Api + '/api/upload_static_model',
+      src1: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
+      src: require('@/assets/images/流程设计图.png'),
     }
   },
   methods: {
-    tableRowClassName({ row, rowIndex }) {
-      if (rowIndex === 1) {
-        return 'warning-row'
-      } else if (rowIndex === 3) {
-        return 'success-row'
-      }
-      return ''
+    handleImport(res) {
+      var base64url = JSON.parse(res.url)
+      this.src = 'data:image/png;base64,' + base64url['image_base64_string']
     },
-    getSpanArr(data) {
-      // data就是我们从后台拿到的数据
-      this.spanArr = []
-      for (var i = 0; i < data.length; i++) {
-        if (i === 0) {
-          this.spanArr.push(1)
-          this.pos = 0
-        } else {
-          // 判断当前元素与上一个元素是否相同
-          if (data[i].type === data[i - 1].type) {
-            this.spanArr[this.pos] += 1
-            this.spanArr.push(0)
-          } else {
-            this.spanArr.push(1)
-            this.pos = i
-          }
-        }
-        // console.log(this.spanArr)
-      }
-    },
-    objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-      if (columnIndex === 1) {
-        // console.log(row, column, rowIndex, columnIndex)
-        const _row = this.spanArr[rowIndex]
-        const _col = _row > 0 ? 1 : 0
-        // console.log(`rowspan:${_row} colspan:${_col}`)
-        return {
-          // [0,0] 表示这一行不显示， [2,1]表示行的合并数
-          rowspan: _row,
-          colspan: _col,
-        }
-      }
-    },
-    gotoTest() {
-      this.$router.replace('/showEdit')
-    },
-  },
-  mounted() {
-    this.getSpanArr(this.tableData)
   },
 }
 </script>
