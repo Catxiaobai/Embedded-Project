@@ -1,8 +1,20 @@
 <template>
   <div>
     <el-card>
+      <div>
+        <el-row>
+          <el-col :span="3">
+            <download-excel class="export-excel-wrapper" :data="rawData" :fields="json_fields" name="data" type="xls">
+              <el-button type="primary">导出表格</el-button>
+            </download-excel>
+          </el-col>
+          <el-col :span="3">
+            <el-button type="primary">导出脚本</el-button>
+          </el-col>
+        </el-row>
+      </div>
       <el-table
-        height="610"
+        height="560"
         width="100%"
         border
         :data="tableData"
@@ -10,6 +22,8 @@
         :summary-method="getSummaries"
         show-summary
         :default-sort="{ prop: 'page_id' }"
+        style="margin-top: 5px"
+        lazy
       >
         <el-table-column type="expand" label="详情" width="60">
           <template slot-scope="props">
@@ -48,6 +62,7 @@ export default {
   name: 'DataList',
   data() {
     return {
+      rawData: [],
       tableData: [],
       spanArr: [], //用于存放每一行记录的合并数
       total: 0,
@@ -66,6 +81,13 @@ export default {
           { text: 'MC/DC', value: 'MC/DC' },
           { text: '时序约束', value: '时序约束' },
         ],
+      },
+      json_fields: {
+        类别: 'type',
+        测试路径: 'path',
+        生成方法: 'function',
+        测试数据: 'data',
+        状态: 'TF',
       },
     }
   },

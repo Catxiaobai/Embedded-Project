@@ -47,4 +47,6 @@ urlpatterns = [
     path('node_edge_list', views.node_edge_list, name='node_edge_list'),
     path('model_variable_options', views.model_variable_options, name='model_variable_options'),
     path('upload_static_model', views.upload_static_model, name='upload_static_model'),
+    path('save_image', views.save_image, name='save_image'),
+    path('load_image', views.load_image, name='load_image'),
 ]

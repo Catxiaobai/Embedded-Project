@@ -743,7 +743,6 @@ def test_data_list(request):
     try:
         test_data = TestData.objects.filter(paths__item_id=request_json['id'])
         result = [p.to_dict() for p in test_data]
-        print(result)
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "test_data_list": result})

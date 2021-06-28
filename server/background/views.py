@@ -1,5 +1,7 @@
+import base64
 import json
 import os
+from json import dumps
 
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
@@ -13,9 +15,7 @@ from background.models import *
 from entity.models import *
 from lwn_Graphic import analysisXMI
 from server import error_code
-import base64
-from base64 import b64encode
-from json import dumps
+
 
 # 登录权限
 def login(request):
@@ -297,6 +297,7 @@ def scenes_list(request):
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "scenes_list": result})
 
+
 def upload_static_model(request):
     myfile = request.FILES['file']
     fs = FileSystemStorage(location='file')
@@ -316,6 +317,31 @@ def upload_static_model(request):
     raw_data["image_base64_string"] = base64_string
     json_data = dumps(raw_data)
     return JsonResponse({**error_code.CLACK_SUCCESS, "url": json_data})
+
+
+def save_image(request):
+    request_json = json.loads(request.body)
+    try:
+        Image(item_id=request_json['item']['id'],
+              name=request_json['name'],
+              src=request_json['src']).save()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+def load_image(request):
+    request_json = json.loads(request.body)
+    try:
+        image = Image.objects.filter(item_id=request_json['item']['id'], name=request_json['name'])
+        src = ''
+        for i in image:
+            src = i.to_dict()['src']
+        print(src)
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS, 'src': src})
+
 
 # 删除场景
 def delete_scenes(request):

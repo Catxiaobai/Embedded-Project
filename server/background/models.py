@@ -66,6 +66,7 @@ class Edge(models.Model):
             'action': self.action,
             'condition': self.condition,
         }
+
     def to_show(self):
         return {
             'text': self.name,
@@ -74,4 +75,18 @@ class Edge(models.Model):
             'event': self.event,
             'action': self.action,
             'condition': self.condition,
+        }
+
+
+class Image(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    name = models.TextField(default='')
+    src = models.TextField(default='')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'item_id': self.item.id,
+            'name': self.name,
+            'src': self.src
         }
