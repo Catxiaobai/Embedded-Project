@@ -38,8 +38,15 @@ def main(qianyi, data, file):
     for i in range(len(Tran_name)):
         if qianyi == Tran_name[i] and fangfa[i] in jbk:
             if fangfa[i] == 'Write' or fangfa[i] == 'Clear':
+                data = data[1:-1]
                 result = 'array=' + road[i] + '.' + fangfa[i] + '(' + data + ')'
                 print(result)
+            elif ',' in canshu[i]:
+                tmp = canshu[i].split(',')
+                for j in range(len(tmp)):
+                    tmp[j] = '[' + tmp[j] + ']'
+                result = road[i] + '.' + fangfa[i] + '(' + ','.join(tmp) + ')'
+                print(road[i] + '.' + fangfa[i] + '(' + ','.join(tmp) + ')')
             else:
                 result = road[i] + '.' + fangfa[i] + '(' + canshu[i] + ')'
                 print(result)

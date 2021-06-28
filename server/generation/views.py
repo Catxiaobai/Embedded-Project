@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import shutil
 
 from django.http import JsonResponse
 
@@ -572,6 +573,40 @@ def generate_script(request):
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
     return JsonResponse({**error_code.CLACK_SUCCESS, "result": result})
+
+
+# 脚本生成
+def generate_script_all(request):
+    request_jsons = json.loads(request.body)
+    # print(request_jsons)
+    try:
+        filepath = './efsmGA/files/'
+        filename = 'efsm_atm.txt'
+        dir_path = './modelfiles/' + request_jsons['item']['name']
+        if os.path.exists(dir_path):
+            shutil.rmtree(dir_path)
+        os.makedirs(dir_path)
+        for i in range(len(request_jsons['data'])):
+            result = []
+            path = eval(request_jsons['data'][i]['path'])
+            data = eval(request_jsons['data'][i]['data'])
+            # print(path)
+            # print(data)
+            for j in range(min(len(path), len(data))):
+                result.append(script.main(path[j], data[j], filepath + filename))
+            # print(i, result)
+            with open(dir_path+'/script_'+str(i), 'w', encoding='utf-8') as f:
+                for r in result:
+                    f.write(r+'\n')
+            # for key in request_jsons:
+        #     regular = re.compile(r"T[0-9]+")
+        #     if regular.match(key):
+        #         print(key, request_jsons[key])
+        #         result.append(script.main(key, request_jsons[key], filepath + filename))
+        # print(result)
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
 
 
 # 新建协议

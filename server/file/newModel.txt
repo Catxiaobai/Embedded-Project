@@ -33,7 +33,7 @@ Transition:
 	src=START
 	tgt=S1
 	event=Write_com7(RS232_ctr,RS232_data)
-	condition=
+	condition=(RS232_ctr==0x01)&(RS232_data==0x0111)
 	action=led7(RS232_data,flag)
 Transition:
 	name=T2
@@ -61,7 +61,7 @@ Transition:
 	src=S3
 	tgt=S4
 	event=Write_com7(RS232_ctr,RS232_data)
-	condition=RS232_ctr==0x06
+	condition=(RS232_ctr==0x06)&(RS232_data==0x0111)
 	action=led3(RS232_data,flag)
 Transition:
 	name=T6
@@ -75,7 +75,7 @@ Transition:
 	src=S2
 	tgt=S5
 	event=Write_com7(RS232_ctr,RS232_data)
-	condition=RS232_ctr==0x03
+	condition=(RS232_ctr==0x03)&(RS232_data==0x1111)
 	action=led4(RS232_data,flag)
 Transition:
 	name=T8
@@ -117,49 +117,49 @@ Transition:
 	src=S1
 	tgt=EXIT
 	event=Clear_com7(RS232_ctr)
-	condition=
+	condition=RS232_ctr==0x08
 	action=led8()
 Transition:
 	name=T14
 	src=S2
 	tgt=EXIT
 	event=Clear_com7(RS232_ctr)
-	condition=
+	condition=RS232_ctr==0x08
 	action=led8()
 Transition:
 	name=T15
 	src=S3
 	tgt=EXIT
 	event=Clear_com7(RS232_ctr)
-	condition=
+	condition=RS232_ctr==0x08
 	action=led8()
 Transition:
 	name=T16
 	src=S4
 	tgt=EXIT
 	event=Clear_com7(RS232_ctr)
-	condition=
+	condition=RS232_ctr==0x08
 	action=led8()
 Transition:
 	name=T17
 	src=S5
 	tgt=EXIT
 	event=Clear_com7(RS232_ctr)
-	condition=
+	condition=RS232_ctr==0x08
 	action=led8()
 Transition:
 	name=T18
 	src=S6
 	tgt=EXIT
 	event=Clear_com7(RS232_ctr)
-	condition=
+	condition=RS232_ctr==0x08
 	action=led8()
 Transition:
 	name=T19
 	src=S7
 	tgt=EXIT
 	event=Clear_com7(RS232_ctr)
-	condition=
+	condition=RS232_ctr==0x08
 	action=led8()
 Transition:
 	name=T20
@@ -194,5 +194,5 @@ Transition:
 	src=S8
 	tgt=EXIT
 	event=Clear_com7(RS232_ctr)
-	condition=
+	condition=RS232_ctr==0x08
 	action=led8()

@@ -1,0 +1,5 @@
+array=com7.Write([88, 8059, 10, 61397, 66])
+array=com7.Write([88, 2, 12, 46587, 66])
+array=com7.Write([88, 4, 13, 22116, 66])
+array=com7.Write([88, 6, 13, 46695, 66])
+array=com7.Clear([88, 192, 0, 33324, 66])

@@ -9,21 +9,18 @@
             </download-excel>
           </el-col>
           <el-col :span="3">
-            <el-button type="primary">导出脚本</el-button>
+            <el-button type="primary" @click="generate_script_all">导出脚本</el-button>
           </el-col>
         </el-row>
       </div>
       <el-table
-        height="560"
+        height="488px"
         width="100%"
         border
         :data="tableData"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        :summary-method="getSummaries"
-        show-summary
-        :default-sort="{ prop: 'page_id' }"
-        style="margin-top: 5px"
-        lazy
+        style="width: 100%; margin-top: 20px"
+        @filter-change="filterType"
       >
         <el-table-column type="expand" label="详情" width="60">
           <template slot-scope="props">
@@ -38,21 +35,23 @@
           </template>
         </el-table-column>
         <!--        <el-table-column prop="page_id" label="ID" width="60" align="center"></el-table-column>-->
-        <el-table-column prop="type" label="类别" width="120" align="center" show-overflow-tooltip :filters="filters.type" :filter-method="filterType">
-        </el-table-column>
+        <el-table-column prop="type" label="类别" width="120" align="center" show-overflow-tooltip column-key="type"> </el-table-column>
         <el-table-column prop="path" label="测试路径" width="200" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column
-          prop="function"
-          label="生成方法"
-          width="120"
-          align="center"
-          show-overflow-tooltip
-          :filters="filters.function"
-          :filter-method="filterFunction"
-        >
+        <el-table-column prop="function" label="生成方法" width="120" align="center" show-overflow-tooltip :filters="filters.function" column-key="function">
         </el-table-column>
         <el-table-column prop="data" label="测试数据" show-overflow-tooltip></el-table-column>
       </el-table>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="page"
+        :page-sizes="[1, 5, 10, 1000]"
+        :page-size="limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        style="margin-left: 30%; margin-top: 30px"
+      >
+      </el-pagination>
     </el-card>
   </div>
 </template>
@@ -62,10 +61,12 @@ export default {
   name: 'DataList',
   data() {
     return {
+      limit: 10, //每页显示条数
+      total: 0, //项目总数
+      page: 1, //第几页
       rawData: [],
       tableData: [],
       spanArr: [], //用于存放每一行记录的合并数
-      total: 0,
       itemInfo: '',
       filters: {
         type: [
@@ -88,6 +89,10 @@ export default {
         生成方法: 'function',
         测试数据: 'data',
         状态: 'TF',
+      },
+      filter: {
+        type: [],
+        function: [],
       },
     }
   },
@@ -145,48 +150,83 @@ export default {
     getList() {
       let list = this.data
       this.adjustId(list)
-      this.tableData = list
+      this.tableData = list.filter((item, index) => index < this.page * this.limit && index >= this.limit * (this.page - 1))
+      this.total = list.length
     },
     adjustId(list) {
       for (let i = 0; i < list.length; i++) {
         list[i].page_id = i + 1
       }
     },
+    // 当每页数量改变
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`)
+      this.limit = val
+      this.getList()
+    },
+    // 当当前页改变
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`)
+      this.page = val
+      this.getList()
+    },
     getItemInfo() {
       this.itemInfo = this.$store.state.item
     },
-    filterType(value, row, column) {
-      console.log(value, row, column)
-      return row['type'] === value
-    },
-    filterFunction(value, row) {
-      return row['function'] === value
-    },
-    getSummaries(param) {
-      const { columns, data } = param
-      const sums = []
-      columns.forEach((column, index) => {
-        if (index === 0) {
-          sums[index] = '统计'
-          return
+    filterType(value) {
+      if (value['function'].length > 0) {
+        this.data = []
+        for (let i = 0; i < this.rawData.length; i++) {
+          if (value['function'].includes(this.rawData[i].function)) {
+            this.data.push(this.rawData[i])
+          }
         }
-        if (index === 4) {
-          sums[index] = '共 ' + data.length + ' 条数据'
-          return
-        }
-      })
+      } else {
+        this.data = this.rawData
+      }
+      // if (this.filter['type'] === 0 && this.filter['function'] === 0) {
+      //   tempData = temp
+      // } else {
+      //   for (let k in this.filter) {
+      //     if (this.filter[k].length > 0) {
+      //       console.log(temp)
+      //       for (let i = 0; i < temp.length; i++) {
+      //         if (this.filter[k].indexOf(temp[i][k]) > -1) {
+      //           tempData.push(temp[i])
+      //         }
+      //       }
+      //       console.log(tempData)
+      //       temp = tempData
+      //     }
+      //   }
+      // }
 
-      return sums
+      // for (let k in this.filter) {
+      //   if (this.filter[k].length > 0) {
+      //     for (let i = 0; i < temp.length; i++) {
+      //       console.log(temp[i][k])
+      //       console.log(this.filter[k])
+      //       if (this.filter[k].includes(temp[i][k])) {
+      //         tempData.push(temp[i])
+      //       }
+      //     }
+      //     temp = tempData
+      //   } else {
+      //     tempData = temp
+      //   }
+      // }
+      this.getList()
+    },
+    generate_script_all() {
+      this.$http.post(this.Global_Api + '/api/generation/generate_script_all', { item: this.itemInfo, data: this.rawData }).then((response) => {
+        console.log(response)
+        this.$message.success('success')
+      })
     },
   },
   created() {
     this.getItemInfo()
     this.pageList()
-  },
-  watch: {
-    tableData() {
-      this.total = this.tableData.length
-    },
   },
 }
 </script>

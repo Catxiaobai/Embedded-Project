@@ -33,6 +33,7 @@ urlpatterns = [
     path('xmi_modeling', views.xmi_modeling, name='xmi_modeling'),  # xmi建模
     path('scenes_modeling', views.scenes_modeling, name='scenes_modeling'),  # 建模
     path('generate_script', views.generate_script, name='generate_script'),  # 脚本生成
+    path('generate_script_all', views.generate_script_all, name='generate_script_all'),  # 脚本生成
     path('add_protocol', views.add_protocol, name='add_protocol'),  # 添加通信协议
     path('protocol_list', views.protocol_list, name='protocol_list'),  # 通信协议列表
     path('edit_protocol', views.edit_protocol, name='edit_protocol'),  # 编辑通信协议
