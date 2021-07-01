@@ -44,7 +44,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="page"
-        :page-sizes="[1, 5, 7, 1000]"
+        :page-sizes="[1, 5, 10, 1000]"
         :page-size="limit"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -61,7 +61,7 @@ export default {
   inject: ['reload'],
   data() {
     return {
-      limit: 7, //每页显示条数
+      limit: 10, //每页显示条数
       total: 0, //项目总数
       page: 1, //第几页
       tableData: [],

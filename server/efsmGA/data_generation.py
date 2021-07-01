@@ -33,15 +33,15 @@ def obtain_var_from_path(SM, currPathT):
     SM.currPathTranVarDict = {}
     SM.currPathTranFuncDict == {}
     SM.copyPathInfo()
+    trans_currPathT=[]
     for tran in currPathT:  # change the varibale name for the same T
         if currPathT.count(tran) > 1:
             SM.repeatTrans(currPathT)
             break
-    SM.pathInputVar(currPathT)  # identify input variable in events relating to the current path
+    SM.pathInputVar1(currPathT,trans_currPathT)  # identify input variable in events relating to the current path
     SM.pathProProcess(currPathT)  # rewrite identical variables, ---stored in self.pathDefVar
     varname = SM.originalDef
-    return varname
-
+    return varname,trans_currPathT
 #根据变量名获得变量的类型
 def obtain_vartype_from_varname(SM, varname):
     pathVarType={}
@@ -52,10 +52,10 @@ def obtain_vartype_from_varname(SM, varname):
 def random_int(l,r):
     return  random.randint( l, r)
 
-def Initial_data(SM,currPath, varname, pathVarType, populationSize):#根据GA进行测试数据生成
+def Initial_data(SM,currPath, varname, pathVarType, populationSize,trans_currPathT):#根据GA进行测试数据生成
     noInputVar=0
     gaSample = EFSM.GA(populationSize, len(SM.pathDefVar))
-    population = gaSample.creatStartPopulation(varname)  ###initiate Population according to input variable number
+    population = gaSample.creatStartPopulation(varname,trans_currPathT)  ###initiate Population according to input variable number
     j = 1
     data = []
     #print population
@@ -65,6 +65,7 @@ def Initial_data(SM,currPath, varname, pathVarType, populationSize):#根据GA进
             data.extend(SM.pathVarValue)
             break  # break for j loop
         j += 1
+        #print population
         population = gaSample.GeneticAlgorithm(oldInvidualFit, population, varname)
         invidualFitness = SM.obtainIndividualFitness(currPath, population, populationSize, noInputVar,varname)
         if invidualFitness[0] == 0:
@@ -96,7 +97,7 @@ def dfs(data,tmp,k):
 def testProcee(SM, currPathT,flag,num=0,accuracy=1,TIME=0):
     coverage = 0
     populationSize=20
-    varname = obtain_var_from_path(SM, currPathT)  #获得序列上的变量名
+    varname,trans_currPathT = obtain_var_from_path(SM, currPathT)  #获得序列上的变量名
     pathVarType=obtain_vartype_from_varname(SM, varname)#获得变量类型
     data = []
 
@@ -106,18 +107,18 @@ def testProcee(SM, currPathT,flag,num=0,accuracy=1,TIME=0):
     elif flag==1:  ##There exist input variables on the path
         if num>0:
             while (num > 0):
-                data.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize))  # 测试数据生成
+                data.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize,trans_currPathT))  # 测试数据生成
                 num -= 1
         elif TIME>0:
             startTime = time.time()
             while(time.time()-startTime<TIME):
-                data.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize))  # 测试数据生成
+                data.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize,trans_currPathT))  # 测试数据生成
     elif flag==2 :
         data=SM.bianJie(currPathT,varname,accuracy,1)
     elif flag==3:#逐渐增加
         ans = []
         while(num>0):
-            ans.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize))  # 测试数据生成
+            ans.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize,trans_currPathT))  # 测试数据生成
             num-=1
         for j in range(len(ans[0])):
             data.append([])
@@ -127,7 +128,7 @@ def testProcee(SM, currPathT,flag,num=0,accuracy=1,TIME=0):
     elif flag == 4:  # 逐渐减少
         ans = []
         while (num > 0):
-            ans.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize))  # 测试数据生成
+            ans.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize,trans_currPathT))  # 测试数据生成
             num -= 1
         for j in range(len(ans[0])):
             data.append([])
@@ -137,7 +138,7 @@ def testProcee(SM, currPathT,flag,num=0,accuracy=1,TIME=0):
     elif flag == 5 or flag==6:  #CDMD
         data = SM.CDMD(currPathT,pathVarType, 1)
     elif flag == 7 :  #接口异常
-        data.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize))
+        data.append(Initial_data(SM, currPathT, varname, pathVarType, populationSize,trans_currPathT))
     return data
 def tran_var_macth(currPathT):
     tran_var= OrderedDict()

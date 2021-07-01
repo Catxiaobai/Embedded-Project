@@ -1,205 +1,148 @@
 State:
-	name=START
-	label=开始
+	name=S0
+	label=Pseudostate
 State:
 	name=S1
-	label=初始化
+	label=off
 State:
 	name=S2
-	label=空闲
+	label=上电
 State:
 	name=S3
-	label=维护
+	label=工作状态
 State:
 	name=S4
-	label=自检
+	label=FinalState
 State:
 	name=S5
-	label=准备完成
+	label=Pseudostate1
 State:
 	name=S6
-	label=校准
+	label=发射
 State:
 	name=S7
-	label=拍照
+	label=运行
 State:
 	name=S8
-	label=故障
+	label=分离
 State:
-	name=EXIT
-	label=结束
+	name=S9
+	label=入轨
+State:
+	name=S10
+	label=在轨运行
+State:
+	name=S11
+	label=回收
 Transition:
 		name=T1
-		src=START
+		src=S0
 		tgt=S1
-		event=Write_com7(RS232_ctr,RS232_data)
-		condition=0)&(RS232_ctr<1000)
-		action=led7(data,falg)
+		event=
+		condition=
+		action=
 Transition:
 		name=T2
 		src=S1
 		tgt=S2
-		event=Write_com7(RS232_ctr,RS232_data)
-		condition=1000)&(RS232_ctr<2000)
-		action=led1(data,falg)
+		event=
+		condition=
+		action=
 Transition:
 		name=T3
 		src=S2
 		tgt=S3
-		event=Write_com7(RS232_ctr,RS232_data)
-		condition=2000)&(RS232_ctr<3000)
-		action=led2(data,falg)
+		event=
+		condition=
+		action=
 Transition:
 		name=T4
-		src=S3
-		tgt=S2
-		event=Write_com7(RS232_ctr,RS232_data)
-		condition=1000)&(RS232_ctr<2000)
-		action=led1(data,falg)
-Transition:
-		name=T5
-		src=S3
-		tgt=S4
-		event=Write_com7(RS232_ctr,RS232_data)
-		condition=4000)
-		action=led3(data,falg)
-Transition:
-		name=T6
-		src=S4
-		tgt=S3
-		event=Write_com7(RS232_ctr,RS232_data)
-		condition=2000)&(RS232_ctr<3000)
-		action=led2(data,falg)
-Transition:
-		name=T7
-		src=S2
-		tgt=S5
-		event=Write_com7(RS232_ctr,RS232_data)
-		condition=4000)&(RS232_ctr<5000)
-		action=led4(data,falg)
-Transition:
-		name=T8
-		src=S5
-		tgt=S2
-		event=Write_com7(RS232_ctr,RS232_data)
-		condition=1000)&(RS232_ctr<2000)
-		action=led1(data,falg)
-Transition:
-		name=T9
 		src=S5
 		tgt=S6
-		event=Write_com7(RS232_ctr,RS232_data)
-		condition=5000)&(RS232_ctr<6000)
-		action=led5(data,falg)
+		event=
+		condition=
+		action=
+Transition:
+		name=T5
+		src=S6
+		tgt=S8
+		event=
+		condition=
+		action=
+Transition:
+		name=T6
+		src=S8
+		tgt=S9
+		event=
+		condition=
+		action=
+Transition:
+		name=T7
+		src=S9
+		tgt=S10
+		event=
+		condition=
+		action=
+Transition:
+		name=T8
+		src=S10
+		tgt=S11
+		event=
+		condition=
+		action=
+Transition:
+		name=T9
+		src=S11
+		tgt=S4
+		event=
+		condition=
+		action=
 Transition:
 		name=T10
-		src=S6
-		tgt=S5
-		event=Write_com7(RS232_ctr,RS232_data)
-		condition=4000)&(RS232_ctr<5000)
-		action=led4(data,falg)
+		src=S2
+		tgt=S1
+		event=
+		condition=
+		action=
 Transition:
 		name=T11
-		src=S5
-		tgt=S7
-		event=Write_com7(RS232_ctr,RS232_data)
-		condition=6000)&(RS232_ctr<7000)
-		action=led6(data,falg)
+		src=S3
+		tgt=S1
+		event=
+		condition=
+		action=
 Transition:
 		name=T12
-		src=S7
+		src=S3
 		tgt=S5
-		event=Write_com7(RS232_ctr,RS232_data)
-		condition=4000)&(RS232_ctr<5000)
-		action=led4(data,falg)
+		event=
+		condition=
+		action=
 Transition:
 		name=T13
-		src=S1
-		tgt=EXIT
-		event=Clear_com7(RS232_ctr)
-		condition=7000)&(RS232_ctr<8000)
-		action=led8()
+		src=S8
+		tgt=S7
+		event=
+		condition=
+		action=
 Transition:
 		name=T14
-		src=S2
-		tgt=EXIT
-		event=Clear_com7(RS232_ctr)
-		condition=7000)&(RS232_ctr<8000)
-		action=led8()
+		src=S7
+		tgt=S9
+		event=
+		condition=
+		action=
 Transition:
 		name=T15
-		src=S3
-		tgt=EXIT
-		event=Clear_com7(RS232_ctr)
-		condition=7000)&(RS232_ctr<8000)
-		action=led8()
+		src=S5
+		tgt=S4
+		event=
+		condition=
+		action=
 Transition:
 		name=T16
-		src=S4
-		tgt=EXIT
-		event=Clear_com7(RS232_ctr)
-		condition=7000)&(RS232_ctr<8000)
-		action=led8()
-Transition:
-		name=T17
-		src=S5
-		tgt=EXIT
-		event=Clear_com7(RS232_ctr)
-		condition=7000)&(RS232_ctr<8000)
-		action=led8()
-Transition:
-		name=T18
-		src=S6
-		tgt=EXIT
-		event=Clear_com7(RS232_ctr)
-		condition=7000)&(RS232_ctr<8000)
-		action=led8()
-Transition:
-		name=T19
-		src=S7
-		tgt=EXIT
-		event=Clear_com7(RS232_ctr)
-		condition=7000)&(RS232_ctr<8000)
-		action=led8()
-Transition:
-		name=T20
-		src=S2
-		tgt=S8
-		event=Read_com7(5)
-		condition=
-		action=
-Transition:
-		name=T21
-		src=S2
-		tgt=S8
-		event=BlockRead_com7(5)
-		condition=
-		action=
-Transition:
-		name=T22
-		src=S2
-		tgt=S8
-		event=Read_com7(5,7)
-		condition=
-		action=
-Transition:
-		name=T23
-		src=S2
-		tgt=S8
-		event=BlockRead_com7(5,7)
-		condition=
-		action=
-Transition:
-		name=T24
-		src=S8
-		tgt=EXIT
-		event=Clear_com7(RS232_ctr)
-		condition=7000)&(RS232_ctr<8000)
-		action=led8()
-Transition:
-		name=8
-		src=S6
+		src=S0
 		tgt=S4
-		event=8
-		condition=8
-		action=8
+		event=
+		condition=
+		action=

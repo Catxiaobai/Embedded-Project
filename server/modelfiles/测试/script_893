@@ -1,5 +1,0 @@
-array=com7.Write()
-array=com7.Write([55, 2, 10, 49147, 66])
-array=com7.Write([55, 4, 13, 22116, 66])
-array=com7.Write([55, 6, 12, 13668, 66])
-array=com7.Clear()

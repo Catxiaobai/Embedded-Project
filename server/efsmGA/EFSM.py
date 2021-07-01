@@ -93,7 +93,6 @@ class Path(list):
 
 ######################Simple Genetic Algorithm ##########################
 
-
 class GA:
     """
     simple Genetic Algorithms
@@ -116,18 +115,20 @@ class GA:
         #    self.max=500   ### fulePump
         self.min = 0
 
-    def genome(self, varname, genomeLen=0):
+    def genome(self, varname, trans_currPathT, genomeLen=0):
         gens = []
-
         for i in range(genomeLen):
             value = varname[i]
-            gens.append(protocolInf.dateGeneration(value))
+            if trans_currPathT[i] is None:
+                gens.append(protocolInf.dateGeneration(value))
+            else:
+                gens.append(trans_currPathT[i])
         return gens
 
-    def creatStartPopulation(self, varname):
+    def creatStartPopulation(self, varname, trans_currPathT):
         self.genomes = []
         for i in range(self.populationSize):
-            self.genomes.append(self.genome(varname, self.genomeLen))
+            self.genomes.append(self.genome(varname, trans_currPathT, self.genomeLen))
         return self.genomes
 
     def fitnessScore(self, geneFitness):
@@ -883,6 +884,104 @@ class EFSM(object):
             while tempvdict != []:
                 self.originalDef.append(tempvdict.pop(0))
 
+    def pathInputVar1(self, currPath, trans_currPath):
+
+        self.originalDef = []  ## variables defined on the path's events
+        tranDealFlag = {}
+        for tran in currPath:
+            tranDealFlag[tran] = 0  ### deaf flag =0
+        i = 0
+        while (i < len(currPath)):
+            currTrans = currPath[i]
+            if tranDealFlag[currTrans] == 0:
+                for vtran, vdict in self.currPathTranVarDict.iteritems():
+                    if vtran == currTrans:
+                        tempvdict = []
+                        #####deal with event variables######
+                        tempvdict.extend(vdict['eventVdef'])
+                        while tempvdict != []:
+                            var = tempvdict.pop(0)
+                            self.originalDef.append(var)
+                            fdict = self.currPathTranFuncDict[currTrans]
+                            if fdict['condFunc'] != ['null'] and fdict['condFunc'] != [''] and fdict['condFunc'] != []:
+                                CondStr1 = fdict['condFunc'][0]
+                                condStr = ''
+                                for char in CondStr1:
+                                    if (char != ' '):
+                                        condStr = condStr + char
+                                if '&' in condStr:
+                                    for predStr in condStr.split("&"):
+                                        predStr = predStr.strip()
+                                        predStr = predStr.strip("(")
+                                        predStr = predStr.strip(")")
+                                        subList = []
+                                        predStr = predStr.strip()
+                                        predStr = predStr.strip("(")
+                                        predStr = predStr.strip(")")
+                                        if "==" not in predStr or var not in predStr:
+                                            continue
+                                        subList = self.identifyLeftRight(predStr)
+                                        rightstr = subList.pop(0)
+                                        leftstr = subList.pop(0)
+                                        if "0x" in leftstr:
+                                            leftValue = int(leftstr, 16)
+                                            trans_currPath.append(leftValue)
+                                        else:
+                                            leftValue = int(leftstr)
+                                            trans_currPath.append(leftValue)
+                                elif '|' in condStr:
+                                    for predStr in condStr.split("&"):
+                                        predStr = predStr.strip()
+                                        predStr = predStr.strip("(")
+                                        predStr = predStr.strip(")")
+                                        subList = []
+                                        predStr = predStr.strip()
+                                        predStr = predStr.strip("(")
+                                        predStr = predStr.strip(")")
+                                        if "==" not in predStr or var not in predStr:
+                                            continue
+                                        subList = self.identifyLeftRight(predStr)
+                                        rightstr = subList.pop(0)
+                                        leftstr = subList.pop(0)
+                                        if "0x" in leftstr:
+                                            leftValue = int(leftstr, 16)
+                                            trans_currPath.append(leftValue)
+                                        else:
+                                            leftValue = int(leftstr)
+                                            trans_currPath.append(leftValue)
+                                elif "==" in condStr and var in condStr:
+                                    predStr = condStr.strip()
+                                    predStr = predStr.strip("(")
+                                    predStr = predStr.strip(")")
+                                    subList = []
+                                    predStr = predStr.strip()
+                                    predStr = predStr.strip("(")
+                                    predStr = predStr.strip(")")
+                                    if "==" not in predStr or var not in predStr:
+                                        continue
+                                    subList = self.identifyLeftRight(predStr)
+                                    rightstr = subList.pop(0)
+                                    leftstr = subList.pop(0)
+                                    if "0x" in leftstr:
+                                        leftValue = int(leftstr, 16)
+                                        trans_currPath.append(leftValue)
+                                    else:
+                                        leftValue = int(leftstr)
+                                        trans_currPath.append(leftValue)
+                                else:
+                                    trans_currPath.append(None)
+                            else:
+                                trans_currPath.append(None)
+                        tranDealFlag[currTrans] = 1
+                        break
+            i = i + 1
+        for vtran, vdict in self.repeatTranVarDict.iteritems():
+            tempvdict = []
+            tempvdict.extend(vdict['eventVdef'])
+            while tempvdict != []:
+                self.originalDef.append(tempvdict.pop(0))
+                trans_currPath.append(currTrans)
+
     def copyPathInfo(self):
         """
         copy path information into current Path Dictionary
@@ -997,7 +1096,10 @@ class EFSM(object):
                                         subList = self.identifyLeftRight(predStr)
                                         rightstr = subList.pop(0)
                                         leftstr = subList.pop(0)
-                                        leftValue = int(leftstr)
+                                        if "0x" in leftstr:
+                                            leftValue = int(leftstr, 16)
+                                        else:
+                                            leftValue = int(leftstr)
                                         if len(condVuseValueDict[rightstr]) == 1:
                                             condVuseValueDict[rightstr].pop()
                                         condVuseValueDict[rightstr].append(leftValue - accuracy)
@@ -1071,7 +1173,10 @@ class EFSM(object):
                                         subList = self.identifyLeftRight(predStr)
                                         rightstr = subList.pop(0)
                                         leftstr = subList.pop(0)
-                                        leftValue = int(leftstr)
+                                        if "0x" in leftstr:
+                                            leftValue = int(leftstr, 16)
+                                        else:
+                                            leftValue = int(leftstr)
                                         if vis[rightstr][0] == False:
                                             tranVarValue[rightstr] = [0, 0]
                                             vis[rightstr][0] = True

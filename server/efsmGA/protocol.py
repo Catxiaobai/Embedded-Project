@@ -99,6 +99,7 @@ class protocol:
         #self.fhead=int(self.format[0]['value'])
         #self.fend=int(self.format[len(self.format)-1]['value'])
         self.IntDateGeneration=INTBYTE.INTBYTE()
+
     def set(self,data):
         self.result = []
         ans={}
@@ -124,8 +125,84 @@ class protocol:
                     dt=0
                 self.message.append(dt)
             self.crc16 = self.getCrc()
+            message_tmp=[]
+            k=0
+            for i in protocol_object:
+                if int(i['length'])==2:
+                    str1 = ""
+                    if type(self.message[k])==type(0.1):
+                        floatStr=str(self.message[k])
+                        indexe=floatStr.find('e')
+                        if indexe>0:
+                            floatStr=floatStr[:indexe]
+                        floatStr=floatStr.split('.')
+                        for i in floatStr:
+                            str1=str1+i
+                        str1=int(str1)
+                    else:
+                        str1=self.message[k]
+                    str1='0x{:04x}'.format(str1)
+                elif int(i['length'])==1:
+                    str1 = ""
+                    if type(self.message[k]) == type(0.1):
+                        floatStr = str(self.message[k])
+                        indexe = floatStr.find('e')
+                        if indexe > 0:
+                            floatStr = floatStr[:indexe]
+                        floatStr = floatStr.split('.')
+                        for i in floatStr:
+                            str1 = str1 + i
+                        str1 = int(str1)
+                    else:
+                        str1 = self.message[k]
+                    str1='0x{:02x}'.format(self.message[k])
+                elif int(i['length'])==3:
+                    str1 = ""
+                    if type(self.message[k]) == type(0.1):
+                        floatStr = str(self.message[k])
+                        indexe = floatStr.find('e')
+                        if indexe > 0:
+                            floatStr = floatStr[:indexe]
+                        floatStr = floatStr.split('.')
+                        for i in floatStr:
+                            str1 = str1 + i
+                        str1 = int(str1)
+                    else:
+                        str1 = self.message[k]
+                    str1='0x{:06x}'.format(self.message[k])
+                elif int(i['length'])==4:
+                    str1 = ""
+                    if type(self.message[k]) == type(0.1):
+                        floatStr = str(self.message[k])
+                        indexe = floatStr.find('e')
+                        if indexe > 0:
+                            floatStr = floatStr[:indexe]
+                        floatStr = floatStr.split('.')
+                        for i in floatStr:
+                            str1 = str1 + i
+                        str1 = int(str1)
+                    else:
+                        str1 = self.message[k]
+                    str1='0x{:08x}'.format(self.message[k])
+                elif int(i['length'])==5:
+                    str1 = ""
+                    if type(self.message[k]) == type(0.1):
+                        floatStr = str(self.message[k])
+                        indexe = floatStr.find('e')
+                        if indexe > 0:
+                            floatStr = floatStr[:indexe]
+                        floatStr = floatStr.split('.')
+                        for i in floatStr:
+                            str1 = str1 + i
+                        str1 = int(str1)
+                    else:
+                        str1 = self.message[k]
+                    str1='0x{:10x}'.format(self.message[k])
+                k+=1
+                message_tmp.append(str1[:])
             self.message.insert(-1, self.crc16)
-            self.result.append(self.message[:])
+            message_tmp.insert(-1, '0x{:04x}'.format(self.crc16))
+            self.result.append(message_tmp)
     def getCrc(self,crcnum=16):
         binstr=""
         for i in self.message:
@@ -185,30 +262,32 @@ class protocol:
     def readBadHead(self, badhead=0):
         ans = []
         for i in self.result:
-            self.message=i[:]
-            self.message[0]=badhead
-            ans.append(self.message[:])
+            message_tmp=i[:]
+            message_tmp[0]='0x{:04x}'.format(badhead)
+            ans.append(message_tmp[:])
         return ans
 
     def readBadEnd(self, badend=0):
         ans = []
         for i in self.result:
-            self.message = i[:]
-            self.message[-1] = badend
-            ans.append(self.message[:])
+            message_tmp = i[:]
+            message_tmp[0] = '0x{:04x}'.format(badend)
+            ans.append(message_tmp)
         return ans
 
     def readBadCrc(self, badcrc=0):
         ans = []
         for i in self.result:
-            self.message = i[:]
-            self.message[-2] = badcrc
-            ans.append(self.message[:])
+            message_tmp = i[:]
+            message_tmp[0] = '0x{:04x}'.format(badcrc)
+            ans.append(message_tmp[:])
         return ans
+
 if __name__ == '__main__':
-    protocol1=protocol()
-    protocol1.set({"RS232_ctr":345})
+    protocol1 = protocol()
+    protocol1.set({"RS232_ctr": 345})
     print protocol1.read()
     print protocol1.readBadEnd(77)
     print protocol1.readBadHead(88)
     print protocol1.readBadCrc(90)
+

@@ -834,6 +834,7 @@ def protocol_save(request):
         for protocol in result:
             print(protocol)
             config = eval(protocol['configuration'])
+            print(config)
             result_conf = [Variable.objects.get(id=i).to_dict() for i in config]
             for i in result_conf:
                 i.pop('id')
