@@ -17,7 +17,7 @@ export default {
   name: 'home',
   data() {
     return {
-      bodyImg: require('@/assets/images/homePage.jpg'),
+      bodyImg: require('@/assets/images/homePage2.jpg'),
       bodyMsg:
         '\xa0\xa0\xa0\xa0基于嵌入式软件的 EFSM 建模与安全测试用例集生成：' +
         '基于模型的测试用例自动生成软件使用的状态包括系统管理状态、测试需求建模状态、测试用例生成策略制定状态、测试用例生成状态。',
@@ -46,7 +46,7 @@ export default {
 .bodyImg {
   width: 100%;
   .el-image__inner {
-    height: 435px;
+    height: 485px;
     width: 100%;
   }
 }

@@ -239,7 +239,7 @@ def generate_random(request):
         # 判断这条path这种方法name下有没有生成data，有就delete，无则save
         aim_path_id = request_json['id']
         new_type2 = request_json['type2']
-        new_name = '随机值'
+        new_name = '等价类划分'
         new_data = result
         PathsData.objects.filter(paths_id=aim_path_id, name=new_name).delete()
         new_paths_data = PathsData(paths_id=aim_path_id, type2=new_type2, name=new_name, data=new_data)
@@ -472,7 +472,7 @@ def save_test_data_to_db(data):
                      function=data['name'],
                      TF=tf,
                      data=new_data).save()
-    elif data['name'] == '随机值' or data['name'] == '时序约束':
+    elif data['name'] == '等价类划分' or data['name'] == '时序约束':
         for key in data['data']:
             new_data = []
             if key != 'name':
@@ -595,18 +595,14 @@ def generate_script_all(request):
             for j in range(min(len(path), len(data))):
                 result.append(script.main(path[j], data[j], filepath + filename))
             # print(i, result)
-            with open(dir_path+'/script_'+str(i), 'w', encoding='utf-8') as f:
+            with open(dir_path + '/script_' + str(i), 'w', encoding='utf-8') as f:
                 for r in result:
-                    f.write(r+'\n')
-            # for key in request_jsons:
-        #     regular = re.compile(r"T[0-9]+")
-        #     if regular.match(key):
-        #         print(key, request_jsons[key])
-        #         result.append(script.main(key, request_jsons[key], filepath + filename))
-        # print(result)
+                    f.write(r + '\n')
+        abspath = os.path.abspath(dir_path)
+        # print(abspath)
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": e})
-    return JsonResponse({**error_code.CLACK_SUCCESS})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "path": abspath})
 
 
 # 新建协议

@@ -1,0 +1,4 @@
+array=com7.Write(['0x0037', '0x0002', '0x0110', '0x3f1e', '0x0042'])
+array=com7.Write()
+com7.Read([5],[7])
+array=com7.Clear()

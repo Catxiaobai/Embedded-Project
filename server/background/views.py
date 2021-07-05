@@ -6,7 +6,6 @@ from json import dumps
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 
-import dsp.main
 import lwn_Graphic.combination
 import lwn_Graphic.combination2
 import lwn_Graphic.constructModel
@@ -535,9 +534,6 @@ def save_model2(request):
     return JsonResponse({**error_code.CLACK_SUCCESS})
 
 
-def dsp_test(request):
-    dsp.main.start()
-    return JsonResponse({**error_code.CLACK_SUCCESS})
 
 
 # 删除项目

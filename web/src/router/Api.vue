@@ -3,7 +3,7 @@
 </template>
 
 <script>
-const Global_Api = 'http://127.0.0.1:2020'
+const Global_Api = 'http://127.0.0.1:4096'
 
 export default {
   name: 'Api',

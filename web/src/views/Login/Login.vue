@@ -27,7 +27,7 @@
 export default {
   data() {
     return {
-      bgImg: require('@/assets/images/background.jpg'),
+      bgImg: require('@/assets/images/login.jpg'),
       loginForm: {
         name: '',
         password: '',
@@ -128,7 +128,7 @@ export default {
   z-index: 1;
   position: absolute;
   margin-top: 15%;
-  margin-left: 40%;
+  margin-left: 37.5%;
   width: 410px;
   height: 500px;
 }

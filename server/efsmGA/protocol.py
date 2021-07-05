@@ -285,7 +285,7 @@ class protocol:
 
 if __name__ == '__main__':
     protocol1 = protocol()
-    protocol1.set({"RS232_ctr": 345})
+    protocol1.set({"RS232_ctr": 257,"RS232_data":0})
     print protocol1.read()
     print protocol1.readBadEnd(77)
     print protocol1.readBadHead(88)

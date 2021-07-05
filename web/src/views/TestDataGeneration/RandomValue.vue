@@ -36,7 +36,7 @@
         </el-table-column>
         <el-table-column label="操作" width="114">
           <template slot-scope="scope">
-            <el-button size="mini" @click="generateRandom(scope.$index, scope.row)" type="primary">随机值生成</el-button>
+            <el-button size="mini" @click="generateRandom(scope.$index, scope.row)" type="primary">等价类划分</el-button>
           </template>
         </el-table-column>
         <el-table-column prop="result" label="测试数据" width="100">
@@ -180,7 +180,7 @@ export default {
       this.itemInfo = this.$store.state.item
     },
     gotoShow(row) {
-      row['name'] = '随机值'
+      row['name'] = '等价类划分'
       console.log('test', row)
       this.$store.commit('setPath', row)
       this.$router.replace('/dataShow')

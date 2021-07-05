@@ -58,7 +58,6 @@
 <script>
 export default {
   name: 'FullState.veu',
-  inject: ['reload'],
   data() {
     return {
       limit: 10, //每页显示条数

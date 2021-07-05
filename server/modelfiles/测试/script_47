@@ -1,4 +1,4 @@
-array=com7.Write([55, 1, 0, 58249, 66])
-array=com7.Write([55, 21, 273, 50689, 66])
-array=com7.Write([55, 23, 273, 17962, 66])
-array=com7.Clear([55, 8, 0, 37301, 66])
+array=com7.Write(['0x0037', '0x0001', '0x0111', '0xb5c9', '0x0042'])
+array=com7.Write(['0x0037', '0x0002', '0x0111', '0xbc1d', '0x0042'])
+com7.Read(5)
+array=com7.Clear(['0x0037', '0x0008', '0x0000', '0x91b5', '0x0042'])

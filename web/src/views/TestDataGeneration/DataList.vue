@@ -14,13 +14,17 @@
         </el-row>
       </div>
       <el-table
-        height="488px"
-        width="100%"
-        border
+        v-loading="loading"
+        element-loading-text="正在生成脚本..."
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.8)"
         :data="tableData"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
         style="width: 100%; margin-top: 20px"
         @filter-change="filterType"
+        height="488px"
+        width="100%"
+        border
       >
         <el-table-column type="expand" label="详情" width="60">
           <template slot-scope="props">
@@ -64,6 +68,7 @@ export default {
       limit: 10, //每页显示条数
       total: 0, //项目总数
       page: 1, //第几页
+      loading: false,
       rawData: [],
       tableData: [],
       spanArr: [], //用于存放每一行记录的合并数
@@ -74,7 +79,7 @@ export default {
           { text: '全状态', value: '全状态' },
         ],
         function: [
-          { text: '随机值', value: '随机值' },
+          { text: '等价类划分', value: '等价类划分' },
           { text: '边界值', value: '边界值' },
           { text: '递增值', value: '递增值' },
           { text: '递减值', value: '递减值' },
@@ -119,19 +124,6 @@ export default {
           }
         }
       }
-    },
-    generateBoundary(index, row) {
-      console.log(index, row)
-      this.loading = true
-      this.$http
-        .post(this.Global_Api + '/api/generation/generate_boundary', row)
-        .then((response) => {
-          this.loading = false
-          console.log(response.data)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
     },
     pageList() {
       this.$http
@@ -218,9 +210,18 @@ export default {
       this.getList()
     },
     generate_script_all() {
+      this.loading = true
       this.$http.post(this.Global_Api + '/api/generation/generate_script_all', { item: this.itemInfo, data: this.rawData }).then((response) => {
-        console.log(response)
-        this.$message.success('success')
+        console.log(response.data.path)
+        this.loading = false
+        // this.$message.success('导出成功')
+        this.$notify({
+          title: '脚本文件保存路径',
+          message: this.$createElement('div', { style: 'word-wrap: break-word;word-break:break-all' }, response.data.path),
+          duration: 0,
+          position: 'bottom-left',
+          type: 'success',
+        })
       })
     },
   },

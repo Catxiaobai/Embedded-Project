@@ -47,7 +47,7 @@
           </el-submenu>
           <el-submenu index="2-2">
             <template slot="title"><i class="el-icon-folder"></i>数据及脚本生成</template>
-            <el-menu-item index="/randomValue"><i class="el-icon-folder"></i>随机值</el-menu-item>
+            <el-menu-item index="/randomValue"><i class="el-icon-folder"></i>等价类划分</el-menu-item>
             <el-menu-item index="/boundaryValue"><i class="el-icon-folder"></i>边界值</el-menu-item>
             <el-menu-item index="/increase"><i class="el-icon-folder"></i>递增值</el-menu-item>
             <el-menu-item index="/decrease"><i class="el-icon-folder"></i>递减值</el-menu-item>
