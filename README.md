@@ -1,8 +1,9 @@
+# 项目介绍：[Embedded-Project项目介绍](https://blog.csdn.net/wryf602/article/details/135431606)
 
-项目介绍：[Embedded-Project项目介绍](https://blog.csdn.net/wryf602/article/details/135431606)
 # Server后端项目
 系统后端项目，基于django实现
-后端环境：python3、django、sqlite
+后端环境：python3、django、sqlite3
+
 ## 后端启动
 直接采用命令行`python manage.py runserver` 或 pycharm配置启动[Pycharm 配置运行 Django 项目](https://zhuanlan.zhihu.com/p/246400570)
 
@@ -43,12 +44,12 @@ python manage.py migrate
 系统前端项目，基于vue实现
 环境配置：npm、node、vue-cli
 
-## 与后端连接
-Api.vue下修改Global_Api
+## 前端启动
 
-```bash
-const Global_Api = 'http://127.0.0.1:4096'
-```
+ 1. `npm install` 安装配置
+ 2. `npm server` 启动项目
+
+![show npm scripts](https://img-blog.csdnimg.cn/direct/1462e265d95b4cc8ab0ee7cf00fec219.png)
 ## 启动时可能遇到的问题
 
  - `node-sass`已废弃
@@ -65,6 +66,8 @@ const Global_Api = 'http://127.0.0.1:4096'
 **-router/:** 存放路由配置文件。
 **-store/:** 存放 Vuex 状态管理相关文件。
 
+ - 与后端连接api设置
+Api.vue下修改`const Global_Api = 'http://127.0.0.1:4096'`
 
 出现`app running at`代表前端启动成功
 
@@ -74,9 +77,7 @@ const Global_Api = 'http://127.0.0.1:4096'
   - Network: http:
 ```
 
-![前端启动成功](htt
-ps://img-blog.csdnimg.cn/direct/5cb5e449da96440c878b966d4b6e6897.png)
-
+![前端启动成功](https://img-blog.csdnimg.cn/direct/5cb5e449da96440c878b966d4b6e6897.png)
 
 # 前后端分离开发流程
 前后端可分别开发，后端完成代码接口提供给前端调用即可
@@ -148,4 +149,3 @@ h1 {
 </style>
 
 ```
-
