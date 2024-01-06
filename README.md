@@ -74,4 +74,78 @@ const Global_Api = 'http://127.0.0.1:4096'
   - Network: http:
 ```
 
-![前端启动成功](https://img-blog.csdnimg.cn/direct/5cb5e449da96440c878b966d4b6e6897.png)
+![前端启动成功](htt
+ps://img-blog.csdnimg.cn/direct/5cb5e449da96440c878b966d4b6e6897.png)
+
+
+# 前后端分离开发流程
+前后端可分别开发，后端完成代码接口提供给前端调用即可
+
+ 1. 后端在 myapp/views.py 中编写一个简单的视图
+```python
+from django.http import JsonResponse
+
+def get_data(request):
+    data = {'message': 'Hello from Django!'}
+    return JsonResponse(data)
+    
+```
+ 2. 后端urls.py 中配置该视图的 URL：
+ 
+
+```python
+from django.urls import path
+from myapp.views import get_data
+
+urlpatterns = [
+    path('api/get_data/', get_data, name='get_data'),
+    # 其他 URL 配置...
+]
+
+```
+即可得到该功能接口`http://localhost:xxxx/api/get_data/`，提供给前端使用
+
+ 3. 前端编写一个简单的组件hello.vue：
+```html
+<template>
+  <div id="app">
+    <h1>{{ message }}</h1>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      message: 'Hello from Vue!',
+    };
+  },
+  mounted() {
+    // 使用后端接口
+    this.$axios.get('http://127.0.0.1:xxxx/api/get_data/')
+      .then(response => {
+        this.message = response.data.message;
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  },
+};
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+
+h1 {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+</style>
+
+```
+
