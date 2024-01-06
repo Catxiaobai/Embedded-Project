@@ -1,5 +1,5 @@
-@[TOC](Embedded-Project项目介绍)
-项目地址：[https://github.com/Catxiaobai/Embedded-Project](https://github.com/Catxiaobai/Embedded-Project)
+
+项目介绍：[Embedded-Project项目介绍](https://blog.csdn.net/wryf602/article/details/135431606)
 # Server后端项目
 系统后端项目，基于django实现
 后端环境：python3、django、sqlite
